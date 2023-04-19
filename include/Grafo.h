@@ -20,6 +20,8 @@ public:
     void removerArco(int id);
     int *getGrauNo(int id);
     int getOrdem();
-    int getRegularidade();    
+    int getRegularidade();
+    int *vizinhancaAberta(int idNo);   
+    int *vizinhancaFechada(int idNo);    
 };
 #endif // GRAFO_H

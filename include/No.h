@@ -18,6 +18,10 @@ public:
     No(int id, int x, int y, float peso);
     ~No();
     bool confirmDigrafo();
+    int getId();
+    int getX();
+    int getY();
+    int getPeso();
 };
 
 #endif // NO_H

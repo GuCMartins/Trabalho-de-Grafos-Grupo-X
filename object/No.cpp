@@ -20,3 +20,23 @@ No::No(int id, int x, int y, float peso)
 No::~No()
 {
 }
+
+int No::getId()
+{
+    return this->id;
+}
+
+int No::getX()
+{
+    return this->x;
+}
+
+int No::getY()
+{
+    return this->y;
+}
+
+int No::getPeso()
+{
+    return this->peso;
+}
