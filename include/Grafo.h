@@ -9,8 +9,8 @@ class Grafo
 private:
     int ordem;
     int regularidade;
-    No *Nos;
-    Arco *Arcos;
+    No* Nos;
+    Arco* Arcos;
 public:
     Grafo(/* args */);
     ~Grafo();
@@ -18,8 +18,9 @@ public:
     void removerNo(int id);
     void inserirArco(int id, int idNoOrigem, int idNoDestino, float peso);
     void removerArco(int id);
-    int *getGrauNo(int id);
-    int getOrdem();
-    int getRegularidade();    
+    int* getGrauNo(int id);
+    int getOrdem(){return ordem;}
+    int getRegularidade();
+    Arco* getArcos(){return Arcos;}  
 };
 #endif // GRAFO_H

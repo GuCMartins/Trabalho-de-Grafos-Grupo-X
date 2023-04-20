@@ -4,10 +4,6 @@
 
 using namespace std;
 
-Grafo::Grafo(/* args */)
-{
-}
+Grafo::Grafo(/* args */){}
+Grafo::~Grafo(){}
 
-Grafo::~Grafo()
-{
-}

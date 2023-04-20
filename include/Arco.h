@@ -6,7 +6,7 @@ class Arco
 private:
     int idDestino;
     int pesoArco;
-    Arco *proxArco;
+    Arco* proxArco;
 public:
     Arco(/* args */);
     ~Arco();

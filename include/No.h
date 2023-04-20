@@ -12,8 +12,8 @@ private:
     int grauSaida;
     int x,y;
     float peso;
-    No *proximo;
-    Arco *adjacente;
+    No* proximo;
+    Arco* adjacente;
 public:
     No(int id, int x, int y, float peso);
     ~No();
