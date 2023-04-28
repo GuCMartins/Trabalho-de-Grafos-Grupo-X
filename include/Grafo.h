@@ -9,8 +9,9 @@ class Grafo
 private:
     int ordem;
     int regularidade;
-    No* Nos;
-    Arco* Arcos;
+    No** Nos;
+    Arco** Arcos;
+    int numArcos;
 public:
     Grafo(/* args */);
     ~Grafo();
@@ -21,6 +22,7 @@ public:
     int* getGrauNo(int id);
     int getOrdem(){return ordem;}
     int getRegularidade();
+    int getNumArcos(){return numArcos;}
     Arco* getArcos(){return Arcos;}  
 };
 #endif // GRAFO_H
