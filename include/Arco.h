@@ -6,15 +6,15 @@
 class Arco
 {
 private:
-    int pesoArco;
+    float pesoArco;
     Arco *proxArco;
     No *noOrigem;
     No *noDestino;
 
 public:
-    Arco(int peso, Arco *prox, No *origem, No *destino);
+    Arco(float peso, Arco *prox, No *origem, No *destino);
     ~Arco();
-    int getPeso();
+    float getPeso();
     int getNoOrigem();
     int getNoDestino();
 };

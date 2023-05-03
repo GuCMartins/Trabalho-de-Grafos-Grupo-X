@@ -7,7 +7,6 @@ class No
 {
 private:
     int id;
-    bool visitado;
     int grauEntrada;
     int grauSaida;
     int x,y;
@@ -21,7 +20,7 @@ public:
     int getId();
     int getX();
     int getY();
-    int getPeso();
+    float getPeso();
 };
 
 #endif // NO_H

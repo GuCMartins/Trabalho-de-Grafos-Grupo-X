@@ -5,7 +5,7 @@
 
 using namespace std;
 
-Arco::Arco(int peso, Arco *prox, No *origem, No *destino)
+Arco::Arco(float peso, Arco *prox, No *origem, No *destino)
 {
     pesoArco = peso;
     proxArco = prox;
@@ -17,7 +17,7 @@ Arco::~Arco()
 {
 }
 
-int Arco::getPeso()
+float Arco::getPeso()
 {
     return pesoArco;
 }

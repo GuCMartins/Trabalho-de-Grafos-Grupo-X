@@ -7,17 +7,16 @@
 class Grafo
 {
 private:
-    int ordem;
-    int regularidade;
-    No *Nos;
-    Arco *Arcos;
+    int ordem,nArcos;
+    No *NoInicial;
+    bool digrafo,pondAresta,pondNode;
 public:
-    Grafo(/* args */);
+    Grafo(int ordem, bool digrafo, bool pondAresta, bool pondNode);
     ~Grafo();
-    void inserirNo(int id, int x, int y, float peso);
+    void inserirNo(int id, float peso);
     void removerNo(int id);
     void inserirArco(int id, int idNoOrigem, int idNoDestino, float peso);
-    void removerArco(int id);
+    void removerArco(int id, int idNoOrigem, int idNoDestino);
     int *getGrauNo(int id);
     int getOrdem();
     int getRegularidade();
