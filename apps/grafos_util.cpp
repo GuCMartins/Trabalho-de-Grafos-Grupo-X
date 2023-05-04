@@ -2,8 +2,9 @@
 #define GRAFOSUTIL_CPP
 
 #include <iostream>
+#include "../include/Grafo.h"
 
-using namespace std;
+using namespace std;    
 
 /*
     => Percorro todas as arestas verificando se o id entre dois caras em sequência
@@ -13,10 +14,10 @@ using namespace std;
     Conversar com a pessoa que fará função de inserção para tentar inserir orde-
     nado.
 */
-bool ehMultigrafo(Grafo g){
-    for(No* v = g.Nos; p != NULL; v = v->getProxNo()){
-        for(Arco *a = g.Arcos; a != NULL; a-->getProxArco()){
-            if(a.getId() == a.getProxArco().getId())
+bool ehMultigrafo(Grafo* g){
+    for(No* v = g->getNoInicio(); v != NULL; v = v->getProxNo()){
+        for(Arco *a = v->getArcos(); a != NULL; a = a->getProxArco()){
+            if(a->getIdDestino() == a->getProxArco()->getIdDestino())
                 return true;
         }
     }
@@ -32,8 +33,8 @@ bool ehMultigrafo(Grafo g){
     o mesmo não é completo mas satisfaz a primeira propriedade. Grafos com self-
     loops também caem no mesmo problema. Botar condição para isso depois.
 */
-bool ehCompleto(Grafo g){
-    if(g.getNumArcos() == g.getOrdem()*(g.getOrdem()-1)/2 && !ehMultigrafo(g))
+bool ehCompleto(Grafo* g){
+    if(g->getNumArcos() == g->getOrdem()*(g->getOrdem()-1)/2 && !ehMultigrafo(g))
         return true;
     else
         return false;
@@ -45,16 +46,18 @@ bool ehCompleto(Grafo g){
     alguém faça a parte de sequência de grau, seria interessante mudar essa função.
 */
 int grauGrafo(Grafo g){
-    int max = -1, cont;
-    for(No* v = g.Nos; p != NULL; v = v->getProxNo()){
-        cont = 0;
-        for(Arco *a = g.Arcos; a != NULL; a-->getProxArco()){
-            cont++;
+    //testar se o grafo é direcionado;
+    if(!g->ehDirecionado()){
+        int max = -1;
+        for (No *v = g.Nos; p != NULL; v = v->getProxNo())
+        {
+            if (v->getGrauEntrada() > max || max == -1)
+                max = v->getGrauEntrada();
         }
-        if(cont > max || max == -1)
-            max = cont;
+        return max;
+    }else{
+        cout << "Grafo eh direcionado." << endl;
     }
-    return max;
 }
 
 bool ehNulo(Grafo g){

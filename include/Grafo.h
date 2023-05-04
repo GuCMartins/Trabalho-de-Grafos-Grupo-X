@@ -8,21 +8,19 @@ class Grafo
 {
 private:
     int ordem;
-    int regularidade;
-    No** Nos;
-    Arco** Arcos;
+    //int regularidade;
+    No* NoInicial;
     int numArcos;
+    bool direcionado, pondAresta, pondNode;
 public:
-    Grafo(/* args */);
+    Grafo(int n, bool direc, bool pondAresta, bool pondNode);
     ~Grafo();
-    void inserirNo(int id, int x, int y, float peso);
-    void removerNo(int id);
-    void inserirArco(int id, int idNoOrigem, int idNoDestino, float peso);
-    void removerArco(int id);
-    int* getGrauNo(int id);
-    int getOrdem(){return ordem;}
-    int getRegularidade();
-    int getNumArcos(){return numArcos;}
-    Arco* getArcos(){return Arcos;}  
+    void inserirNo(int idNode,  float pesoNode);
+    void removerNo(int idNode);
+    void inserirArco(int idNoOrigem, int idNoDestino, float pesoArco);
+    void removerArco(int idNoOrigem, int idNoDestino);
+    int* getGrauNo(int idNode);
+    int getOrdem(){return ordem;};
+    int getNumArcos(){return numArcos;};
 };
 #endif // GRAFO_H

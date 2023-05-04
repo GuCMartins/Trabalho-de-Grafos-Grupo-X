@@ -5,12 +5,12 @@ class Arco
 {
 private:
     int idDestino;
-    int pesoArco;
+    float pesoArco;
     Arco* proxArco;
 public:
-    Arco(/* args */);
+    Arco(int nodeDest, float w);
     ~Arco();
-    int getPeso();
+    float getPeso();
 };
 
 #endif // Arco_H

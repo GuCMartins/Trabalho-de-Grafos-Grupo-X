@@ -7,17 +7,17 @@ class No
 {
 private:
     int id;
-    bool visitado;
     int grauEntrada;
     int grauSaida;
-    int x,y;
+    // int x,y; //possivelmente usado para pontos no espaço R2
     float peso;
     No* proximo;
     Arco* adjacente;
 public:
     No(int id, int x, int y, float peso);
     ~No();
-    bool confirmDigrafo();
+    int getGrauEntrada{return grauEntrada;};
+    int getGrauSaida{return grauSaida;};
 };
 
 #endif // NO_H
