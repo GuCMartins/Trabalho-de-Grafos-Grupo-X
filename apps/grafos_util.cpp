@@ -61,14 +61,19 @@ int grauGrafo(Grafo g){
 }
 
 bool ehNulo(Grafo g){
-    if(g.getArcos() == NULL)
+    bool verif = false;
+    if (g.getOrdem() == 0){
+        for (No* node = g.getNoInicial(); node != NULL; node = node->getProx()) 
+           if(node->getGrauEntrada() != 0)
+                return false;
         return true;
+    }
     else
         return false;
 }
 
 bool ehTrivial(Grafo g){
-    if(g.getArcos() == NULL && g.getOrdem() == 1)
+    if(g.getOrdem() == 0)
         return true;
     else
         return false;

@@ -16,8 +16,9 @@ private:
 public:
     No(int id, int x, int y, float peso);
     ~No();
-    int getGrauEntrada{return grauEntrada;};
-    int getGrauSaida{return grauSaida;};
+    int getGrauEntrada(){return grauEntrada;};
+    int getGrauSaida(){return grauSaida;};
+    No* getProx(){no = proximo;};
 };
 
 #endif // NO_H

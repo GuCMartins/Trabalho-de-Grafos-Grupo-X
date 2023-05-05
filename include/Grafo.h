@@ -10,7 +10,6 @@ private:
     int ordem;
     //int regularidade;
     No* NoInicial;
-    int numArcos;
     bool direcionado, pondAresta, pondNode;
 public:
     Grafo(int n, bool direc, bool pondAresta, bool pondNode);
@@ -19,8 +18,7 @@ public:
     void removerNo(int idNode);
     void inserirArco(int idNoOrigem, int idNoDestino, float pesoArco);
     void removerArco(int idNoOrigem, int idNoDestino);
-    int* getGrauNo(int idNode);
     int getOrdem(){return ordem;};
-    int getNumArcos(){return numArcos;};
+    No* getNoInicial(){return NoInicial;};
 };
 #endif // GRAFO_H
