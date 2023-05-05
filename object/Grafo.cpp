@@ -4,9 +4,8 @@
 
 using namespace std;
 
-Grafo::Grafo(/* args */)
-{
-}
+Grafo::Grafo(int n, bool direc, bool pondAresta, bool pondNode){}
+Grafo::~Grafo(){}
 
 Grafo::~Grafo()
 {
@@ -24,9 +23,9 @@ int *Grafo::vizinhancaAberta(int idNo)
     int i = 0;
     for (int j = 0; j < this->ordem; j++)
     {
-        if (Arcos[j].getNoOrigem() == idNo)
+        if (Nos[j].getProximo().getId() == idNo)
         {
-            vizinhanca[i] = Arcos[j].getNoDestino();
+            vizinhanca[i] = Nos[j].getProximo().getId();
             i++;
         }
     }

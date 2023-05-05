@@ -7,20 +7,23 @@
 class Grafo
 {
 private:
-    int ordem,nArcos;
-    No *NoInicial;
-    bool digrafo,pondAresta,pondNode;
+    int ordem;
+    //int regularidade;
+    No* NoInicial;
+    No* Nos;
+    int numArcos;
+    bool direcionado, pondAresta, pondNode;
 public:
-    Grafo(int ordem, bool digrafo, bool pondAresta, bool pondNode);
+    Grafo(int n, bool direc, bool pondAresta, bool pondNode);
     ~Grafo();
-    void inserirNo(int id, float peso);
-    void removerNo(int id);
-    void inserirArco(int id, int idNoOrigem, int idNoDestino, float peso);
-    void removerArco(int id, int idNoOrigem, int idNoDestino);
-    int *getGrauNo(int id);
-    int getOrdem();
-    int getRegularidade();
-    int *vizinhancaAberta(int idNo);   
-    int *vizinhancaFechada(int idNo);    
+    void inserirNo(int idNode,  float pesoNode);
+    void removerNo(int idNode);
+    void inserirArco(int idNoOrigem, int idNoDestino, float pesoArco);
+    void removerArco(int idNoOrigem, int idNoDestino);
+    int* getGrauNo(int idNode);
+    int getOrdem(){return ordem;};
+    int getNumArcos(){return numArcos;};
+    int* vizinhancaAberta(int idNo);
+    int* vizinhancaFechada(int idNo);
 };
 #endif // GRAFO_H
