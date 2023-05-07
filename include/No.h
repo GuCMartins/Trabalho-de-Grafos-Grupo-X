@@ -18,7 +18,7 @@ public:
     ~No();
     int getGrauEntrada(){return grauEntrada;};
     int getGrauSaida(){return grauSaida;};
-    No* getProx(){no = proximo;};
+    No* getProx(){return proximo;};
 };
 
 #endif // NO_H

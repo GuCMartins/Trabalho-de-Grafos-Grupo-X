@@ -47,9 +47,9 @@ bool ehCompleto(Grafo* g){
 */
 int grauGrafo(Grafo g){
     //testar se o grafo é direcionado;
-    if(!g->ehDirecionado()){
+    if(!g.ehDirecionado()){
         int max = -1;
-        for (No *v = g.Nos; p != NULL; v = v->getProxNo())
+        for (No *v = g.getNoInicial(); v != NULL; v = v->getProx())
         {
             if (v->getGrauEntrada() > max || max == -1)
                 max = v->getGrauEntrada();
@@ -61,19 +61,14 @@ int grauGrafo(Grafo g){
 }
 
 bool ehNulo(Grafo g){
-    bool verif = false;
-    if (g.getOrdem() == 0){
-        for (No* node = g.getNoInicial(); node != NULL; node = node->getProx()) 
-           if(node->getGrauEntrada() != 0)
-                return false;
-        return true;
-    }
-    else
-        return false;
+    for (No* node = g.getNoInicial(); node != NULL; node = node->getProx()) 
+        if(node->getGrauEntrada() != 0)
+            return false;
+    return true;
 }
 
 bool ehTrivial(Grafo g){
-    if(g.getOrdem() == 0)
+    if(g.getOrdem() == 1)
         return true;
     else
         return false;
