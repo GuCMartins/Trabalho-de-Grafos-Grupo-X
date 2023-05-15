@@ -18,21 +18,34 @@ int Grafo::getOrdem()
 }
 
 int *Grafo:: vizinhancaAberta(int idNo){
-    int *vizinhanca = new int[Nos[idNo].getGrauSaida()];
+    int size = 0;
+    if(direcionado)
+        size = Nos[idNo].getGrauSaida() + Nos[idNo].getGrauEntrada();
+    else
+        size = Nos[idNo].getGrauEntrada();    
+    int *vizinhanca = new int[size];//aloca um vetor de vizinhanca com o numero de vizinhos do no
     int i = 0;
     Arco* arco = this->Nos[idNo].getAdjacente();//pega a aresta que sai do nó
-    while(i<Nos[idNo].getGrauSaida()){
-        vizinhanca[i] = arco->getNoDestino()->getId();
+    while(i<size && arco != NULL){
+        if(arco->getNoDestino()->getId() == idNo || arco->getNoOrigem()->getId() == idNo){
+            vizinhanca[i] = arco->getNoDestino()->getId();
+            i++;
+        }
         arco = arco->getProximo();
-        i++;
     }
     return vizinhanca;
 }
 
 int *Grafo::vizinhancaFechada(int idNo)
 {
-    int *vizinhanca = new int[Nos[idNo].getGrauSaida()+1];
-    vizinhanca = vizinhancaAberta(idNo);
-    vizinhanca[Nos[idNo].getGrauSaida()] = idNo;
+    int size = 0;
+    if(direcionado)
+        size = Nos[idNo].getGrauSaida() + Nos[idNo].getGrauEntrada();
+    else
+        size = Nos[idNo].getGrauEntrada();    
+    int *vizinhanca = new int[size];//aloca um vetor de vizinhanca com o numero de vizinhos do no
+    int *vizinhanca = new int[size+1];
+    vizinhanca = vizinhancaAberta(idNo);//recebe a vizinhanca aberta e completa com o no que esta sendo analisado
+    vizinhanca[size] = idNo;
     return vizinhanca;
 }

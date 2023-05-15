@@ -14,10 +14,14 @@ private:
 public:
     Arco(float peso, Arco *prox, No *origem, No *destino);
     ~Arco();
-    Arco *getProximo();
-    float getPeso();
+    Arco *getProximo(){return proxArco;}
+    void setProximo(Arco *arco){proxArco = arco;}
+    float getPeso(){return pesoArco;}
+    void setPeso(float peso){pesoArco = peso;}
     No* getNoOrigem(){return noOrigem;}
+    void setNoOrigem(No* no){noOrigem = no;}
     No* getNoDestino(){return noDestino;}
+    void setNoDestino(No* no){noDestino = no;}
 };
 
 #endif // Arco_H

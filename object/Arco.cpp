@@ -16,8 +16,3 @@ Arco::Arco(float peso, Arco *prox, No *origem, No *destino)
 Arco::~Arco()
 {
 }
-
-float Arco::getPeso()
-{
-    return pesoArco;
-}
