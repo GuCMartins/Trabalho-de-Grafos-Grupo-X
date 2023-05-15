@@ -14,15 +14,15 @@ using namespace std;
     Conversar com a pessoa que fará função de inserção para tentar inserir orde-
     nado.
 */
-bool ehMultigrafo(Grafo* g){
-    for(No* v = g->getNoInicio(); v != NULL; v = v->getProxNo()){
-        for(Arco *a = v->getArcos(); a != NULL; a = a->getProxArco()){
-            if(a->getIdDestino() == a->getProxArco()->getIdDestino())
-                return true;
-        }
-    }
-    return false;
-}
+// bool ehMultigrafo(Grafo* g){
+//     for(No* v = g->getNoInicio(); v != NULL; v = v->getProxNo()){
+//         for(Arco *a = v->getArcos(); a != NULL; a = a->getProxArco()){
+//             if(a->getIdDestino() == a->getProxArco()->getIdDestino())
+//                 return true;
+//         }
+//     }
+//     return false;
+// }
 
 /*
     => Verifico se a quantidade de arestas no grafo corresponde a n*(n-1)/2,
@@ -33,32 +33,32 @@ bool ehMultigrafo(Grafo* g){
     o mesmo não é completo mas satisfaz a primeira propriedade. Grafos com self-
     loops também caem no mesmo problema. Botar condição para isso depois.
 */
-bool ehCompleto(Grafo* g){
-    if(g->getNumArcos() == g->getOrdem()*(g->getOrdem()-1)/2 && !ehMultigrafo(g))
-        return true;
-    else
-        return false;
-}
+// bool ehCompleto(Grafo* g){
+//     if(g->getNumArcos() == g->getOrdem()*(g->getOrdem()-1)/2 && !ehMultigrafo(g))
+//         return true;
+//     else
+//         return false;
+// }
 
 /*
     => Grau do grafo é o maior valor para de grau dentre os vértices do grafo.
     => Seria verificar em cada nó a quantidade de itens na lista de arcos dele. Caso
     alguém faça a parte de sequência de grau, seria interessante mudar essa função.
 */
-int grauGrafo(Grafo g){
-    //testar se o grafo é direcionado;
-    if(!g.ehDirecionado()){
-        int max = -1;
-        for (No *v = g.getNoInicial(); v != NULL; v = v->getProx())
-        {
-            if (v->getGrauEntrada() > max || max == -1)
-                max = v->getGrauEntrada();
-        }
-        return max;
-    }else{
-        cout << "Grafo eh direcionado." << endl;
-    }
-}
+// int grauGrafo(Grafo g){
+//     //testar se o grafo é direcionado;
+//     if(!g.ehDirecionado()){
+//         int max = -1;
+//         for (No *v = g.getNoInicial(); v != NULL; v = v->getProx())
+//         {
+//             if (v->getGrauEntrada() > max || max == -1)
+//                 max = v->getGrauEntrada();
+//         }
+//         return max;
+//     }else{
+//         cout << "Grafo eh direcionado." << endl;
+//     }
+// }
 
 bool ehNulo(Grafo g){
     for (No* node = g.getNoInicial(); node != NULL; node = node->getProx()) 

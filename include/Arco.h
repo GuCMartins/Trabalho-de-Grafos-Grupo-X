@@ -4,8 +4,8 @@
 class Arco
 {
 private:
-    int idDestino;
-    float pesoArco;
+    int nodeDest;
+    float w;
     Arco* proxArco;
 public:
     Arco(int nodeDest, float w);

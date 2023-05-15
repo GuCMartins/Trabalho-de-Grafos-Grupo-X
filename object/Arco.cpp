@@ -4,15 +4,16 @@
 
 using namespace std;
 
-Arco::Arco(/* args */)
+Arco::Arco(int nodeDest, float w)
 {
+    this->nodeDest = nodeDest;
+    this->w = w;
 }
 
 Arco::~Arco()
 {
 }
 
-int Arco::getPeso()
-{
-    return pesoArco;
+float Arco::getPeso(){
+    return this->w;
 }
