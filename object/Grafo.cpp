@@ -49,3 +49,20 @@ int *Grafo::vizinhancaFechada(int idNo)
     vizinhanca[size] = idNo;
     return vizinhanca;
 }
+
+bool Grafo::Euleriano(){
+//Teorema: Um multigrafo M é euleriano se e somente se M é conexo e cada vértice de M tem grau par.
+    
+    if(ordem == 0)
+        return false;//se o grafo nao tiver nos, nao eh euleriano
+
+    for(int i=0;i<ordem;i++){
+        if(Nos[i].getGrauEntrada() <= 1)
+            return false;//se algum no nao tiver arcos conectando outros dois nos (na saida ou na entrada), o grafo nao eh euleriano
+        if(Nos[i].getGrauEntrada()%2!=0 || Nos[i].getGrauSaida()%2 !=0)
+            return false;//se algum no tiver grau de entrada diferente do grau de saida, o grafo nao eh euleriano   
+    }
+    return true;
+}
+
+

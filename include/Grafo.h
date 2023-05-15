@@ -25,5 +25,6 @@ public:
     int getNumArcos(){return numArcos;};
     int* vizinhancaAberta(int idNo);
     int* vizinhancaFechada(int idNo);
+    bool Euleriano();
 };
 #endif // GRAFO_H
