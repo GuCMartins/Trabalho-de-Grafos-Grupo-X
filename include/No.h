@@ -9,7 +9,7 @@ private:
     int id;
     int grauEntrada;
     int grauSaida;
-    // int x,y; //possivelmente usado para pontos no espaço R2
+    int x,y; //possivelmente usado para pontos no espaço R2
     float peso;
     No* proximo;
     Arco* adjacente;
@@ -23,6 +23,7 @@ public:
     int getGrauEntrada(){return grauEntrada;};
     int getGrauSaida(){return grauSaida;};
     No getProximo(){return *proximo;};
+    Arco* getAdjacente(){return adjacente;};
 };
 
 #endif // NO_H

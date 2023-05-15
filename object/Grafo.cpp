@@ -17,25 +17,22 @@ int Grafo::getOrdem()
     return this->ordem;
 }
 
-int *Grafo::vizinhancaAberta(int idNo)
-{
-    int *vizinhanca = new int[this->ordem];
+int *Grafo:: vizinhancaAberta(int idNo){
+    int *vizinhanca = new int[Nos[idNo].getGrauSaida()];
     int i = 0;
-    for (int j = 0; j < this->ordem; j++)
-    {
-        if (Nos[j].getProximo().getId() == idNo)
-        {
-            vizinhanca[i] = Nos[j].getProximo().getId();
-            i++;
-        }
+    Arco* arco = this->Nos[idNo].getAdjacente();//pega a aresta que sai do nó
+    while(i<Nos[idNo].getGrauSaida()){
+        vizinhanca[i] = arco->getNoDestino()->getId();
+        arco = arco->getProximo();
+        i++;
     }
     return vizinhanca;
 }
 
 int *Grafo::vizinhancaFechada(int idNo)
 {
-    int *vizinhanca = new int[this->ordem+1];
+    int *vizinhanca = new int[Nos[idNo].getGrauSaida()+1];
     vizinhanca = vizinhancaAberta(idNo);
-    vizinhanca[this->ordem] = idNo;
+    vizinhanca[Nos[idNo].getGrauSaida()] = idNo;
     return vizinhanca;
 }

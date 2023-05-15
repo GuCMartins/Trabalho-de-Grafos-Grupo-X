@@ -21,13 +21,3 @@ float Arco::getPeso()
 {
     return pesoArco;
 }
-
-int Arco::getNoOrigem()
-{
-    return noOrigem->getId();
-}
-
-int Arco::getNoDestino()
-{
-    return noDestino->getId();
-}
