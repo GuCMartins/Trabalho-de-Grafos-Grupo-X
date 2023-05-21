@@ -107,7 +107,7 @@ void escritaArquivo(string pathOut, Grafo *G){
             {
                 No *no = G->getNoInicial();
                 while(no != NULL){
-                    Arco *arco = no->getArcoAdjacente();
+                    Arco *arco = no->getArcoAdjacentes();
                     while(arco != NULL){
                         arqSaida << to_string(no->getId()) + " " + to_string(arco->getNodeDest()) + " " + to_string(arco->getPeso()) + "\n"; 
                         arco = arco->getProx();
@@ -120,7 +120,7 @@ void escritaArquivo(string pathOut, Grafo *G){
             else{
                 No *no = G->getNoInicial();
                 while(no != NULL){
-                    Arco *arco = no->getArcoAdjacente();
+                    Arco *arco = no->getArcoAdjacentes();
                     while(arco != NULL){
                         arqSaida << to_string(no->getId()) + " " + to_string(arco->getNodeDest()) + "\n"; 
                         arco = arco->getProx();
@@ -145,7 +145,7 @@ void escritaArquivo(string pathOut, Grafo *G){
                 visitados[0] = no->getId();
                 int v = 1;
                 while(no != NULL && v < G->getOrdem()){
-                    Arco *arco = no->getArcoAdjacente();
+                    Arco *arco = no->getArcoAdjacentes();
                     for(int i = 0; arco != NULL; i++){
                         if(arco->getNodeDest() != visitados[i])
                             arqSaida << to_string(no->getId()) + " " + to_string(arco->getNodeDest()) + " " + to_string(arco->getPeso()) + "\n";    
@@ -163,7 +163,7 @@ void escritaArquivo(string pathOut, Grafo *G){
             else{
                 No *no = G->getNoInicial();
                 while(no != NULL){
-                    Arco *arco = no->getArcoAdjacente();
+                    Arco *arco = no->getArcoAdjacentes();
                     while(arco != NULL){
                         arqSaida << to_string(no->getId()) + " " + to_string(arco->getNodeDest()) + "\n"; 
                         arco = arco->getProx();
@@ -200,9 +200,16 @@ int main(int argc, char **argv)
     }
 
     Grafo *G = leituraArquivo(pathIn, ehDir, ehPondAr, ehPondNode);
-    G->imprimirListaNos();
-    G->imprimirListaNosAdjacentes(4);
-    escritaArquivo(pathOut, G); //passar o grafo modificado com base na entrada
+    
+    cout <<"IMPRESSÃO "<<endl;
+    G->imprimirTodosNosAdjacentes();
+
+    cout <<"REMOVER NO "<<endl;
+    G->removerNo(5);
+    
+    cout <<"IMPRESSÃO APÓS REMOVER "<<endl;
+    G->imprimirTodosNosAdjacentes();
+    //escritaArquivo(pathOut, G); //passar o grafo modificado com base na entrada
 
     // Continuar o tratamento para o argv
     return 0;

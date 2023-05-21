@@ -24,6 +24,7 @@ public:
     No* getNoInicial(){return noInicial;};
     void imprimirListaNos();
     void imprimirListaNosAdjacentes(int idNo);
+    void imprimirTodosNosAdjacentes();
 
     bool ehDirecionado() {return direcionado;};
     int getNumArcos() {return numArcos;};

@@ -12,7 +12,7 @@ private:
     // int x,y; //possivelmente usado para pontos no espaço R2
     float peso;
     No *proximo;
-    Arco *adjacente;
+    Arco *adjacentes;
 
 public:
     No(int id, int x, int y, float peso);
@@ -31,10 +31,10 @@ public:
         this->proximo = no;
     }
 
-    Arco *getArcoAdjacente() { return adjacente; };
+    Arco *getArcoAdjacentes() { return adjacentes; };
     void setArcoAdjacente(Arco *arco)
     {
-        this->adjacente = arco;
+        this->adjacentes = arco;
     }
 };
 

@@ -69,7 +69,7 @@ void Grafo::auxInserirArco(No *noOrigem, No *noDestino, float pesoArco)
 {
     Arco *novoArco = new Arco(noDestino->getId(), pesoArco);
 
-    Arco *arcoInsercao = noOrigem->getArcoAdjacente();
+    Arco *arcoInsercao = noOrigem->getArcoAdjacentes();
 
     if (arcoInsercao == NULL)
     {
@@ -87,26 +87,50 @@ void Grafo::auxInserirArco(No *noOrigem, No *noDestino, float pesoArco)
 
 void Grafo::removerNo(int idNode)
 {
-    No *busca = findNoById(idNode);
-    if (busca == NULL)
+    No *busca = noInicial;
+    No *predecessor = NULL;
+
+    while (busca != NULL && busca->getId() != idNode)
     {
-        cout << "O nó " << idNode << " não existe no grafo e não pode ser removido.." << endl;
+        predecessor = busca;
+        busca = busca->getProx();
+    }
+
+    if (busca->getId() != idNode)
+    {
+        cout << "O nó " << idNode << " não existe no grafo e não pode ser removido..." << endl;
         return;
     }
 
-    Arco *arcoInicial = busca->getArcoAdjacente();
+    Arco *arcoInicial = busca->getArcoAdjacentes();
     if (arcoInicial == NULL)
     {
-        cout << "Grafo não tem arcos, removendo só o nó " << idNode << endl;
+        cout << "Nó não tem arcos, removendo só o nó " << idNode << endl;
+        if (predecessor != NULL)
+        {
+            predecessor->setProx(busca->getProx());
+        }
         delete busca;
+        return;
     }
 
-    Arco *aux;
+    Arco *aux = arcoInicial;
     while (arcoInicial->getProx() != NULL)
     {
         aux = arcoInicial->getProx();
         delete arcoInicial;
         arcoInicial = aux;
+    }
+
+    delete arcoInicial;
+
+    if (busca->getId() == noInicial->getId())
+    {
+        noInicial = busca->getProx();
+    }
+    else
+    {
+        predecessor->setProx(busca->getProx());
     }
 
     delete busca;
@@ -137,8 +161,25 @@ void Grafo::imprimirListaNos()
     No *no = noInicial;
     while (no != NULL)
     {
-        cout << "ID: " << no->getId() << " PESO: " << no->getPeso() << endl;
+        cout << "ID: " << no->getId() << " PESO: " << no->getPeso() << " Grau Entrada: " << no->getGrauEntrada() << " Grau Saída : " << no->getGrauSaida() << endl;
         no = no->getProx();
+    }
+}
+
+void Grafo::imprimirTodosNosAdjacentes()
+{
+    No *aux = noInicial;
+    if (aux != NULL)
+    {
+        while (aux != NULL)
+        {
+            imprimirListaNosAdjacentes(aux->getId());
+            aux = aux->getProx();
+        }
+    }
+    else
+    {
+        cout << "Grafo não tem nó inicial..." << endl;
     }
 }
 
@@ -151,7 +192,7 @@ void Grafo::imprimirListaNosAdjacentes(int idNo)
         cout << "Nó com id " << idNo << " não encontrado no grafo..." << endl;
         return;
     }
-    Arco *arco = no->getArcoAdjacente();
+    Arco *arco = no->getArcoAdjacentes();
     if (arco == NULL)
     {
         cout << "Nó com id " << idNo << " não tem adjacentes" << endl;
@@ -160,7 +201,7 @@ void Grafo::imprimirListaNosAdjacentes(int idNo)
     cout << "Nós adjacentes ao nó: " << idNo << endl;
     while (arco != NULL)
     {
-        cout << "ARCO NO ID: " << arco->getNodeDest() << endl;
+        cout << "NO DESTINO ID: " << arco->getNodeDest() << endl;
         arco = arco->getProx();
     }
 }
