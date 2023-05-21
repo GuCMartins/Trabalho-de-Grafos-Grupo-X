@@ -11,11 +11,13 @@ private:
     //int regularidade;
     No* noInicial;
     bool direcionado, pondAresta, pondNode;
+    void auxInserirArco(int idNoOrigem, int idNoDestino, float pesoArco);
 public:
     Grafo(int ordem, bool direc, bool pondAresta, bool pondNode);
     ~Grafo();
     void inserirNo(int idNode,  float pesoNode);
     void removerNo(int idNode);
+    
     void inserirArco(int idNoOrigem, int idNoDestino, float pesoArco);
     void removerArco(int idNoOrigem, int idNoDestino);
     int getOrdem(){return ordem;};

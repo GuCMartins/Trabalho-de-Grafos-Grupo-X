@@ -102,12 +102,8 @@ int main(int argc, char **argv)
         ehPondAr = argv[5];
     }
 
-    bool bEhDIr = (std::stoi(argv[3]) == 1), behPondAr = (std::stoi(argv[5]) == 1), bEhPondNode = (std::stoi(argv[4]) == 1);
-
-    cout << "EH DIR: " << bEhDIr << behPondAr << " EH POND NODE: " << bEhPondNode << " EH POND AR: " << endl;
-
     // Grafo G = leituraArquivo(pathIn, ehDir, ehPondNode, ehPondAr);
-    Grafo *g = new Grafo(5, bEhDIr, behPondAr, bEhPondNode);
+    Grafo *g = new Grafo(5, ehDir == "1", ehPondNode == "1", ehPondAr == "1");
     g->inserirNo(1, 1);
     g->inserirNo(2, 4);
     g->inserirNo(3, 6);
@@ -122,7 +118,7 @@ int main(int argc, char **argv)
     g->inserirArco(3, 4, 1);
 
     g->imprimirListaNos();
-    g->imprimirListaNosAdjacentes(3);
+    g->imprimirListaNosAdjacentes(4);
     // escritaArquivo(pathOut, G) //passar o grafo modificado com base na entrada
 
     // Continuar o tratamento para o argv

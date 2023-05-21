@@ -4,7 +4,7 @@
 
 using namespace std;
 
-No::No(int id, int x, int y, float peso)
+No::No(int id, float peso)
 {
     this->id = id;
     this->peso = peso;

@@ -15,6 +15,7 @@ private:
     Arco* adjacente;
 public:
     No(int id, int x, int y, float peso);
+    No(int id, float peso);
     ~No();
     int getId(){return id;};
     float getPeso(){return peso;};

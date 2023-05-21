@@ -16,7 +16,7 @@ Grafo::~Grafo() {}
 
 void Grafo::inserirNo(int idNode, float pesoNode)
 {
-    No *novoNo = new No(idNode, 1, 1, pesoNode);
+    No *novoNo = new No(idNode, pesoNode);
 
     if (noInicial == NULL)
     {
@@ -41,6 +41,19 @@ void Grafo::removerNo(int idNode)
 
 void Grafo::inserirArco(int idNoOrigem, int idNoDestino, float pesoArco)
 {
+    if (this->direcionado)
+    {
+        this->auxInserirArco(idNoOrigem, idNoDestino, pesoArco);
+    }
+    else
+    {
+        this->auxInserirArco(idNoOrigem, idNoDestino, pesoArco);
+        this->auxInserirArco(idNoDestino, idNoOrigem, pesoArco);
+    }
+}
+
+void Grafo::auxInserirArco(int idNoOrigem, int idNoDestino, float pesoArco)
+{
     No *noOrigem = this->findNoById(idNoOrigem);
     No *noDestino = this->findNoById(idNoDestino);
 
@@ -60,7 +73,6 @@ void Grafo::inserirArco(int idNoOrigem, int idNoDestino, float pesoArco)
             {
                 arcoInsercao = arcoInsercao->getProx();
             }
-
             arcoInsercao->setProx(novoArco);
         }
     }
@@ -115,6 +127,7 @@ void Grafo::imprimirListaNosAdjacentes(int idNo)
         cout << "Nó com id " << idNo << " não tem adjacentes" << endl;
         return;
     }
+    cout << "Nós adjacentes ao nó: " << idNo << endl;
     while (arco != NULL)
     {
         cout << "ARCO NO ID: " << arco->getNodeDest() << endl;
