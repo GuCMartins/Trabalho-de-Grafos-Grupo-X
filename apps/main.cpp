@@ -4,6 +4,7 @@
 #include "../include/Grafo.h"
 #include "../include/No.h"
 #include "../include/Arco.h"
+#include "grafos_util.h"
 
 using namespace std;
 
@@ -204,6 +205,5 @@ int main(int argc, char **argv)
     escritaArquivo(pathOut, G); //passar o grafo modificado com base na entrada
 
     // Continuar o tratamento para o argv
-
     return 0;
 }

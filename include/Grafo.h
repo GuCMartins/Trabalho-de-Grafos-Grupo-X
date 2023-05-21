@@ -25,6 +25,9 @@ public:
     void imprimirListaNos();
     void imprimirListaNosAdjacentes(int idNo);
 
+    bool ehDirecionado() {return direcionado;};
+    int getNumArcos() {return numArcos;};
+
     No* findNoById(int id);
     bool ehDir(){return direcionado;};
     bool ehPondAr(){return pondAresta;};

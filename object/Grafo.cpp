@@ -56,7 +56,7 @@ void Grafo::inserirArco(int idNoOrigem, int idNoDestino, float pesoArco)
             noDestino->incrementaGrauEntrada(1);
             this->auxInserirArco(noOrigem, noDestino, pesoArco);
             this->auxInserirArco(noDestino, noOrigem, pesoArco);
-            this->numArcos += 2;
+            this->numArcos += 1;
         }
     }
     else
