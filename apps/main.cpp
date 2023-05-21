@@ -2,6 +2,8 @@
 #include <fstream>
 #include <sstream>
 #include "../include/Grafo.h"
+#include "../include/No.h"
+#include "../include/Arco.h"
 
 using namespace std;
 
@@ -25,7 +27,7 @@ void divideString(string s, float cut[3])
     }
 }
 
-Grafo leituraArquivo(string path, string ehDir, string ehPondNode, string ehPondAr)
+Grafo* leituraArquivo(string path, string ehDir, string ehPondAr, string ehPondNode)
 {
     ifstream arq(path);
 
@@ -33,15 +35,16 @@ Grafo leituraArquivo(string path, string ehDir, string ehPondNode, string ehPond
     string numV;
     string auxId, auxPesoNode;
 
-    Grafo G(0, ehDir == "1", ehPondNode == "1", ehPondAr == "1");
+    
 
     if (arq.is_open())
     {
         getline(arq, line);
         numV = line;
+        Grafo *G = new Grafo(stoi(numV), ehDir == "1", ehPondAr == "1", ehPondNode == "1");
         if (ehPondNode == "0")
             for (int i = 0; i < stoi(numV); i++)
-                G.inserirNo(i, 0);
+                G->inserirNo(i+1, 0);
         else
             for (int i = 0; i < stoi(numV); i++)
             {
@@ -50,7 +53,7 @@ Grafo leituraArquivo(string path, string ehDir, string ehPondNode, string ehPond
                 divideString(line, cut);
                 int idNode = (int)cut[0];
                 float pesoNode = cut[1];
-                G.inserirNo(idNode, pesoNode);
+                G->inserirNo(idNode, pesoNode);
             }
         while (getline(arq, line))
         {
@@ -60,7 +63,7 @@ Grafo leituraArquivo(string path, string ehDir, string ehPondNode, string ehPond
                 divideString(line, cut);
                 int idNoOrigem = (int)cut[0];
                 float idNoDestino = cut[1];
-                G.inserirArco(idNoOrigem, idNoDestino, 0);
+                G->inserirArco(idNoOrigem, idNoDestino, 0);
             }
             else
             {
@@ -70,15 +73,108 @@ Grafo leituraArquivo(string path, string ehDir, string ehPondNode, string ehPond
                 int idNoDestino = (int)cut[1];
                 float pesoArco = cut[2];
                 cout << idNoOrigem << " " << idNoDestino << " " << pesoArco << endl;
-                G.inserirArco(idNoOrigem, idNoDestino, pesoArco);
+                G->inserirArco(idNoOrigem, idNoDestino, pesoArco);
             }
         }
+        return G;
     }
 
     else
         cerr << "Erro ao tentar abrir o arquivo de entrada" << endl;
 
-    return G;
+    arq.close();
+    return NULL;
+}
+
+void escritaArquivo(string pathOut, Grafo *G){
+
+    ofstream arqSaida(pathOut);
+    
+    if(arqSaida.is_open()){
+        arqSaida << to_string(G->getOrdem()) + "\n";
+
+        if(G->ehDir()){
+            if(G->ehPondNode()){
+                No *noInicial = G->getNoInicial();
+                while(noInicial != NULL){
+                    arqSaida << to_string(noInicial->getId()) + " " + to_string(noInicial->getGrauEntrada()) + to_string(noInicial->getGrauSaida()) + "\n"; 
+                    noInicial = noInicial->getProx();
+                }
+            }
+
+            if(G->ehPondAr())
+            {
+                No *no = G->getNoInicial();
+                while(no != NULL){
+                    Arco *arco = no->getArcoAdjacente();
+                    while(arco != NULL){
+                        arqSaida << to_string(no->getId()) + " " + to_string(arco->getNodeDest()) + " " + to_string(arco->getPeso()) + "\n"; 
+                        arco = arco->getProx();
+                    }
+                    no = no->getProx();
+                }
+
+            }
+
+            else{
+                No *no = G->getNoInicial();
+                while(no != NULL){
+                    Arco *arco = no->getArcoAdjacente();
+                    while(arco != NULL){
+                        arqSaida << to_string(no->getId()) + " " + to_string(arco->getNodeDest()) + "\n"; 
+                        arco = arco->getProx();
+                    }
+                    no = no->getProx();
+                }
+            }
+        }
+        else{
+            if(G->ehPondNode()){
+                No *noInicial = G->getNoInicial();
+                while(noInicial != NULL){
+                    arqSaida << to_string(noInicial->getId()) + " " + to_string(noInicial->getGrauEntrada()) + "\n";
+                    noInicial = noInicial->getProx(); 
+                }
+            }
+
+            if(G->ehPondAr())
+            {
+                No *no = G->getNoInicial();
+                int *visitados = new int[G->getOrdem()];
+                visitados[0] = no->getId();
+                int v = 1;
+                while(no != NULL && v < G->getOrdem()){
+                    Arco *arco = no->getArcoAdjacente();
+                    for(int i = 0; arco != NULL; i++){
+                        if(arco->getNodeDest() != visitados[i])
+                            arqSaida << to_string(no->getId()) + " " + to_string(arco->getNodeDest()) + " " + to_string(arco->getPeso()) + "\n";    
+                        arco = arco->getProx();
+                    }
+                    no = no->getProx();
+                    visitados[v] = no->getId();
+                    v++;
+                    delete arco;
+                }
+
+                delete [] visitados;
+            }
+
+            else{
+                No *no = G->getNoInicial();
+                while(no != NULL){
+                    Arco *arco = no->getArcoAdjacente();
+                    while(arco != NULL){
+                        arqSaida << to_string(no->getId()) + " " + to_string(arco->getNodeDest()) + "\n"; 
+                        arco = arco->getProx();
+                    }
+                    no = no->getProx();
+                }
+            }
+        }
+    }
+    else
+        cerr << "Erro ao tentar abrir o arquivo .txt" << endl;
+    arqSaida.close();
 }
 
 int main(int argc, char **argv)
@@ -98,28 +194,14 @@ int main(int argc, char **argv)
         pathIn = argv[1];
         pathOut = argv[2];
         ehDir = argv[3];
-        ehPondNode = argv[4];
-        ehPondAr = argv[5];
+        ehPondAr = argv[4];
+        ehPondNode = argv[5];
     }
 
-    // Grafo G = leituraArquivo(pathIn, ehDir, ehPondNode, ehPondAr);
-    Grafo *g = new Grafo(5, ehDir == "1", ehPondNode == "1", ehPondAr == "1");
-    g->inserirNo(1, 1);
-    g->inserirNo(2, 4);
-    g->inserirNo(3, 6);
-    g->inserirNo(4, 6);
-
-    g->inserirArco(1, 2, 1);
-    g->inserirArco(1, 3, 1);
-
-    g->inserirArco(2, 3, 1);
-    g->inserirArco(2, 4, 1);
-
-    g->inserirArco(3, 4, 1);
-
-    g->imprimirListaNos();
-    g->imprimirListaNosAdjacentes(4);
-    // escritaArquivo(pathOut, G) //passar o grafo modificado com base na entrada
+    Grafo *G = leituraArquivo(pathIn, ehDir, ehPondAr, ehPondNode);
+    G->imprimirListaNos();
+    G->imprimirListaNosAdjacentes(4);
+    escritaArquivo(pathOut, G); //passar o grafo modificado com base na entrada
 
     // Continuar o tratamento para o argv
 

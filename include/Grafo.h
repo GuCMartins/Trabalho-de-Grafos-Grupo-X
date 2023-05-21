@@ -26,5 +26,8 @@ public:
     void imprimirListaNosAdjacentes(int idNo);
 
     No* findNoById(int id);
+    bool ehDir(){return direcionado;};
+    bool ehPondAr(){return pondAresta;};
+    bool ehPondNode(){return pondNode;};
 };
 #endif // GRAFO_H
