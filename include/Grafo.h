@@ -9,16 +9,20 @@ class Grafo
 private:
     int ordem;
     //int regularidade;
-    No* NoInicial;
+    No* noInicial;
     bool direcionado, pondAresta, pondNode;
 public:
-    Grafo(int n, bool direc, bool pondAresta, bool pondNode);
+    Grafo(int ordem, bool direc, bool pondAresta, bool pondNode);
     ~Grafo();
     void inserirNo(int idNode,  float pesoNode);
     void removerNo(int idNode);
     void inserirArco(int idNoOrigem, int idNoDestino, float pesoArco);
     void removerArco(int idNoOrigem, int idNoDestino);
     int getOrdem(){return ordem;};
-    No* getNoInicial(){return NoInicial;};
+    No* getNoInicial(){return noInicial;};
+    void imprimirListaNos();
+    void imprimirListaNosAdjacentes(int idNo);
+
+    No* findNoById(int id);
 };
 #endif // GRAFO_H

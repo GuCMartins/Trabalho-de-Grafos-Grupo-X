@@ -8,6 +8,7 @@ Arco::Arco(int nodeDest, float w)
 {
     this->nodeDest = nodeDest;
     this->w = w;
+    this->proxArco = NULL;
 }
 
 Arco::~Arco()
