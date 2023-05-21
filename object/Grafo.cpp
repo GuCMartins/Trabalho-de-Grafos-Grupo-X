@@ -11,6 +11,7 @@ Grafo::Grafo(int ordem, bool direc, bool pondAresta, bool pondNode)
     this->pondAresta = pondAresta;
     this->pondNode = pondNode;
     this->noInicial = NULL;
+    this->numArcos = 0;
 }
 Grafo::~Grafo() {}
 
@@ -34,52 +35,81 @@ void Grafo::inserirNo(int idNode, float pesoNode)
     }
 }
 
-void Grafo::removerNo(int idNode)
-{
-    int a = 0;
-}
-
 void Grafo::inserirArco(int idNoOrigem, int idNoDestino, float pesoArco)
-{
-    if (this->direcionado)
-    {
-        this->auxInserirArco(idNoOrigem, idNoDestino, pesoArco);
-    }
-    else
-    {
-        this->auxInserirArco(idNoOrigem, idNoDestino, pesoArco);
-        this->auxInserirArco(idNoDestino, idNoOrigem, pesoArco);
-    }
-}
-
-void Grafo::auxInserirArco(int idNoOrigem, int idNoDestino, float pesoArco)
 {
     No *noOrigem = this->findNoById(idNoOrigem);
     No *noDestino = this->findNoById(idNoDestino);
 
     if (noOrigem != NULL && noDestino != NULL)
     {
-        Arco *novoArco = new Arco(noDestino->getId(), pesoArco);
-
-        Arco *arcoInsercao = noOrigem->getArcoAdjacente();
-
-        if (arcoInsercao == NULL)
+        if (this->direcionado)
         {
-            noOrigem->setArcoAdjacente(novoArco);
+            this->auxInserirArco(noOrigem, noDestino, pesoArco);
+            this->numArcos += 1;
+
+            noDestino->incrementaGrauEntrada(1);
+            noOrigem->incrementaGrauSaida(1);
         }
         else
         {
-            while (arcoInsercao->getProx() != NULL)
-            {
-                arcoInsercao = arcoInsercao->getProx();
-            }
-            arcoInsercao->setProx(novoArco);
+            noOrigem->incrementaGrauEntrada(1);
+            noDestino->incrementaGrauEntrada(1);
+            this->auxInserirArco(noOrigem, noDestino, pesoArco);
+            this->auxInserirArco(noDestino, noOrigem, pesoArco);
+            this->numArcos += 2;
         }
     }
     else
     {
         cout << "No origem/destino inexistente no grafo!" << endl;
     }
+}
+
+void Grafo::auxInserirArco(No *noOrigem, No *noDestino, float pesoArco)
+{
+    Arco *novoArco = new Arco(noDestino->getId(), pesoArco);
+
+    Arco *arcoInsercao = noOrigem->getArcoAdjacente();
+
+    if (arcoInsercao == NULL)
+    {
+        noOrigem->setArcoAdjacente(novoArco);
+    }
+    else
+    {
+        while (arcoInsercao->getProx() != NULL)
+        {
+            arcoInsercao = arcoInsercao->getProx();
+        }
+        arcoInsercao->setProx(novoArco);
+    }
+}
+
+void Grafo::removerNo(int idNode)
+{
+    No *busca = findNoById(idNode);
+    if (busca == NULL)
+    {
+        cout << "O nó " << idNode << " não existe no grafo e não pode ser removido.." << endl;
+        return;
+    }
+
+    Arco *arcoInicial = busca->getArcoAdjacente();
+    if (arcoInicial == NULL)
+    {
+        cout << "Grafo não tem arcos, removendo só o nó " << idNode << endl;
+        delete busca;
+    }
+
+    Arco *aux;
+    while (arcoInicial->getProx() != NULL)
+    {
+        aux = arcoInicial->getProx();
+        delete arcoInicial;
+        arcoInicial = aux;
+    }
+
+    delete busca;
 }
 
 void Grafo::removerArco(int idNoOrigem, int idNoDestino)

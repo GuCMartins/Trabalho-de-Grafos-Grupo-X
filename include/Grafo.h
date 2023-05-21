@@ -7,11 +7,11 @@
 class Grafo
 {
 private:
-    int ordem;
+    int ordem, numArcos;
     //int regularidade;
     No* noInicial;
     bool direcionado, pondAresta, pondNode;
-    void auxInserirArco(int idNoOrigem, int idNoDestino, float pesoArco);
+    void auxInserirArco(No* idNoOrigem, No* idNoDestino, float pesoArco);
 public:
     Grafo(int ordem, bool direc, bool pondAresta, bool pondNode);
     ~Grafo();
