@@ -58,4 +58,13 @@ bool ehTrivial(Grafo *g){
         return false;
 }
 
+void DFS(No *noPartida, Grafo *g,int* visitado){
+    visitado[noPartida->getId()] = 1;
+    for (No *no = g->getNoInicial(); no != NULL; no = no->getProx())
+    {
+        if(g->existeArco(noPartida->getId(),no->getId()) && visitado[no->getId()] == 0)
+            DFS(no,g,visitado);
+    }
+}
+
 #endif

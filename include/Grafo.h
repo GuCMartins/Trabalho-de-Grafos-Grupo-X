@@ -15,19 +15,19 @@ private:
     bool direcionado, pondAresta, pondNode;
     void auxInserirArco(No* noDestino, No* noOrigem, float pesoArco);
     void auxRemoverArco(No* noDestino, No* noOrigem);
+    int** matrizAdj;
 public:
     Grafo(int ordem, bool direc, bool pondAresta, bool pondNode);
     ~Grafo();
     void inserirNo(int idNode,  float pesoNode);
     void removerNo(int idNode);
-    
     void inserirArco(int idNoOrigem, int idNoDestino, float pesoArco);
     void removerArco(int idNoOrigem, int idNoDestino);
     int getOrdem(){return ordem;};
     int getNumArcos(){return numArcos;};
     int* vizinhancaAberta(int idNo);
     int* vizinhancaFechada(int idNo);
-    bool Euleriano();
+    bool Euleriano(int* visitados);
     No* getNoInicial(){return noInicial;};
     void imprimirListaNos();
     void imprimirListaNosAdjacentes(int idNo);
@@ -40,5 +40,6 @@ public:
     bool ehDir(){return direcionado;};
     bool ehPondAr(){return pondAresta;};
     bool ehPondNode(){return pondNode;};
+    bool existeArco(int noPartida,int noDestino);
 };
 #endif // GRAFO_H
