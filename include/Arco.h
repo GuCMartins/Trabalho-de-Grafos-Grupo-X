@@ -6,21 +6,23 @@
 class Arco
 {
 private:
-    float pesoArco;
-    Arco *proxArco;
     No *noOrigem;
     No *noDestino;
-
+//confirmar a parte abaixo
+    int nodeDest;
+    float w;
+    Arco* proxArco;
 public:
-    Arco(float peso, Arco *prox, No *origem, No *destino);
+    Arco(int nodeDest, float w);
     ~Arco();
-    Arco *getProximo(){return proxArco;}
-    void setProximo(Arco *arco){proxArco = arco;}
-    float getPeso(){return pesoArco;}
-    void setPeso(float peso){pesoArco = peso;}
+    Arco *getProx(){return proxArco;}
+    void setProx(Arco *arco){proxArco = arco;}
+    float getPeso(){return w;}
+    void setPeso(float peso){w = peso;}
     No* getNoOrigem(){return noOrigem;}
     void setNoOrigem(No* no){noOrigem = no;}
     No* getNoDestino(){return noDestino;}
+    int getNodeDest(){return nodeDest;}
     void setNoDestino(No* no){noDestino = no;}
 };
 

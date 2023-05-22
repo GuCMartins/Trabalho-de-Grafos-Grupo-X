@@ -5,12 +5,18 @@
 
 using namespace std;
 
-Arco::Arco(float peso, Arco *prox, No *origem, No *destino)
+// Arco::Arco(float peso, Arco *prox, No *origem, No *destino)
+// {
+//     pesoArco = peso;
+//     proxArco = prox;
+//     noOrigem = origem;
+//     noDestino = destino;
+// }    
+Arco::Arco(int nodeDest, float w)
 {
-    pesoArco = peso;
-    proxArco = prox;
-    noOrigem = origem;
-    noDestino = destino;
+    this->nodeDest = nodeDest;
+    this->w = w;
+    this->proxArco = NULL;
 }
 
 Arco::~Arco()

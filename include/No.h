@@ -12,9 +12,11 @@ private:
     int x,y; //possivelmente usado para pontos no espaço R2
     float peso;
     No* proximo;//ponteiro para o proximo no
-    Arco* adjacente;//ponteiro para o primeiro arco adjacente ao no
+    Arco* adjacentes;//ponteiro para o primeiro arco adjacente ao no
+
 public:
     No(int id, int x, int y, float peso);
+    No(int id, float peso);
     ~No();
     int getId();
     int getX();
@@ -23,7 +25,27 @@ public:
     int getGrauEntrada(){return grauEntrada;};
     int getGrauSaida(){return grauSaida;};
     No getProximo(){return *proximo;};
-    Arco* getAdjacente(){return adjacente;};
+    Arco* getAdjacente(){return adjacentes;};
+    int getId() { return id; };
+    float getPeso() { return peso; };
+    void incrementaGrauEntrada(int i) { this->grauEntrada += i; };
+    void incrementaGrauSaida(int i) { this->grauSaida += i; };
+    void decrementaGrauEntrada(int i) { this->grauEntrada -= i; };
+    void decrementaGrauSaida(int i) { this->grauSaida -= i; };
+    int getGrauEntrada() { return grauEntrada; };
+    int getGrauSaida() { return grauSaida; };
+
+    No *getProx() { return proximo; };
+    void setProx(No *no)
+    {
+        this->proximo = no;
+    }
+
+    Arco *getArcoAdjacentes() { return adjacentes; };
+    void setArcoAdjacente(Arco *arco)
+    {
+        this->adjacentes = arco;
+    }
 };
 
 #endif // NO_H

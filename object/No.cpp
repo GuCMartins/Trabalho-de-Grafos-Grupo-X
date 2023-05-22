@@ -4,16 +4,14 @@
 
 using namespace std;
 
-No::No(int id, int x, int y, float peso)
+No::No(int id, float peso)
 {
     this->id = id;
-    this->x = x;
-    this->y = y;
     this->peso = peso;
     this->grauEntrada = 0;
     this->grauSaida = 0;
     this->proximo = NULL;
-    this->adjacente = NULL;
+    this->adjacentes = NULL;
 }
 
 No::~No()
