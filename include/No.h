@@ -18,12 +18,8 @@ public:
     No(int id, int x, int y, float peso);
     No(int id, float peso);
     ~No();
-    int getId();
-    int getX();
-    int getY();
-    float getPeso();
-    int getGrauEntrada(){return grauEntrada;};
-    int getGrauSaida(){return grauSaida;};
+    int getX(){return x;};
+    int getY(){return y;};
     No getProximo(){return *proximo;};
     Arco* getAdjacente(){return adjacentes;};
     int getId() { return id; };

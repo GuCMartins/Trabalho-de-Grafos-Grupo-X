@@ -18,11 +18,6 @@ No::~No()
 {
 }
 
-int No::getId()
-{
-    return this->id;
-}
-
 int No::getX()
 {
     return this->x;
