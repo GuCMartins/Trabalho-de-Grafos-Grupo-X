@@ -142,18 +142,23 @@ void escritaArquivo(string pathOut, Grafo *G){
             {
                 No *no = G->getNoInicial();
                 int *visitados = new int[G->getOrdem()];
-                visitados[0] = no->getId();
                 int v = 1;
-                while(no != NULL && v < G->getOrdem()){
+                bool visitado = false;
+                while(no != NULL){
                     Arco *arco = no->getArcoAdjacentes();
-                    for(int i = 0; arco != NULL; i++){
-                        if(arco->getNodeDest() != visitados[i])
-                            arqSaida << to_string(no->getId()) + " " + to_string(arco->getNodeDest()) + " " + to_string(arco->getPeso()) + "\n";    
+                    visitados[v-1] = no->getId();
+                    while(arco != NULL){
+                        for(int i = 0; i < v; i++){
+                            if(arco->getNodeDest() == visitados[i])
+                                visitado = true;
+                        }
+                        if(visitado)
+                            arqSaida << to_string(no->getId()) + " " + to_string(arco->getNodeDest()) + " " + to_string(arco->getPeso()) + "\n";
                         arco = arco->getProx();
+                        visitado = false;
                     }
                     no = no->getProx();
-                    visitados[v] = no->getId();
-                    v++;
+                    v++; 
                     delete arco;
                 }
 
@@ -162,14 +167,28 @@ void escritaArquivo(string pathOut, Grafo *G){
 
             else{
                 No *no = G->getNoInicial();
+                int *visitados = new int[G->getOrdem()];
+                int v = 1;
+                bool visitado = false;
                 while(no != NULL){
                     Arco *arco = no->getArcoAdjacentes();
+                    visitados[v-1] = no->getId();
                     while(arco != NULL){
-                        arqSaida << to_string(no->getId()) + " " + to_string(arco->getNodeDest()) + "\n"; 
+                        for(int i = 0; i < v; i++){
+                            if(arco->getNodeDest() == visitados[i])
+                                visitado = true;
+                        }
+                        if(visitado)
+                            arqSaida << to_string(no->getId()) + " " + to_string(arco->getNodeDest()) + "\n";
                         arco = arco->getProx();
+                        visitado = false;
                     }
                     no = no->getProx();
+                    v++; 
+                    delete arco;
                 }
+
+                delete [] visitados;
             }
         }
     }
@@ -205,11 +224,11 @@ int main(int argc, char **argv)
     G->imprimirTodosNosAdjacentes();
 
     cout <<"REMOVER NO "<<endl;
-    G->removerNo(5);
+    //G->removerNo(5);
     
     cout <<"IMPRESSÃO APÓS REMOVER "<<endl;
     G->imprimirTodosNosAdjacentes();
-    //escritaArquivo(pathOut, G); //passar o grafo modificado com base na entrada
+    escritaArquivo(pathOut, G); //passar o grafo modificado com base na entrada
 
     // Continuar o tratamento para o argv
     return 0;
