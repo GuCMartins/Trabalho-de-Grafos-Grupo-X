@@ -22,6 +22,8 @@ public:
     float getPeso() { return peso; };
     void incrementaGrauEntrada(int i) { this->grauEntrada += i; };
     void incrementaGrauSaida(int i) { this->grauSaida += i; };
+    void decrementaGrauEntrada(int i) { this->grauEntrada -= i; };
+    void decrementaGrauSaida(int i) { this->grauSaida -= i; };
     int getGrauEntrada() { return grauEntrada; };
     int getGrauSaida() { return grauSaida; };
 

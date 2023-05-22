@@ -42,10 +42,9 @@ void Grafo::inserirArco(int idNoOrigem, int idNoDestino, float pesoArco)
 
     if (noOrigem != NULL && noDestino != NULL)
     {
-        if (this->direcionado)
+        if (this->ehDir())
         {
             this->auxInserirArco(noOrigem, noDestino, pesoArco);
-            this->numArcos += 1;
 
             noDestino->incrementaGrauEntrada(1);
             noOrigem->incrementaGrauSaida(1);
@@ -56,8 +55,8 @@ void Grafo::inserirArco(int idNoOrigem, int idNoDestino, float pesoArco)
             noDestino->incrementaGrauEntrada(1);
             this->auxInserirArco(noOrigem, noDestino, pesoArco);
             this->auxInserirArco(noDestino, noOrigem, pesoArco);
-            this->numArcos += 1;
         }
+        this->numArcos += 1;
     }
     else
     {
@@ -124,6 +123,7 @@ void Grafo::removerNo(int idNode)
 
     delete arcoInicial;
 
+    // Se estou removendo o primeiro nó
     if (busca->getId() == noInicial->getId())
     {
         noInicial = busca->getProx();
@@ -138,7 +138,59 @@ void Grafo::removerNo(int idNode)
 
 void Grafo::removerArco(int idNoOrigem, int idNoDestino)
 {
-    int a = 0;
+    No *noOrigem = this->findNoById(idNoOrigem);
+    No *noDestino = this->findNoById(idNoDestino);
+
+    if (this->ehDir())
+    {
+        auxRemoverArco(noOrigem, noDestino);
+        noDestino->decrementaGrauEntrada(1);
+        noOrigem->decrementaGrauSaida(1);
+    }
+    else
+    {
+        auxRemoverArco(noOrigem, noDestino);
+        auxRemoverArco(noDestino, noOrigem);
+        noOrigem->decrementaGrauEntrada(1);
+        noDestino->decrementaGrauEntrada(1);
+    }
+    this->numArcos -= 1;
+}
+
+void Grafo::auxRemoverArco(No *noOrigem, No *noDestino)
+{
+
+    Arco *busca = noOrigem->getArcoAdjacentes();
+    if (busca == NULL)
+    {
+        cout << "Nó " << noOrigem->getId() << " não tem adjacente..." << endl;
+        return;
+    }
+
+    Arco *predecessor = NULL;
+
+    while (busca != NULL && busca->getNodeDest() != noDestino->getId())
+    {
+        predecessor = busca;
+        busca = busca->getProx();
+    }
+
+    if (busca->getNodeDest() != noDestino->getId())
+    {
+        cout << "O arco " << noDestino->getId() << " não existe como adjacente do no " << noOrigem->getId() << endl;
+        return;
+    }
+
+    if (predecessor == NULL)
+    {
+        cout << "Removendo primeiro adjacente..." << endl;
+        noOrigem->setArcoAdjacente(busca->getProx());
+        delete busca;
+        return;
+    }
+
+    predecessor->setProx(busca->getProx());
+    delete busca;
 }
 
 No *Grafo::findNoById(int id)
