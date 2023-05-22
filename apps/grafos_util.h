@@ -58,13 +58,25 @@ bool ehTrivial(Grafo *g){
         return false;
 }
 
-void DFS(No *noPartida, Grafo *g,int* visitado){
+void DFSGeral(No *noPartida, Grafo *g,int* visitado){//o no de partida é iniciado como o no inicial do grafo
     visitado[noPartida->getId()] = 1;
-    for (No *no = g->getNoInicial(); no != NULL; no = no->getProx())
+    for (No *no = noPartida; no != NULL; no = no->getProx())
     {
         if(g->existeArco(noPartida->getId(),no->getId()) && visitado[no->getId()] == 0)
-            DFS(no,g,visitado);
+            DFSGeral(no,g,visitado);
     }
+}
+
+bool DFSCaminho(No *noPartida,No* Destino, Grafo *g,int* visitado){//o no de partida é iniciado como o no inicial do grafo
+    visitado[noPartida->getId()] = 1;
+    for (No *no = noPartida; no != NULL; no = no->getProx())
+    {
+        if(no->getId() == Destino->getId())
+            return true;
+        if(g->existeArco(noPartida->getId(),no->getId()) && visitado[no->getId()] == 0)
+            DFSGeral(no,g,visitado);
+    }
+    return false;//usar para fecho transitivo direto e indireto
 }
 
 #endif
