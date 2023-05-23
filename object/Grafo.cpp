@@ -94,56 +94,77 @@ void Grafo::auxInserirArco(No *noOrigem, No *noDestino, float pesoArco)
 
 void Grafo::removerNo(int idNode)
 {
-    No *busca = noInicial;
+    No *noRemover = noInicial;
     No *predecessor = NULL;
 
-    while (busca != NULL && busca->getId() != idNode)
+    // Procuro na lista de nós, o nó a ser removido
+    while (noRemover != NULL && noRemover->getId() != idNode)
     {
-        predecessor = busca;
-        busca = busca->getProx();
+        predecessor = noRemover;
+        noRemover = noRemover->getProx();
     }
 
-    if (busca->getId() != idNode)
+    //se não encontrar, retorna; 
+    if (noRemover == NULL)
     {
         cout << "O nó " << idNode << " não existe no grafo e não pode ser removido..." << endl;
         return;
     }
 
-    Arco *arcoInicial = busca->getArcoAdjacentes();
-    if (arcoInicial == NULL)
+    Arco *adjacentes = noRemover->getArcoAdjacentes();
+
+    //se a lista de adjacentes é NULL, o nó não tem adjacentes
+    // removo o nó e retorno
+    if (adjacentes == NULL)
     {
         cout << "Nó não tem arcos, removendo só o nó " << idNode << endl;
+        
+        //removendo do meio da lista, então atualizo o proximo do nó anterior
         if (predecessor != NULL)
         {
-            predecessor->setProx(busca->getProx());
+            predecessor->setProx(noRemover->getProx());
         }
-        delete busca;
+        delete noRemover;
         return;
     }
 
-    Arco *aux = arcoInicial;
-    while (arcoInicial->getProx() != NULL)
-    {
-        aux = arcoInicial->getProx();
-        delete arcoInicial;
-        arcoInicial = aux;
+    if(!this->ehDir()){
+        // removo todas as ocorrências do nó nas outras adjacências
+        No *aux;
+        while(adjacentes!=NULL){
+           // cout <<"Removendo ocorrencias do  "<<idNode<<" no nó"<<adjacentes->getNodeDest()<<endl;
+            
+            aux = findNoById(adjacentes->getNodeDest());
+            auxRemoverArco(aux, idNode);
+            aux->decrementaGrauEntrada(1);
+
+            adjacentes = adjacentes->getProx();
+        }
+    }else{
+        No *auxNo ;
+        Arco *auxAdj = adjacentes;
+        while (adjacentes != NULL)
+        {
+            auxNo = findNoById(adjacentes->getNodeDest());
+            auxNo->decrementaGrauEntrada(1);
+            
+            auxAdj = adjacentes->getProx();
+            delete adjacentes;
+            adjacentes = auxAdj;
+        }
     }
 
-    delete arcoInicial;
+    noRemover->setArcoAdjacente(NULL);
 
-    // Se estou removendo o primeiro nó
-    if (busca->getId() == noInicial->getId())
-    {
-        noInicial = busca->getProx();
+    if(noRemover->getId() == noInicial->getId()){
+            noInicial = noRemover->getProx();
+    }else{
+        predecessor->setProx(noRemover->getProx());
     }
-    else
-    {
-        predecessor->setProx(busca->getProx());
-    }
+    delete noRemover;
 
-    delete busca;
-
-    for(int i=0;i<ordem;i++){//modifica a matriz de adjacencia para retirar o no
+    for (int i = 0; i < ordem; i++)
+    { // modifica a matriz de adjacencia para retirar o no
         matrizAdj[i][idNode] = 0;
         matrizAdj[idNode][i] = 0;
     }
@@ -156,22 +177,23 @@ void Grafo::removerArco(int idNoOrigem, int idNoDestino)
 
     if (this->ehDir())
     {
-        auxRemoverArco(noOrigem, noDestino);
+        auxRemoverArco(noOrigem, idNoDestino);
         noDestino->decrementaGrauEntrada(1);
         noOrigem->decrementaGrauSaida(1);
     }
     else
     {
-        auxRemoverArco(noOrigem, noDestino);
-        auxRemoverArco(noDestino, noOrigem);
+        auxRemoverArco(noOrigem, idNoDestino);
+
+        auxRemoverArco(noDestino, idNoDestino);
         noOrigem->decrementaGrauEntrada(1);
         noDestino->decrementaGrauEntrada(1);
     }
     this->numArcos -= 1;
-    matrizAdj[idNoOrigem][idNoDestino] = 0;//modifica a matriz de adjacencia para retirar o arco
+    matrizAdj[idNoOrigem][idNoDestino] = 0; // modifica a matriz de adjacencia para retirar o arco
 }
 
-void Grafo::auxRemoverArco(No *noOrigem, No *noDestino)
+void Grafo::auxRemoverArco(No *noOrigem,  int idNoDestino)
 {
 
     Arco *busca = noOrigem->getArcoAdjacentes();
@@ -183,15 +205,15 @@ void Grafo::auxRemoverArco(No *noOrigem, No *noDestino)
 
     Arco *predecessor = NULL;
 
-    while (busca != NULL && busca->getNodeDest() != noDestino->getId())
+    while (busca != NULL && busca->getNodeDest() != idNoDestino)
     {
         predecessor = busca;
         busca = busca->getProx();
     }
 
-    if (busca->getNodeDest() != noDestino->getId())
+    if (busca->getNodeDest() != idNoDestino)
     {
-        cout << "O arco " << noDestino->getId() << " não existe como adjacente do no " << noOrigem->getId() << endl;
+        cout << "O arco " << idNoDestino << " não existe como adjacente do no " << noOrigem->getId() << endl;
         return;
     }
 

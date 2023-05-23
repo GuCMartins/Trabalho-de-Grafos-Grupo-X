@@ -14,7 +14,7 @@ private:
     No* noInicial;
     bool direcionado, pondAresta, pondNode;
     void auxInserirArco(No* noDestino, No* noOrigem, float pesoArco);
-    void auxRemoverArco(No* noDestino, No* noOrigem);
+    void auxRemoverArco(No* noDestino, int idNoOrigem);
     int** matrizAdj;
 public:
     Grafo(int ordem, bool direc, bool pondAresta, bool pondNode);

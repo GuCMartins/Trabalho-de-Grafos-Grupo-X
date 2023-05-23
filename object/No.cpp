@@ -16,6 +16,15 @@ No::No(int id, float peso)
 
 No::~No()
 {
+    // Ao excluir um nó, deletar da memória todos seus adjacentes
+    Arco *aux = adjacentes;
+    while (adjacentes != NULL)
+    {
+        aux = adjacentes->getProx();
+        //cout << "DELETANDO " << adjacentes->getNodeDest() << endl;
+        delete adjacentes;
+        adjacentes = aux;
+    }
 }
 
 int No::getX()
