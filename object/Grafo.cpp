@@ -68,11 +68,11 @@ void Grafo::auxInserirArco(No *noOrigem, No *noDestino, float pesoArco)
 {
     Arco *novoArco = new Arco(noDestino->getId(), pesoArco);
 
-    Arco *arcoInsercao = noOrigem->getArcoAdjacentes();
+    Arco *arcoInsercao = noOrigem->getAdjacentes();
 
     if (arcoInsercao == NULL)
     {
-        noOrigem->setArcoAdjacente(novoArco);
+        noOrigem->setAdjacente(novoArco);
     }
     else
     {
@@ -101,7 +101,7 @@ void Grafo::auxInserirArco(No *noOrigem, No *noDestino, float pesoArco)
 //         return;
 //     }
 
-//     Arco *arcoInicial = busca->getArcoAdjacentes();
+//     Arco *arcoInicial = busca->getAdjacentes();
 //     if (arcoInicial == NULL)
 //     {
 //         cout << "Nó não tem arcos, removendo só o nó " << idNode << endl;
@@ -159,7 +159,7 @@ void Grafo::removerNo(int idNode)
         return;
     }
 
-    Arco *adjacentes = noRemover->getArcoAdjacentes();
+    Arco *adjacentes = noRemover->getAdjacentes();
 
     //se a lista de adjacentes é NULL, o nó não tem adjacentes
     // removo o nó e retorno
@@ -204,7 +204,7 @@ void Grafo::removerNo(int idNode)
         }
     }
 
-    noRemover->setArcoAdjacente(NULL);
+    noRemover->setAdjacente(NULL);
 
     if(noRemover->getId() == noInicial->getId()){
             noInicial = noRemover->getProx();
@@ -242,7 +242,7 @@ void Grafo::removerArco(int idNoOrigem, int idNoDestino)
 void Grafo::auxRemoverArco(No *noOrigem, int idNoDestino)
 {
 
-    Arco *busca = noOrigem->getArcoAdjacentes();
+    Arco *busca = noOrigem->getAdjacentes();
     if (busca == NULL)
     {
         cout << "Nó " << noOrigem->getId() << " não tem adjacente..." << endl;
@@ -266,7 +266,7 @@ void Grafo::auxRemoverArco(No *noOrigem, int idNoDestino)
     if (predecessor == NULL)
     {
         cout << "Removendo primeiro adjacente..." << endl;
-        noOrigem->setArcoAdjacente(busca->getProx());
+        noOrigem->setAdjacente(busca->getProx());
         delete busca;
         return;
     }
@@ -326,7 +326,7 @@ void Grafo::imprimirListaNosAdjacentes(int idNo)
         cout << "Nó com id " << idNo << " não encontrado no grafo..." << endl;
         return;
     }
-    Arco *arco = no->getArcoAdjacentes();
+    Arco *arco = no->getAdjacentes();
     if (arco == NULL)
     {
         cout << "Nó com id " << idNo << " não tem adjacentes" << endl;

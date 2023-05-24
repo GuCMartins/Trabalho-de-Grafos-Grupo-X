@@ -107,7 +107,7 @@ void escritaArquivo(string pathOut, Grafo *G){
             {
                 No *no = G->getNoInicial();
                 while(no != NULL){
-                    Arco *arco = no->getArcoAdjacentes();
+                    Arco *arco = no->getAdjacentes();
                     while(arco != NULL){
                         arqSaida << to_string(no->getId()) + " " + to_string(arco->getNodeDest()) + " " + to_string(arco->getPeso()) + "\n"; 
                         arco = arco->getProx();
@@ -120,7 +120,7 @@ void escritaArquivo(string pathOut, Grafo *G){
             else{
                 No *no = G->getNoInicial();
                 while(no != NULL){
-                    Arco *arco = no->getArcoAdjacentes();
+                    Arco *arco = no->getAdjacentes();
                     while(arco != NULL){
                         arqSaida << to_string(no->getId()) + " " + to_string(arco->getNodeDest()) + "\n"; 
                         arco = arco->getProx();
@@ -145,7 +145,7 @@ void escritaArquivo(string pathOut, Grafo *G){
                 int v = 1;
                 bool visitado = false;
                 while(no != NULL){
-                    Arco *arco = no->getArcoAdjacentes();
+                    Arco *arco = no->getAdjacentes();
                     visitados[v-1] = no->getId();
                     while(arco != NULL){
                         for(int i = 0; i < v; i++){
@@ -171,7 +171,7 @@ void escritaArquivo(string pathOut, Grafo *G){
                 int v = 1;
                 bool visitado = false;
                 while(no != NULL){
-                    Arco *arco = no->getArcoAdjacentes();
+                    Arco *arco = no->getAdjacentes();
                     visitados[v-1] = no->getId();
                     while(arco != NULL){
                         for(int i = 0; i < v; i++){
@@ -224,7 +224,7 @@ int main(int argc, char **argv)
     G->imprimirTodosNosAdjacentes();
 
     cout <<"REMOVER NO "<<endl;
-    //G->removerNo(5);
+    G->removerNo(5);
     
     cout <<"IMPRESSÃO APÓS REMOVER "<<endl;
     G->imprimirTodosNosAdjacentes();

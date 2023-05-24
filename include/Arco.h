@@ -13,13 +13,9 @@ public:
     float getPeso();
 
     int getNodeDest(){return nodeDest;};
-    Arco * getProx(){
-        return proxArco;
-    }
 
-    void setProx(Arco * arco){
-        this->proxArco = arco;
-    }
+    Arco * getProx(){return proxArco;}
+    void setProx(Arco * arco){ this->proxArco = arco;}
 };
 
 #endif // Arco_H
