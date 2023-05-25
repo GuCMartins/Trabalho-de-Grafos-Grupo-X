@@ -223,11 +223,20 @@ int main(int argc, char **argv)
     cout <<"IMPRESSÃO "<<endl;
     G->imprimirTodosNosAdjacentes();
 
-    cout <<"REMOVER NO "<<endl;
-    G->removerNo(5);
+    // cout <<"REMOVER NO "<<endl;
+    // G->removerNo(5);
     
-    cout <<"IMPRESSÃO APÓS REMOVER "<<endl;
-    G->imprimirTodosNosAdjacentes();
+    // cout <<"IMPRESSÃO APÓS REMOVER "<<endl;
+    // G->imprimirTodosNosAdjacentes();
+
+    int* distancias = dijkstraAlgorithm(G);
+
+    No* no = G->getNoInicial();
+    for(int i = 0; i < G->getOrdem(); i++){
+        cout << "Id do no: " << no->getId() << " | Caminho minimo ate ele: " << distancias[i] << endl;
+        no = no->getProx();
+    }
+
     escritaArquivo(pathOut, G); //passar o grafo modificado com base na entrada
 
     // Continuar o tratamento para o argv
