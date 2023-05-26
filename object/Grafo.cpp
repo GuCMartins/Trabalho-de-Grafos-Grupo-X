@@ -64,6 +64,8 @@ void Grafo::inserirArco(int idNoOrigem, int idNoDestino, float pesoArco)
             this->auxInserirArco(noDestino, noOrigem, pesoArco);
         }
         this->numArcos += 1;
+        if(!ehDir())
+            matrizAdj[idNoDestino][idNoOrigem] = 1;
         matrizAdj[idNoOrigem][idNoDestino] = 1;
     }
     else
@@ -224,13 +226,12 @@ void Grafo::removerNo(int idNode)
         predecessor->setProx(busca->getProx());
     }
 
-    delete busca;
-
-    for(int i=0;i<ordem;i++){//modifica a matriz de adjacencia para retirar o no
+    //modifica a matriz de adjacencia para retirar o no
+    for(int i=0;i<ordem;i++){
         matrizAdj[i][idNode] = 0;
         matrizAdj[idNode][i] = 0;
     }
-    
+
     cout <<" Removendo nó "<<noRemover->getId()<<endl;
     delete noRemover;
 }
@@ -361,12 +362,8 @@ void Grafo::imprimirListaNosAdjacentes(int idNo)
     }
 }
 
-int Grafo::getOrdem()
-{
-    return this->ordem;
-}
 
-int *Grafo:: vizinhancaAberta(int idNo){
+int *Grafo::vizinhancaAberta(int idNo){
     int size = 0;
     if(direcionado)
         size = Nos[idNo].getGrauSaida() + Nos[idNo].getGrauEntrada();

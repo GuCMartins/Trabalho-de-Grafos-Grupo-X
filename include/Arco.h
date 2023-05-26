@@ -1,21 +1,16 @@
 #ifndef ARCO_H
 #define ARCO_H
 
-#include "No.h"
-
 class Arco
 {
 private:
-    No *noOrigem;
-    No *noDestino;
-//confirmar a parte abaixo
     int nodeDest;
     float w;
     Arco* proxArco;
 public:
     Arco(int nodeDest, float w);
     ~Arco();
-    float getPeso();
+    float getPeso(){return w;};
 
     int getNodeDest(){return nodeDest;};
 

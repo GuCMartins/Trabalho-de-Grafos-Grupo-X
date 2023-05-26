@@ -7,23 +7,20 @@ class No
 {
 private:
     int id;
-    int grauEntrada;//se o grafo for direcionado, grau de entrada e saida podem ser diferentes. Se for direcionado, usar apenas o grau de entrada
-    int grauSaida=0;
-    int x,y; //possivelmente usado para pontos no espaço R2
+    int grauEntrada;
+    int grauSaida;
+    // int x,y; //possivelmente usado para pontos no espaço R2
     float peso;
-    No* proximo;//ponteiro para o proximo no
-    Arco* adjacentes;//ponteiro para o primeiro arco adjacente ao no
+    No *proximo;
+    Arco *adjacentes;
 
 public:
     No(int id, int x, int y, float peso);
     No(int id, float peso);
     ~No();
-    int getX(){return x;};
-    int getY(){return y;};
-    No getProximo(){return *proximo;};
-    Arco* getAdjacente(){return adjacentes;};
     int getId() { return id; };
     float getPeso() { return peso; };
+    Arco* getAdjacente(){return adjacentes;};
     void incrementaGrauEntrada(int i) { this->grauEntrada += i; };
     void incrementaGrauSaida(int i) { this->grauSaida += i; };
     void decrementaGrauEntrada(int i) { this->grauEntrada -= i; };
