@@ -140,6 +140,9 @@ void DFSGeral(No *noPartida, Grafo *g, int* visitado){//o no de partida é inici
         if(g->existeArco(noPartida->getId(),no->getId()) && visitado[no->getId()] == 0)
             DFSGeral(no,g,visitado);
     }
+    /*a ideia do DFS geral é preencher o vetor de visitados com 1 por referencia
+    para os nós que são alcançáveis a partir do nó de partida, sendo necessário 
+    passar o vetor de visitados como argumento*/
 }
 
 bool DFSCaminho(No *noPartida,No* Destino, Grafo *g,int* visitado){//o no de partida é iniciado como o no inicial do grafo
@@ -152,6 +155,7 @@ bool DFSCaminho(No *noPartida,No* Destino, Grafo *g,int* visitado){//o no de par
             DFSGeral(no,g,visitado);
     }
     return false;//usar para fecho transitivo direto e indireto
+    //caso o nó de destino não seja alcançável a partir do nó de partida, retorna false e usa o vetor de visitados para nao repetir o no visitado
 }
 
 #endif

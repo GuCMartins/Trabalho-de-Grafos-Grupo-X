@@ -41,5 +41,8 @@ public:
     int* vizinhancaAberta(int idNo);
     int* vizinhancaFechada(int idNo);
     bool Euleriano(int* visitados);
+
+    int* FechoTransitivoDireto(int idNo);
+    int* FechoTransitivoIndireto(int idNo);
 };
 #endif // GRAFO_H

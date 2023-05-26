@@ -396,7 +396,7 @@ int *Grafo::vizinhancaFechada(int idNo)
     return vizinhanca;
 }
 
-bool Grafo::Euleriano(int *visitados){
+bool Grafo::Euleriano(int *visitados){//recebe um vetor de visitados do DFS
 //Teorema: Um multigrafo M é euleriano se e somente se M é conexo e cada vértice de M tem grau par.
     
     if(ordem == 0)
@@ -421,4 +421,42 @@ bool Grafo::existeArco(int noPartida,int noDestino){//faz a busca pela matriz de
         if(matrizAdj[noPartida][noDestino] == 1 || matrizAdj[noDestino][noPartida] == 1)
             return true;
     return false;                
+}
+
+int* Grafo:FechoTransitivoDireto(int idNo){ //o conjunto dos vértices de um grafo alcançáveis a partir de v.
+    
+    No* noPartida = findNoById(idNo);
+    int *fecho = new int[ordem];
+    int *visitados = new int[ordem];
+    for(int k=0;k<ordem;k++)
+        visitados[k] = 0;
+    int i = 0;
+    for(int j=0;j<ordem;j++){//faz o percurso de busca em profundidade para cada no do grafo, variando o no final
+        if(DFSCaminho(noPartida,findNoById(j),this,visitados)){//se encontrar o no a partir do no inicial, adiciona no fecho transitivo
+            fecho[i] = j;
+            i++;
+        }
+        for(int k=0;k<ordem;k++)
+        visitados[k] = 0;
+    }
+    return fecho;
+}
+
+int* Grafo:FechoTransitivoIndireto(int idNo){ //o conjunto dos vértices de um grafo alcançáveis a partir de v.
+    
+    No* noDestino = findNoById(idNo);
+    int *fecho = new int[ordem];
+    int *visitados = new int[ordem];
+    for(int k=0;k<ordem;k++)
+        visitados[k] = 0;
+    int i = 0;
+    for(int j=0;j<ordem;j++){//faz o percurso de busca em profundidade para cada no do grafo, variando o no inicial
+        if(DFSCaminho(findNoById(j),noDestino,this,visitados)){//se encontrar o no a partir do no inicial, adiciona no fecho transitivo
+            fecho[i] = j;
+            i++;
+        }
+        for(int k=0;k<ordem;k++)
+        visitados[k] = 0;
+    }
+    return fecho;
 }
