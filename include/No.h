@@ -32,16 +32,10 @@ public:
     int getGrauSaida() { return grauSaida; };
 
     No *getProx() { return proximo; };
-    void setProx(No *no)
-    {
-        this->proximo = no;
-    }
+    void setProx(No *no){this->proximo = no;}
 
-    Arco *getArcoAdjacentes() { return adjacentes; };
-    void setArcoAdjacente(Arco *arco)
-    {
-        this->adjacentes = arco;
-    }
+    Arco *getAdjacentes() { return adjacentes; };
+    void setAdjacente(Arco *arco){ this->adjacentes = arco;}
 };
 
 #endif // NO_H
