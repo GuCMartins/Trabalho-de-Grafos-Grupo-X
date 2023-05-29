@@ -23,7 +23,6 @@ public:
     void inserirArco(int idNoOrigem, int idNoDestino, float pesoArco);
     void removerArco(int idNoOrigem, int idNoDestino);
     int getOrdem(){return ordem;};
-    int getNumArcos(){return numArcos;};
     No* getNoInicial(){return noInicial;};
     void imprimirListaNos();
     void imprimirListaNosAdjacentes(int idNo);

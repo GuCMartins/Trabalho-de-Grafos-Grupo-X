@@ -1,4 +1,5 @@
 #include "../include/Grafo.h"
+#include "../apps/grafos_util.h"
 
 #include <iostream>
 
@@ -65,8 +66,8 @@ void Grafo::inserirArco(int idNoOrigem, int idNoDestino, float pesoArco)
         }
         this->numArcos += 1;
         if(!ehDir())
-            matrizAdj[idNoDestino][idNoOrigem] = 1;
-        matrizAdj[idNoOrigem][idNoDestino] = 1;
+            matrizAdj[idNoDestino-1][idNoOrigem-1] = 1;
+        matrizAdj[idNoOrigem-1][idNoDestino-1] = 1;
     }
     else
     {
@@ -221,17 +222,11 @@ void Grafo::removerNo(int idNode)
     }else{
         predecessor->setProx(noRemover->getProx());
     }
-    else
-    {
-        predecessor->setProx(busca->getProx());
-    }
-
     //modifica a matriz de adjacencia para retirar o no
     for(int i=0;i<ordem;i++){
-        matrizAdj[i][idNode] = 0;
-        matrizAdj[idNode][i] = 0;
+        matrizAdj[i][idNode-1] = 0;
+        matrizAdj[idNode-1][i] = 0;
     }
-
     cout <<" Removendo nó "<<noRemover->getId()<<endl;
     delete noRemover;
 }
@@ -258,7 +253,7 @@ void Grafo::removerArco(int idNoOrigem, int idNoDestino)
         noDestino->decrementaGrauEntrada(1);
     }
     this->numArcos -= 1;
-    matrizAdj[idNoOrigem][idNoDestino] = 0;//modifica a matriz de adjacencia para retirar o arco
+    matrizAdj[idNoOrigem-1][idNoDestino-1] = 0;//modifica a matriz de adjacencia para retirar o arco
 }
 
 void Grafo::auxRemoverArco(No *noOrigem, int idNoDestino)
@@ -362,22 +357,21 @@ void Grafo::imprimirListaNosAdjacentes(int idNo)
     }
 }
 
-
 int *Grafo::vizinhancaAberta(int idNo){
     int size = 0;
+    No* no = findNoById(idNo);
     if(direcionado)
-        size = Nos[idNo].getGrauSaida() + Nos[idNo].getGrauEntrada();
+        size = no->getGrauSaida() + no->getGrauEntrada();
     else
-        size = Nos[idNo].getGrauEntrada();    
+        size = no->getGrauEntrada();    
     int *vizinhanca = new int[size];//aloca um vetor de vizinhanca com o numero de vizinhos do no
     int i = 0;
-    Arco* arco = this->Nos[idNo].getAdjacente();//pega a aresta que sai do nó
+    Arco* arco = this->findNoById(idNo)->getAdjacente();//pega a aresta que sai do nó
     while(i<size && arco != NULL){
-        if(arco->getNoDestino()->getId() == idNo || arco->getNoOrigem()->getId() == idNo){
-            vizinhanca[i] = arco->getNoDestino()->getId();
+        if(arco->getNodeDest() == idNo || arco->getProx()->getNodeDest() == idNo){
+            vizinhanca[i] = arco->getProx()->getNodeDest();
             i++;
         }
-        arco = arco->getProx();
     }
     return vizinhanca;
 }
@@ -385,13 +379,16 @@ int *Grafo::vizinhancaAberta(int idNo){
 int *Grafo::vizinhancaFechada(int idNo)
 {
     int size = 0;
+    No* no = findNoById(idNo);
     if(direcionado)
-        size = Nos[idNo].getGrauSaida() + Nos[idNo].getGrauEntrada();
+        size = no->getGrauSaida() + no->getGrauEntrada();
     else
-        size = Nos[idNo].getGrauEntrada();    
-    int *vizinhanca = new int[size];//aloca um vetor de vizinhanca com o numero de vizinhos do no
+        size = no->getGrauEntrada();    
+    int *vizinhancaAux = new int[size];//aloca um vetor de vizinhanca com o numero de vizinhos do no
     int *vizinhanca = new int[size+1];
-    vizinhanca = vizinhancaAberta(idNo);//recebe a vizinhanca aberta e completa com o no que esta sendo analisado
+    vizinhancaAux = vizinhancaAberta(idNo);//recebe a vizinhanca aberta e completa com o no que esta sendo analisado
+    for(int i =0;i<size;i++)
+        vizinhanca[i] = vizinhancaAux[i];
     vizinhanca[size] = idNo;
     return vizinhanca;
 }
@@ -407,7 +404,7 @@ bool Grafo::Euleriano(int *visitados){//recebe um vetor de visitados do DFS
     for(int i=0;i<ordem;i++){
         if(visitados[i] == 0)
             return false;//se algum no nao foi visitado, o grafo nao eh euleriano
-        if(Nos[i].getGrauEntrada()%2!=0 || Nos[i].getGrauSaida()%2 !=0)
+        if(findNoById(i)->getGrauEntrada()%2!=0 || findNoById(i)->getGrauSaida()%2 !=0)
             return false;//se algum no tiver grau de entrada diferente do grau de saida, o grafo nao eh euleriano   
     }
     return true;
@@ -415,15 +412,15 @@ bool Grafo::Euleriano(int *visitados){//recebe um vetor de visitados do DFS
 
 bool Grafo::existeArco(int noPartida,int noDestino){//faz a busca pela matriz de adjacencia para ver se existe um arco entre os nos
     if(direcionado)
-        if(matrizAdj[noPartida][noDestino] == 1)
+        if(matrizAdj[noPartida-1][noDestino-1] == 1)
             return true;
     else
-        if(matrizAdj[noPartida][noDestino] == 1 || matrizAdj[noDestino][noPartida] == 1)
+        if(matrizAdj[noPartida-1][noDestino-1] == 1 || matrizAdj[noDestino-1][noPartida-1] == 1)
             return true;
     return false;                
 }
 
-int* Grafo:FechoTransitivoDireto(int idNo){ //o conjunto dos vértices de um grafo alcançáveis a partir de v.
+int* Grafo::FechoTransitivoDireto(int idNo){ //o conjunto dos vértices de um grafo alcançáveis a partir de v.
     
     No* noPartida = findNoById(idNo);
     int *fecho = new int[ordem];
@@ -442,7 +439,7 @@ int* Grafo:FechoTransitivoDireto(int idNo){ //o conjunto dos vértices de um gra
     return fecho;
 }
 
-int* Grafo:FechoTransitivoIndireto(int idNo){ //o conjunto dos vértices de um grafo alcançáveis a partir de v.
+int* Grafo::FechoTransitivoIndireto(int idNo){ //o conjunto dos vértices de um grafo alcançáveis a partir de v.
     
     No* noDestino = findNoById(idNo);
     int *fecho = new int[ordem];
