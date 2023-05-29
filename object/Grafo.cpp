@@ -12,6 +12,13 @@ Grafo::Grafo(int ordem, bool direc, bool pondAresta, bool pondNode)
     this->pondNode = pondNode;
     this->noInicial = NULL;
     this->numArcos = 0;
+    this->matrizAdj = new int*[ordem];
+    for(int i =0;i<ordem;i++){
+        matrizAdj[i] = new int[ordem];
+        for(int j=0;j<ordem;j++){//preenche cada linha da matriz com 0
+            matrizAdj[i][j] = 0;
+        }
+    }
 }
 Grafo::~Grafo() {}
 
@@ -57,6 +64,9 @@ void Grafo::inserirArco(int idNoOrigem, int idNoDestino, float pesoArco)
             this->auxInserirArco(noDestino, noOrigem, pesoArco);
         }
         this->numArcos += 1;
+        if(!ehDir())
+            matrizAdj[idNoDestino-1][idNoOrigem-1] = 1;
+        matrizAdj[idNoOrigem-1][idNoDestino-1] = 1;
     }
     else
     {
@@ -211,6 +221,11 @@ void Grafo::removerNo(int idNode)
     }else{
         predecessor->setProx(noRemover->getProx());
     }
+    //modifica a matriz de adjacencia para retirar o no
+    for(int i=0;i<ordem;i++){
+        matrizAdj[i][idNode-1] = 0;
+        matrizAdj[idNode-1][i] = 0;
+    }
     cout <<" Removendo nó "<<noRemover->getId()<<endl;
     delete noRemover;
 }
@@ -237,6 +252,7 @@ void Grafo::removerArco(int idNoOrigem, int idNoDestino)
         noDestino->decrementaGrauEntrada(1);
     }
     this->numArcos -= 1;
+    matrizAdj[idNoOrigem-1][idNoDestino-1] = 0;//modifica a matriz de adjacencia para retirar o arco
 }
 
 void Grafo::auxRemoverArco(No *noOrigem, int idNoDestino)
@@ -338,4 +354,14 @@ void Grafo::imprimirListaNosAdjacentes(int idNo)
         cout << "NO DESTINO ID: " << arco->getNodeDest() << endl;
         arco = arco->getProx();
     }
+}
+
+bool Grafo::existeArco(int noPartida,int noDestino){//faz a busca pela matriz de adjacencia para ver se existe um arco entre os nos
+    if(direcionado)
+        if(matrizAdj[noPartida-1][noDestino-1] == 1)
+            return true;
+    else
+        if(matrizAdj[noPartida-1][noDestino-1] == 1 || matrizAdj[noDestino-1][noPartida-1] == 1)
+            return true;
+    return false;                
 }
