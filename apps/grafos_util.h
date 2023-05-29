@@ -133,25 +133,100 @@ int* dijkstraAlgorithm(Grafo *g){
 
 /* Parte da Busca em Profundidade */
 
-// void DFSGeral(No *noPartida, Grafo *g, int* visitado){//o no de partida é iniciado como o no inicial do grafo
-//     visitado[noPartida->getId()] = 1;
-//     for (No *no = noPartida; no != NULL; no = no->getProx())
-//     {
-//         if(g->existeArco(noPartida->getId(),no->getId()) && visitado[no->getId()] == 0)
-//             DFSGeral(no,g,visitado);
-//     }
-// }
+void DFSGeral(No *noPartida, Grafo *g, int* visitado){//o no de partida é iniciado como o no inicial do grafo
+    visitado[noPartida->getId() - 1] = 1;
+    Arco *arco = noPartida->getAdjacentes();
 
-// bool DFSCaminho(No *noPartida,No* Destino, Grafo *g,int* visitado){//o no de partida é iniciado como o no inicial do grafo
-//     visitado[noPartida->getId()] = 1;
-//     for (No *no = noPartida; no != NULL; no = no->getProx())
-//     {
-//         if(no->getId() == Destino->getId())
-//             return true;
-//         if(g->existeArco(noPartida->getId(),no->getId()) && visitado[no->getId()] == 0)
-//             DFSGeral(no,g,visitado);
-//     }
-//     return false;//usar para fecho transitivo direto e indireto
-// }
+    while(arco != NULL){
+        if(visitado[arco->getNodeDest() - 1] == 0){
+            No *no_aux = g->getNoInicial();
+
+            while(no_aux != NULL){
+                if(no_aux->getId() == arco->getNodeDest())
+                    break;
+                no_aux = no_aux->getProx();
+            }
+            arco = arco->getProx();
+            DFSGeral(no_aux, g, visitado);
+        }
+    }
+
+    // for (No *no = noPartida; no != NULL; no = no->getProx())
+    // {
+    //     if(g->existeArco(noPartida->getId(),no->getId()) && visitado[no->getId()-1]  == 0)
+    //         DFSGeral(no,g,visitado);
+    // }
+}
+
+bool DFSCaminho(No *noPartida,No* Destino, Grafo *g,int* visitado){//o no de partida é iniciado como o no inicial do grafo
+    visitado[noPartida->getId() - 1] = 1;
+    for (No *no = noPartida; no != NULL; no = no->getProx())
+    {
+        if(no->getId() == Destino->getId())
+            return true;
+        if(g->existeArco(noPartida->getId(),no->getId()) && visitado[no->getId() - 1] == 0)
+            DFSGeral(no,g,visitado);
+    }
+    return false;//usar para fecho transitivo direto e indireto
+}
+
+Grafo* criarCopia(Grafo *g){
+    Grafo* copia = new Grafo(g->getOrdem(), g->ehDir(), g->ehPondAr(), g->ehPondNode());
+
+    No* no = g->getNoInicial();
+
+    while(no != NULL){
+        copia->inserirNo(no->getId(), no->getPeso());
+        no = no->getProx();
+    }
+
+    no = g->getNoInicial();
+
+    while(no != NULL){
+        Arco *arco = no->getAdjacentes();
+
+        int *visitados = new int[g->getOrdem()];
+                int v = 1;
+                bool visitado = false;
+                while(no != NULL){
+                    Arco *arco = no->getAdjacentes();
+                    visitados[v-1] = no->getId();
+                    while(arco != NULL){
+                        for(int i = 0; i < v; i++){
+                            if(arco->getNodeDest() == visitados[i])
+                                visitado = true;
+                        }
+                        if(visitado)
+                            copia->inserirArco(no->getId(), arco->getNodeDest(), arco->getPeso());
+                        arco = arco->getProx();
+                        visitado = false;
+                    }
+                    no = no->getProx();
+                    v++; 
+                    delete arco;
+                }
+    }
+    
+    return copia;
+}
+
+bool ehNoArticulacao(Grafo *g, int noId){
+    Grafo *g_aux = criarCopia(g);
+    g_aux->removerNo(noId);
+    int *visitado = new int[g_aux->getOrdem()];
+    for(int i = 0; i < g_aux->getOrdem(); i++){
+        visitado[i] = -1;
+    }
+    DFSGeral(g_aux->getNoInicial(), g_aux, visitado);
+    for(int i = 0; i < g_aux->getOrdem(); i++){
+        if(visitado[i] != 1)
+        {
+            cout << i+1 << endl;
+        }
+    }
+    return false;
+
+
+}
 
 #endif

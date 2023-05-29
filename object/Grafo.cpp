@@ -228,6 +228,7 @@ void Grafo::removerNo(int idNode)
     }
     cout <<" Removendo nó "<<noRemover->getId()<<endl;
     delete noRemover;
+    this->ordem -= 1;
 }
 
 void Grafo::removerArco(int idNoOrigem, int idNoDestino)

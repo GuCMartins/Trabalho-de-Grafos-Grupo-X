@@ -227,17 +227,21 @@ int main(int argc, char **argv)
     // G->removerNo(5);
     
     // cout <<"IMPRESSÃO APÓS REMOVER "<<endl;
-    // G->imprimirTodosNosAdjacentes();
+    //  G->imprimirTodosNosAdjacentes();
 
-    int* distancias = dijkstraAlgorithm(G);
+    // int* distancias = dijkstraAlgorithm(G);
 
-    No* no = G->getNoInicial();
-    for(int i = 0; i < G->getOrdem(); i++){
-        cout << "Id do no: " << no->getId() << " | Caminho minimo ate ele: " << distancias[i] << endl;
-        no = no->getProx();
-    }
+    // No* no = G->getNoInicial();
+    // for(int i = 0; i < G->getOrdem(); i++){
+    //     cout << "Id do no: " << no->getId() << " | Caminho minimo ate ele: " << distancias[i] << endl;
+    //     no = no->getProx();
+    // }
 
     escritaArquivo(pathOut, G); //passar o grafo modificado com base na entrada
+
+    cout << "Eh no articulacao? " << endl << ehNoArticulacao(G, 5) << endl;
+
+    // G->imprimirTodosNosAdjacentes();
 
     // Continuar o tratamento para o argv
     return 0;
