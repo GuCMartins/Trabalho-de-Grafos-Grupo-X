@@ -239,9 +239,14 @@ int main(int argc, char **argv)
 
     escritaArquivo(pathOut, G); //passar o grafo modificado com base na entrada
 
-    cout << "Eh no articulacao? " << endl << ehNoArticulacao(G, 5) << endl;
+    //cout << "Eh no articulacao? " << endl << ehNoArticulacao(G, 5) << endl;
 
     // G->imprimirTodosNosAdjacentes();
+
+    int k = 4;
+    cout << "Verificando se o grafo é "<<k<<"-regular"<<endl;
+    ehKRegular(G, k);
+
 
     // Continuar o tratamento para o argv
     return 0;

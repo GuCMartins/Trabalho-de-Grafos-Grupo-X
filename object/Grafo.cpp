@@ -183,6 +183,7 @@ void Grafo::removerNo(int idNode)
             predecessor->setProx(noRemover->getProx());
         }
         delete noRemover;
+        this->ordem -= 1;
         return;
     }
 

@@ -229,4 +229,27 @@ bool ehNoArticulacao(Grafo *g, int noId){
 
 }
 
+bool ehKRegular(Grafo *g, int k){
+    int numArestas = k*g->getOrdem()/2;
+    cout << "\tOrdem: "<<g->getOrdem()<<endl;
+    cout << "\tK: "<<k<<endl;
+    cout << "\tNúmero de arcos do grafo: "<<g->getNumArcos()<<endl;
+    cout << "\tCalculado: "<<numArestas<<endl;
+
+    if(numArestas != g->getNumArcos()){
+        cout <<"\tGrafo não é "<<k<<"-regular"<<endl;
+        return false;
+    }
+
+    No *aux = g->getNoInicial();
+    while(aux!=NULL){
+        if(aux->getGrauEntrada() != k) 
+            return false;
+        aux = aux->getProx();
+    }
+
+    cout << "\tGrafo regular. Verificou todo grafo e não encontrou nó com grau != "<<k<<endl;
+    return true;
+}
+
 #endif
