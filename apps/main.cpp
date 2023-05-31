@@ -267,10 +267,10 @@ int main(int argc, char **argv)
     idNos[2] = 3;
     idNos[3] = 4;
    
-    Grafo *grafoInduzido = subgrafoInduzido(G, idNos, &size);
-    cout <<"Ordem do subgrafo: "<<grafoInduzido->getOrdem()<<endl;
-    cout <<"Num de arcos: "<<grafoInduzido->getNumArcos()<<endl;
-    grafoInduzido->imprimirTodosNosAdjacentes();
+    // Grafo *grafoInduzido = subgrafoInduzido(G, idNos, &size);
+    // cout <<"Ordem do subgrafo: "<<grafoInduzido->getOrdem()<<endl;
+    // cout <<"Num de arcos: "<<grafoInduzido->getNumArcos()<<endl;
+    // grafoInduzido->imprimirTodosNosAdjacentes();
     
     
     //G->imprimirTodosNosAdjacentes();
@@ -285,6 +285,27 @@ int main(int argc, char **argv)
     // G2->inserirArco(1,2,3);
     // G2->inserirArco(2,2,3);
     // G2->imprimirTodosNosAdjacentes();
+
+
+    Grafo *G3 = new Grafo(3, ehDir == "1", ehPondAr == "1", ehPondNode == "1");
+    G3->inserirNo(1,1);
+    G3->inserirNo(2,1);
+    G3->inserirNo(3,1);
+
+    //G3->inserirArco(1,2,1);
+    G3->inserirArco(1,3,1);
+
+    //G3->inserirArco(2,1,1);
+    G3->inserirArco(2,3,1);
+
+    G3->inserirArco(3,1,1);
+    G3->inserirArco(3,2,1);
+
+    Grafo *grafoC = grafoComplementar(G3);
+     cout <<"Ordem do subgrafo: "<<grafoC->getOrdem()<<endl;
+    cout <<"Num de arcos: "<<grafoC->getNumArcos()<<endl;
+    grafoC->imprimirTodosNosAdjacentes();
+
 
     delete idNos;
 

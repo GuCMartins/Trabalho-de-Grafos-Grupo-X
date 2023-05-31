@@ -30,6 +30,7 @@ public:
     void imprimirTodosNosAdjacentes();
 
     bool ehDirecionado() {return direcionado;};
+    void setNumArcos(int numArcos) { this->numArcos = numArcos;};
     int getNumArcos() {return numArcos;};
 
     No* findNoById(int id);

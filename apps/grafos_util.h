@@ -304,4 +304,33 @@ Grafo* subgrafoInduzido(Grafo *grafo, int *idNos, int *size){
 
 }
 
+Grafo *grafoComplementar(Grafo *grafo){
+    Grafo *novoGrafo = new Grafo(grafo->getOrdem(), grafo->ehDir(), grafo->ehPondAr(), grafo->ehPondNode());
+    No *aux1 = grafo->getNoInicial();
+    
+    while(aux1 != NULL){
+        novoGrafo->inserirNo(aux1->getId(), aux1->getPeso());
+        aux1 = aux1->getProx();
+    }
+
+    No *aux2;
+    aux1 = grafo->getNoInicial(); 
+    while(aux1 != NULL){
+        aux2 = grafo->getNoInicial();
+        while(aux2 != NULL){
+            if(aux1->getId() != aux2->getId()){
+                //cout <<"Verificando se existe no nó "<<aux1->getId()<<" o adjacente "<<aux2->getId()<<endl;
+                if(aux1->existeNoAdjacente(aux2->getId()) == NULL){
+                    novoGrafo->inserirArco(aux1->getId(), aux2->getId(), 1);
+                }
+            }
+            
+            aux2 = aux2->getProx();
+        }
+        aux1 = aux1->getProx();     
+    }
+
+    return novoGrafo;
+}
+
 #endif
