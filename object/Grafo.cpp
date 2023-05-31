@@ -24,6 +24,11 @@ Grafo::~Grafo() {}
 
 void Grafo::inserirNo(int idNode, float pesoNode)
 {
+    if(findNoById(idNode) != NULL){
+        cout <<"Nó "<<idNode<<" já existe no grafo."<<endl;
+        return;
+    }
+
     No *novoNo = new No(idNode, pesoNode);
 
     if (noInicial == NULL)
@@ -44,34 +49,49 @@ void Grafo::inserirNo(int idNode, float pesoNode)
 
 void Grafo::inserirArco(int idNoOrigem, int idNoDestino, float pesoArco)
 {
+    if(idNoOrigem == idNoDestino){
+        cout <<"Grafo simples. Não é permitido self-loop."<<endl;
+        return;
+    }
+
     No *noOrigem = this->findNoById(idNoOrigem);
+    
+    if(noOrigem == NULL){
+        cout <<"Não é possível inserir o arco <"<<idNoOrigem<<","<<idNoDestino<<">. Nó Origem"<<idNoOrigem<< " não existe no grafo"<<endl;
+        return;
+    }
+
+    if( noOrigem->existeNoAdjacente(idNoDestino) != NULL){
+        cout <<"Já existe o adjacente "<<idNoDestino<< " para o nó "<<idNoOrigem<<endl;
+        return;
+    }
+
     No *noDestino = this->findNoById(idNoDestino);
 
-    if (noOrigem != NULL && noDestino != NULL)
-    {
-        if (this->ehDir())
-        {
-            this->auxInserirArco(noOrigem, noDestino, pesoArco);
+    if(noDestino == NULL){
+        cout <<"Não é possível inserir o arco <"<<idNoOrigem<<","<<idNoDestino<<">. Nó Destino"<<noDestino<< " não existe no grafo"<<endl;
+        return;
+    }
 
-            noDestino->incrementaGrauEntrada(1);
-            noOrigem->incrementaGrauSaida(1);
-        }
-        else
-        {
-            noOrigem->incrementaGrauEntrada(1);
-            noDestino->incrementaGrauEntrada(1);
-            this->auxInserirArco(noOrigem, noDestino, pesoArco);
-            this->auxInserirArco(noDestino, noOrigem, pesoArco);
-        }
-        this->numArcos += 1;
-        if(!ehDir())
-            matrizAdj[idNoDestino-1][idNoOrigem-1] = 1;
-        matrizAdj[idNoOrigem-1][idNoDestino-1] = 1;
+    if (this->ehDir())
+    {
+        this->auxInserirArco(noOrigem, noDestino, pesoArco);
+
+        noDestino->incrementaGrauEntrada(1);
+        noOrigem->incrementaGrauSaida(1);
     }
     else
     {
-        cout << "No origem/destino inexistente no grafo!" << endl;
+        noOrigem->incrementaGrauEntrada(1);
+        noDestino->incrementaGrauEntrada(1);
+        this->auxInserirArco(noOrigem, noDestino, pesoArco);
+        this->auxInserirArco(noDestino, noOrigem, pesoArco);
     }
+    this->numArcos += 1;
+    if(!ehDir())
+        matrizAdj[idNoDestino-1][idNoOrigem-1] = 1;
+    matrizAdj[idNoOrigem-1][idNoDestino-1] = 1;
+    
 }
 
 void Grafo::auxInserirArco(No *noOrigem, No *noDestino, float pesoArco)
@@ -93,58 +113,6 @@ void Grafo::auxInserirArco(No *noOrigem, No *noDestino, float pesoArco)
         arcoInsercao->setProx(novoArco);
     }
 }
-
-// void Grafo::removerNo(int idNode)
-// {
-//     No *busca = noInicial;
-//     No *predecessor = NULL;
-
-//     while (busca != NULL && busca->getId() != idNode)
-//     {
-//         predecessor = busca;
-//         busca = busca->getProx();
-//     }
-
-//     if (busca->getId() != idNode)
-//     {
-//         cout << "O nó " << idNode << " não existe no grafo e não pode ser removido..." << endl;
-//         return;
-//     }
-
-//     Arco *arcoInicial = busca->getAdjacentes();
-//     if (arcoInicial == NULL)
-//     {
-//         cout << "Nó não tem arcos, removendo só o nó " << idNode << endl;
-//         if (predecessor != NULL)
-//         {
-//             predecessor->setProx(busca->getProx());
-//         }
-//         delete busca;
-//         return;
-//     }
-
-//     Arco *aux = arcoInicial;
-//     while (arcoInicial->getProx() != NULL)
-//     {
-//         aux = arcoInicial->getProx();
-//         delete arcoInicial;
-//         arcoInicial = aux;
-//     }
-
-//     delete arcoInicial;
-
-//     // Se estou removendo o primeiro nó
-//     if (busca->getId() == noInicial->getId())
-//     {
-//         noInicial = busca->getProx();
-//     }
-//     else
-//     {
-//         predecessor->setProx(busca->getProx());
-//     }
-
-//     delete busca;
-// }
 
 void Grafo::removerNo(int idNode)
 {
