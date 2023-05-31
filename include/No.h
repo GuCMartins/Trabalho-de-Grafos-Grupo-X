@@ -33,6 +33,8 @@ public:
 
     Arco *getAdjacentes() { return adjacentes; };
     void setAdjacente(Arco *arco){ this->adjacentes = arco;}
+
+    Arco* existeNoAdjacente(int idNo);
 };
 
 #endif // NO_H

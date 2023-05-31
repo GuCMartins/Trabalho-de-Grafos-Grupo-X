@@ -220,8 +220,8 @@ int main(int argc, char **argv)
 
     Grafo *G = leituraArquivo(pathIn, ehDir, ehPondAr, ehPondNode);
     
-    cout <<"IMPRESSÃO "<<endl;
-    G->imprimirTodosNosAdjacentes();
+    //cout <<"IMPRESSÃO "<<endl;
+    //G->imprimirTodosNosAdjacentes();
 
     // cout <<"REMOVER NO "<<endl;
     // G->removerNo(5);
@@ -237,16 +237,43 @@ int main(int argc, char **argv)
     //     no = no->getProx();
     // }
 
-    escritaArquivo(pathOut, G); //passar o grafo modificado com base na entrada
+    //escritaArquivo(pathOut, G); //passar o grafo modificado com base na entrada
 
     //cout << "Eh no articulacao? " << endl << ehNoArticulacao(G, 5) << endl;
 
     // G->imprimirTodosNosAdjacentes();
 
-    int k = 4;
-    cout << "Verificando se o grafo é "<<k<<"-regular"<<endl;
-    ehKRegular(G, k);
+    // int k = 4;
+    // cout << "Verificando se o grafo é "<<k<<"-regular"<<endl;
+    // ehKRegular(G, k);
 
+    
+    // int id = 1;
+    // No *no = getGrauNo(G, id);
+    // if(no!=NULL){
+    //     cout <<"GE: "<<no->getGrauEntrada()<<endl;
+    //     if(G->ehDir())
+    //         cout <<"GS: "<<no->getGrauSaida()<<endl;
+    // }else{
+    //     cout <<"Nó com id "<<id<< " inválido..."<<endl;
+    // }
+    
+
+    int size = 3;
+    int *idNos = new int[size];
+    
+    idNos[0] = 1;
+    idNos[1] = 2;
+    idNos[2] = 3;
+   
+    Grafo *grafoInduzido = subgrafoInduzido(G, idNos, &size);
+    
+    cout <<"Imprimindo subgrafo induzido"<<endl;
+    //G->imprimirTodosNosAdjacentes();
+    grafoInduzido->imprimirTodosNosAdjacentes();
+    
+
+    delete idNos;
 
     // Continuar o tratamento para o argv
     return 0;

@@ -229,6 +229,12 @@ bool ehNoArticulacao(Grafo *g, int noId){
 
 }
 
+//TODO: retornar o nó, vetor de int ou imprimir o GE/GS dentro da função???
+No* getGrauNo(Grafo *g, int idNode){
+    No* no = g->findNoById(idNode);
+    return no;
+}
+
 bool ehKRegular(Grafo *g, int k){
     int numArestas = k*g->getOrdem()/2;
     cout << "\tOrdem: "<<g->getOrdem()<<endl;
@@ -250,6 +256,57 @@ bool ehKRegular(Grafo *g, int k){
 
     cout << "\tGrafo regular. Verificou todo grafo e não encontrou nó com grau != "<<k<<endl;
     return true;
+}
+
+Grafo* subgrafoInduzido(Grafo *grafo, int *idNos, int *size){
+
+    //1. Verificar se os idsNos estão no grafo, removendo caso não esteja
+    for (int i = 0; i < *size; i++) {
+        if(!grafo->findNoById(idNos[i])){
+            for(int j=i;j<(*size)-1;j++){
+                idNos[j] = idNos[j+1]; 
+            }
+            i--;
+            (*size)--;
+        }
+
+    }
+
+    //2. Inserir os idNos no novo Grafo que existem no grafo original
+    Grafo *grafoInduzido = new Grafo(grafo->getOrdem(), grafo->ehDir(), grafo->ehPondAr(), grafo->ehPondNode());
+    for (int i = 0; i < *size; i++) {
+        cout <<"BUscando "<<idNos[i]<<endl;
+        No *no = grafo->findNoById(idNos[i]);    
+        if(no!=NULL){
+            grafoInduzido->inserirNo(no->getId(),no->getPeso());
+        }
+        
+    }
+       
+    
+
+    //3. Para cada nó k do grafoInduzido, encontro o nó k no grafo original e verifico se existe entre os adjacentes
+    No *aux = grafoInduzido->getNoInicial();
+    No *auxGrafoOriginal;
+
+    while(aux != NULL){
+        auxGrafoOriginal = grafo->findNoById(aux->getId());
+        
+        for (int i = 0; i < *size; i++) {
+            
+            Arco *auxArco = auxGrafoOriginal->existeNoAdjacente(idNos[i]);
+            
+            if(auxArco!=NULL){
+                 grafoInduzido->inserirArco(aux->getId(), idNos[i], auxArco->getPeso());    
+            }
+            
+        }
+        aux = aux->getProx();
+    }
+    
+    
+    return grafoInduzido;
+
 }
 
 #endif

@@ -26,3 +26,17 @@ No::~No()
             adjacentes = aux;
         }
 }
+
+Arco* No::existeNoAdjacente(int idNo){
+    Arco *aux = adjacentes;
+    while (aux != NULL)
+    {
+        if(aux->getNodeDest() == idNo){
+            return aux;
+        }
+            
+        aux = aux->getProx();
+    }
+
+    return NULL;
+}
