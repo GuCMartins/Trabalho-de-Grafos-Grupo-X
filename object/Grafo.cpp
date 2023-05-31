@@ -31,20 +31,9 @@ void Grafo::inserirNo(int idNode, float pesoNode)
 
     No *novoNo = new No(idNode, pesoNode);
 
-    if (noInicial == NULL)
-    {
-        this->noInicial = novoNo;
-    }
-    else
-    {
-        No *noInsercao = noInicial;
-        while (noInsercao->getProx() != NULL)
-        {
-            noInsercao = noInsercao->getProx();
-        }
-
-        noInsercao->setProx(novoNo);
-    }
+    No *antigoNoInicial = noInicial;
+    this->noInicial = novoNo;
+    novoNo->setProx(antigoNoInicial);
 }
 
 void Grafo::inserirArco(int idNoOrigem, int idNoDestino, float pesoArco)
@@ -98,20 +87,9 @@ void Grafo::auxInserirArco(No *noOrigem, No *noDestino, float pesoArco)
 {
     Arco *novoArco = new Arco(noDestino->getId(), pesoArco);
 
-    Arco *arcoInsercao = noOrigem->getAdjacentes();
-
-    if (arcoInsercao == NULL)
-    {
-        noOrigem->setAdjacente(novoArco);
-    }
-    else
-    {
-        while (arcoInsercao->getProx() != NULL)
-        {
-            arcoInsercao = arcoInsercao->getProx();
-        }
-        arcoInsercao->setProx(novoArco);
-    }
+    Arco *arcoInicialAtual = noOrigem->getAdjacentes();
+    noOrigem->setAdjacente(novoArco);
+    novoArco->setProx(arcoInicialAtual);
 }
 
 void Grafo::removerNo(int idNode)
