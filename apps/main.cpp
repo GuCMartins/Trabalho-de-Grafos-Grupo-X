@@ -259,19 +259,32 @@ int main(int argc, char **argv)
     // }
     
 
-    int size = 3;
+    int size = 4;
     int *idNos = new int[size];
     
     idNos[0] = 1;
     idNos[1] = 2;
     idNos[2] = 3;
+    idNos[3] = 4;
    
     Grafo *grafoInduzido = subgrafoInduzido(G, idNos, &size);
-    
-    cout <<"Imprimindo subgrafo induzido"<<endl;
-    //G->imprimirTodosNosAdjacentes();
+    cout <<"Ordem do subgrafo: "<<grafoInduzido->getOrdem()<<endl;
+    cout <<"Num de arcos: "<<grafoInduzido->getNumArcos()<<endl;
     grafoInduzido->imprimirTodosNosAdjacentes();
     
+    
+    //G->imprimirTodosNosAdjacentes();
+    //cout <<"Imprimindo subgrafo induzido"<<endl;
+    //grafoInduzido->imprimirTodosNosAdjacentes();
+
+    // Grafo *G2 = new Grafo(3, ehDir == "1", ehPondAr == "1", ehPondNode == "1");
+    // G2->inserirNo(1,1);
+    // G2->inserirNo(2,1);
+    // G2->inserirNo(3,1);
+
+    // G2->inserirArco(1,2,3);
+    // G2->inserirArco(2,2,3);
+    // G2->imprimirTodosNosAdjacentes();
 
     delete idNos;
 

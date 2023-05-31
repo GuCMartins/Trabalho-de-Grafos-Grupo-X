@@ -62,7 +62,7 @@ void Grafo::inserirArco(int idNoOrigem, int idNoDestino, float pesoArco)
     }
 
     if( noOrigem->existeNoAdjacente(idNoDestino) != NULL){
-        cout <<"Já existe o adjacente "<<idNoDestino<< " para o nó "<<idNoOrigem<<endl;
+        // cout <<"Já existe o adjacente "<<idNoDestino<< " para o nó "<<idNoOrigem<<endl;
         return;
     }
 

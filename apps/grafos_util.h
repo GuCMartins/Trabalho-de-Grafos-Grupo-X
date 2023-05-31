@@ -4,6 +4,7 @@
 #include <algorithm>
 #include <iostream>
 #include "../include/Grafo.h"
+#include <forward_list>
 
 using namespace std;    
 
@@ -259,53 +260,47 @@ bool ehKRegular(Grafo *g, int k){
 }
 
 Grafo* subgrafoInduzido(Grafo *grafo, int *idNos, int *size){
+    //1. Inserir os nós no subrafoInduzido que existem no grafo original
+    Grafo *subGrafoInduzido = new Grafo(*size, grafo->ehDir(), grafo->ehPondAr(), grafo->ehPondNode());
+    forward_list<int> idNosInseridos;
+    int countNosInseridos = 0;
 
-    //1. Verificar se os idsNos estão no grafo, removendo caso não esteja
     for (int i = 0; i < *size; i++) {
-        if(!grafo->findNoById(idNos[i])){
-            for(int j=i;j<(*size)-1;j++){
-                idNos[j] = idNos[j+1]; 
-            }
-            i--;
-            (*size)--;
+        No *no = grafo->findNoById(idNos[i]);
+        if(no != NULL){
+            subGrafoInduzido->inserirNo(no->getId(),no->getPeso());
+            idNosInseridos.push_front(no->getId());
+            countNosInseridos++;
         }
-
     }
 
-    //2. Inserir os idNos no novo Grafo que existem no grafo original
-    Grafo *grafoInduzido = new Grafo(grafo->getOrdem(), grafo->ehDir(), grafo->ehPondAr(), grafo->ehPondNode());
-    for (int i = 0; i < *size; i++) {
-        cout <<"BUscando "<<idNos[i]<<endl;
-        No *no = grafo->findNoById(idNos[i]);    
-        if(no!=NULL){
-            grafoInduzido->inserirNo(no->getId(),no->getPeso());
-        }
-        
-    }
-       
-    
+    subGrafoInduzido->setOrdem(countNosInseridos);
 
-    //3. Para cada nó k do grafoInduzido, encontro o nó k no grafo original e verifico se existe entre os adjacentes
-    No *aux = grafoInduzido->getNoInicial();
-    No *auxGrafoOriginal;
+    //2. Para cada nó k do subGrafoInduzido, encontro o nó k no grafo original e verifico se existe entre os adjacentes
+    No *noAuxSubGrafoInduzido = subGrafoInduzido->getNoInicial();
+    No *noAuxGrafoOriginal;
 
-    while(aux != NULL){
-        auxGrafoOriginal = grafo->findNoById(aux->getId());
+    while(noAuxSubGrafoInduzido != NULL){
+        //procuro no grafo original o nó k da da iteração atual
+        noAuxGrafoOriginal = grafo->findNoById(noAuxSubGrafoInduzido->getId());
         
-        for (int i = 0; i < *size; i++) {
-            
-            Arco *auxArco = auxGrafoOriginal->existeNoAdjacente(idNos[i]);
-            
-            if(auxArco!=NULL){
-                 grafoInduzido->inserirArco(aux->getId(), idNos[i], auxArco->getPeso());    
+        // procuro nos adjacentes do nó k se existe algum dos id do subgrafo induzido
+        for(forward_list<int>::iterator it = idNosInseridos.begin();it != idNosInseridos.end();it++){
+            if(*it != noAuxGrafoOriginal->getId()){
+                //verificando se existe o idNode
+                Arco *auxArco = noAuxGrafoOriginal->existeNoAdjacente(*it);
+                
+                if(auxArco != NULL){
+                    subGrafoInduzido->inserirArco(noAuxSubGrafoInduzido->getId(), *it, auxArco->getPeso());
+                }
             }
             
         }
-        aux = aux->getProx();
+        noAuxSubGrafoInduzido = noAuxSubGrafoInduzido->getProx();
     }
     
-    
-    return grafoInduzido;
+
+    return subGrafoInduzido;
 
 }
 
