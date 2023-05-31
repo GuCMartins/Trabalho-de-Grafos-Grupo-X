@@ -1,5 +1,9 @@
 {
+<<<<<<< HEAD
     "C_Cpp.errorSquiggles": "enabled",
+=======
+    "C_Cpp.errorSquiggles": "enable",
+>>>>>>> 8122e143ad71f812973dae309771070e1a5c730a
     "files.associations": {
         "*.embeddedhtml": "html",
         "iosfwd": "cpp",

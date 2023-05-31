@@ -4,6 +4,7 @@
 #include <algorithm>
 #include <iostream>
 #include "../include/Grafo.h"
+#include <forward_list>
 
 using namespace std;    
 
@@ -134,28 +135,196 @@ int* dijkstraAlgorithm(Grafo *g){
 /* Parte da Busca em Profundidade */
 
 void DFSGeral(No *noPartida, Grafo *g, int* visitado){//o no de partida é iniciado como o no inicial do grafo
-    visitado[noPartida->getId()] = 1;
-    for (No *no = noPartida; no != NULL; no = no->getProx())
-    {
-        if(g->existeArco(noPartida->getId(),no->getId()) && visitado[no->getId()] == 0)
-            DFSGeral(no,g,visitado);
+    visitado[noPartida->getId() - 1] = 1;
+    Arco *arco = noPartida->getAdjacentes();
+
+    while(arco != NULL){
+        if(visitado[arco->getNodeDest() - 1] == 0){
+            No *no_aux = g->getNoInicial();
+
+            while(no_aux != NULL){
+                if(no_aux->getId() == arco->getNodeDest())
+                    break;
+                no_aux = no_aux->getProx();
+            }
+            arco = arco->getProx();
+            DFSGeral(no_aux, g, visitado);
+        }
     }
-    /*a ideia do DFS geral é preencher o vetor de visitados com 1 por referencia
-    para os nós que são alcançáveis a partir do nó de partida, sendo necessário 
-    passar o vetor de visitados como argumento*/
 }
 
 bool DFSCaminho(No *noPartida,No* Destino, Grafo *g,int* visitado){//o no de partida é iniciado como o no inicial do grafo
-    visitado[noPartida->getId()] = 1;
+    visitado[noPartida->getId() - 1] = 1;
     for (No *no = noPartida; no != NULL; no = no->getProx())
     {
         if(no->getId() == Destino->getId())
             return true;
-        if(g->existeArco(noPartida->getId(),no->getId()) && visitado[no->getId()] == 0)
+        if(g->existeArco(noPartida->getId(),no->getId()) && visitado[no->getId() - 1] == 0)
             DFSGeral(no,g,visitado);
     }
     return false;//usar para fecho transitivo direto e indireto
-    //caso o nó de destino não seja alcançável a partir do nó de partida, retorna false e usa o vetor de visitados para nao repetir o no visitado
+}
+
+Grafo* criarCopia(Grafo *g){
+    Grafo* copia = new Grafo(g->getOrdem(), g->ehDir(), g->ehPondAr(), g->ehPondNode());
+
+    No* no = g->getNoInicial();
+
+    while(no != NULL){
+        copia->inserirNo(no->getId(), no->getPeso());
+        no = no->getProx();
+    }
+
+    no = g->getNoInicial();
+
+    while(no != NULL){
+        Arco *arco = no->getAdjacentes();
+
+        int *visitados = new int[g->getOrdem()];
+                int v = 1;
+                bool visitado = false;
+                while(no != NULL){
+                    Arco *arco = no->getAdjacentes();
+                    visitados[v-1] = no->getId();
+                    while(arco != NULL){
+                        for(int i = 0; i < v; i++){
+                            if(arco->getNodeDest() == visitados[i])
+                                visitado = true;
+                        }
+                        if(visitado)
+                            copia->inserirArco(no->getId(), arco->getNodeDest(), arco->getPeso());
+                        arco = arco->getProx();
+                        visitado = false;
+                    }
+                    no = no->getProx();
+                    v++; 
+                    delete arco;
+                }
+    }
+    
+    return copia;
+}
+
+bool ehNoArticulacao(Grafo *g, int noId){
+    Grafo *g_aux = criarCopia(g);
+    g_aux->removerNo(noId);
+    int *visitado = new int[g_aux->getOrdem()];
+    for(int i = 0; i < g_aux->getOrdem(); i++){
+        visitado[i] = -1;
+    }
+    DFSGeral(g_aux->getNoInicial(), g_aux, visitado);
+    for(int i = 0; i < g_aux->getOrdem(); i++){
+        if(visitado[i] != 1)
+        {
+            cout << i+1 << endl;
+        }
+    }
+    return false;
+
+
+}
+
+//TODO: retornar o nó, vetor de int ou imprimir o GE/GS dentro da função???
+No* getGrauNo(Grafo *g, int idNode){
+    No* no = g->findNoById(idNode);
+    return no;
+}
+
+bool ehKRegular(Grafo *g, int k){
+    int numArestas = k*g->getOrdem()/2;
+    cout << "\tOrdem: "<<g->getOrdem()<<endl;
+    cout << "\tK: "<<k<<endl;
+    cout << "\tNúmero de arcos do grafo: "<<g->getNumArcos()<<endl;
+    cout << "\tCalculado: "<<numArestas<<endl;
+
+    if(numArestas != g->getNumArcos()){
+        cout <<"\tGrafo não é "<<k<<"-regular"<<endl;
+        return false;
+    }
+
+    No *aux = g->getNoInicial();
+    while(aux!=NULL){
+        if(aux->getGrauEntrada() != k) 
+            return false;
+        aux = aux->getProx();
+    }
+
+    cout << "\tGrafo regular. Verificou todo grafo e não encontrou nó com grau != "<<k<<endl;
+    return true;
+}
+
+Grafo* subgrafoInduzido(Grafo *grafo, int *idNos, int *size){
+    //1. Inserir os nós no subrafoInduzido que existem no grafo original
+    Grafo *subGrafoInduzido = new Grafo(*size, grafo->ehDir(), grafo->ehPondAr(), grafo->ehPondNode());
+    forward_list<int> idNosInseridos;
+    int countNosInseridos = 0;
+
+    for (int i = 0; i < *size; i++) {
+        No *no = grafo->findNoById(idNos[i]);
+        if(no != NULL){
+            subGrafoInduzido->inserirNo(no->getId(),no->getPeso());
+            idNosInseridos.push_front(no->getId());
+            countNosInseridos++;
+        }
+    }
+
+    subGrafoInduzido->setOrdem(countNosInseridos);
+
+    //2. Para cada nó k do subGrafoInduzido, encontro o nó k no grafo original e verifico se existe entre os adjacentes
+    No *noAuxSubGrafoInduzido = subGrafoInduzido->getNoInicial();
+    No *noAuxGrafoOriginal;
+
+    while(noAuxSubGrafoInduzido != NULL){
+        //procuro no grafo original o nó k da da iteração atual
+        noAuxGrafoOriginal = grafo->findNoById(noAuxSubGrafoInduzido->getId());
+        
+        // procuro nos adjacentes do nó k se existe algum dos id do subgrafo induzido
+        for(forward_list<int>::iterator it = idNosInseridos.begin();it != idNosInseridos.end();it++){
+            if(*it != noAuxGrafoOriginal->getId()){
+                //verificando se existe o idNode
+                Arco *auxArco = noAuxGrafoOriginal->existeNoAdjacente(*it);
+                
+                if(auxArco != NULL){
+                    subGrafoInduzido->inserirArco(noAuxSubGrafoInduzido->getId(), *it, auxArco->getPeso());
+                }
+            }
+            
+        }
+        noAuxSubGrafoInduzido = noAuxSubGrafoInduzido->getProx();
+    }
+    
+
+    return subGrafoInduzido;
+
+}
+
+Grafo *grafoComplementar(Grafo *grafo){
+    Grafo *novoGrafo = new Grafo(grafo->getOrdem(), grafo->ehDir(), grafo->ehPondAr(), grafo->ehPondNode());
+    No *aux1 = grafo->getNoInicial();
+    
+    while(aux1 != NULL){
+        novoGrafo->inserirNo(aux1->getId(), aux1->getPeso());
+        aux1 = aux1->getProx();
+    }
+
+    No *aux2;
+    aux1 = grafo->getNoInicial(); 
+    while(aux1 != NULL){
+        aux2 = grafo->getNoInicial();
+        while(aux2 != NULL){
+            if(aux1->getId() != aux2->getId()){
+                //cout <<"Verificando se existe no nó "<<aux1->getId()<<" o adjacente "<<aux2->getId()<<endl;
+                if(aux1->existeNoAdjacente(aux2->getId()) == NULL){
+                    novoGrafo->inserirArco(aux1->getId(), aux2->getId(), 1);
+                }
+            }
+            
+            aux2 = aux2->getProx();
+        }
+        aux1 = aux1->getProx();     
+    }
+
+    return novoGrafo;
 }
 
 #endif

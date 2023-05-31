@@ -220,24 +220,94 @@ int main(int argc, char **argv)
 
     Grafo *G = leituraArquivo(pathIn, ehDir, ehPondAr, ehPondNode);
     
-    cout <<"IMPRESSÃO "<<endl;
-    G->imprimirTodosNosAdjacentes();
+    //cout <<"IMPRESSÃO "<<endl;
+    //G->imprimirTodosNosAdjacentes();
 
     // cout <<"REMOVER NO "<<endl;
     // G->removerNo(5);
     
     // cout <<"IMPRESSÃO APÓS REMOVER "<<endl;
+    //  G->imprimirTodosNosAdjacentes();
+
+    // int* distancias = dijkstraAlgorithm(G);
+
+    // No* no = G->getNoInicial();
+    // for(int i = 0; i < G->getOrdem(); i++){
+    //     cout << "Id do no: " << no->getId() << " | Caminho minimo ate ele: " << distancias[i] << endl;
+    //     no = no->getProx();
+    // }
+
+    //escritaArquivo(pathOut, G); //passar o grafo modificado com base na entrada
+
+    //cout << "Eh no articulacao? " << endl << ehNoArticulacao(G, 5) << endl;
+
     // G->imprimirTodosNosAdjacentes();
 
-    int* distancias = dijkstraAlgorithm(G);
+    // int k = 4;
+    // cout << "Verificando se o grafo é "<<k<<"-regular"<<endl;
+    // ehKRegular(G, k);
 
-    No* no = G->getNoInicial();
-    for(int i = 0; i < G->getOrdem(); i++){
-        cout << "Id do no: " << no->getId() << " | Caminho minimo ate ele: " << distancias[i] << endl;
-        no = no->getProx();
-    }
+    
+    // int id = 1;
+    // No *no = getGrauNo(G, id);
+    // if(no!=NULL){
+    //     cout <<"GE: "<<no->getGrauEntrada()<<endl;
+    //     if(G->ehDir())
+    //         cout <<"GS: "<<no->getGrauSaida()<<endl;
+    // }else{
+    //     cout <<"Nó com id "<<id<< " inválido..."<<endl;
+    // }
+    
 
-    escritaArquivo(pathOut, G); //passar o grafo modificado com base na entrada
+    int size = 4;
+    int *idNos = new int[size];
+    
+    idNos[0] = 1;
+    idNos[1] = 2;
+    idNos[2] = 3;
+    idNos[3] = 4;
+   
+    // Grafo *grafoInduzido = subgrafoInduzido(G, idNos, &size);
+    // cout <<"Ordem do subgrafo: "<<grafoInduzido->getOrdem()<<endl;
+    // cout <<"Num de arcos: "<<grafoInduzido->getNumArcos()<<endl;
+    // grafoInduzido->imprimirTodosNosAdjacentes();
+    
+    
+    //G->imprimirTodosNosAdjacentes();
+    //cout <<"Imprimindo subgrafo induzido"<<endl;
+    //grafoInduzido->imprimirTodosNosAdjacentes();
+
+    // Grafo *G2 = new Grafo(3, ehDir == "1", ehPondAr == "1", ehPondNode == "1");
+    // G2->inserirNo(1,1);
+    // G2->inserirNo(2,1);
+    // G2->inserirNo(3,1);
+
+    // G2->inserirArco(1,2,3);
+    // G2->inserirArco(2,2,3);
+    // G2->imprimirTodosNosAdjacentes();
+
+
+    Grafo *G3 = new Grafo(3, ehDir == "1", ehPondAr == "1", ehPondNode == "1");
+    G3->inserirNo(1,1);
+    G3->inserirNo(2,1);
+    G3->inserirNo(3,1);
+
+    //G3->inserirArco(1,2,1);
+    G3->inserirArco(1,3,1);
+
+    //G3->inserirArco(2,1,1);
+    G3->inserirArco(2,3,1);
+
+    G3->inserirArco(3,1,1);
+    G3->inserirArco(3,2,1);
+
+    Grafo *grafoC = grafoComplementar(G3);
+     cout <<"Ordem do subgrafo: "<<grafoC->getOrdem()<<endl;
+    cout <<"Num de arcos: "<<grafoC->getNumArcos()<<endl;
+    grafoC->imprimirTodosNosAdjacentes();
+
+
+    delete idNos;
 
     // Continuar o tratamento para o argv
     return 0;
