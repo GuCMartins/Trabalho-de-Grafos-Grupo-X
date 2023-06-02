@@ -241,7 +241,10 @@ int main(int argc, char **argv)
 
     //cout << "Eh no articulacao? " << endl << ehNoArticulacao(G, 5) << endl;
 
-    // G->imprimirTodosNosAdjacentes();
+    //Grafo* copia = criarCopia(G);
+
+
+    //copia->imprimirTodosNosAdjacentes();
 
     // int k = 4;
     // cout << "Verificando se o grafo é "<<k<<"-regular"<<endl;

@@ -183,29 +183,25 @@ Grafo* criarCopia(Grafo *g){
 
     no = g->getNoInicial();
 
+    int *visitados = new int[g->getOrdem()];
+    int v = 1;
+    bool visitado = false;
     while(no != NULL){
         Arco *arco = no->getAdjacentes();
-
-        int *visitados = new int[g->getOrdem()];
-                int v = 1;
-                bool visitado = false;
-                while(no != NULL){
-                    Arco *arco = no->getAdjacentes();
-                    visitados[v-1] = no->getId();
-                    while(arco != NULL){
-                        for(int i = 0; i < v; i++){
-                            if(arco->getNodeDest() == visitados[i])
-                                visitado = true;
-                        }
-                        if(visitado)
-                            copia->inserirArco(no->getId(), arco->getNodeDest(), arco->getPeso());
-                        arco = arco->getProx();
-                        visitado = false;
-                    }
-                    no = no->getProx();
-                    v++; 
-                    delete arco;
-                }
+        visitados[v-1] = no->getId();
+        while(arco != NULL){
+            for(int i = 0; i < v; i++){
+                if(arco->getNodeDest() == visitados[i])
+                    visitado = true;
+            }
+            if(visitado)
+                copia->inserirArco(no->getId(), arco->getNodeDest(), arco->getPeso());
+            arco = arco->getProx();
+            visitado = false;
+        }
+        no = no->getProx();
+        v++; 
+        delete arco;
     }
     
     return copia;
@@ -226,9 +222,73 @@ bool ehNoArticulacao(Grafo *g, int noId){
         }
     }
     return false;
-
-
 }
+
+bool ehArestaPonte(Grafo *g, int idNodeOrig, int idNodeDest){
+    Grafo*g_aux = criarCopia(g);
+    g_aux->removerArco(idNodeOrig, idNodeDest);
+    int *visitado = new int[g_aux->getOrdem()];
+    for(int i = 0; i < g_aux->getOrdem(); i++){
+        visitado[i] = -1;
+    }
+    DFSGeral(g_aux->getNoInicial(), g_aux, visitado);
+    for(int i = 0; i < g_aux->getOrdem(); i++){
+        if(visitado[i] != 1)
+        {
+            cout << i+1 << endl;
+        }
+    }
+    return false;
+}
+
+void nosArticulacao(Grafo *g){
+    No* no = g->getNoInicial();
+    
+    int i = 0;
+    cout << "Nos de articulacao: " << endl;
+
+    while(no != NULL){
+        if(ehNoArticulacao(g, no->getId()))
+        {
+            cout << no->getId() << endl;
+            i++;
+        }
+        no = no->getProx();
+    }
+
+    if(i == 0)
+        cout << "nenhum no do grafo eh de articulacao." << endl;
+}
+
+void arestasPonte(Grafo *g){
+    No* no = g->getNoInicial();
+    int i = 0;
+    cout << "Arestas ponte: " << endl;
+
+    int *visitados = new int[g->getOrdem()];
+    int v = 1;
+    bool visitado = false;
+
+    while(no != NULL){
+        Arco *arco = no->getAdjacentes();
+        visitados[v-1] = no->getId();
+        while(arco != NULL){
+            for(int i = 0; i < v; i++){
+                if(arco->getNodeDest() == visitados[i])
+                    visitado = true;
+            }
+            if(visitado)
+                if(ehArestaPonte(g, no->getId(), arco->getNodeDest()))
+                    cout << no->getId() << " e " << arco->getNodeDest() << endl; 
+            arco = arco->getProx();
+            visitado = false;
+        }
+        no = no->getProx();
+        v++; 
+        delete arco;
+    }
+}
+
 
 //TODO: retornar o nó, vetor de int ou imprimir o GE/GS dentro da função???
 No* getGrauNo(Grafo *g, int idNode){
