@@ -262,7 +262,7 @@ void nosArticulacao(Grafo *g){
 
 void arestasPonte(Grafo *g){
     No* no = g->getNoInicial();
-    int i = 0;
+    int cont = 0;
     cout << "Arestas ponte: " << endl;
 
     int *visitados = new int[g->getOrdem()];
@@ -278,8 +278,9 @@ void arestasPonte(Grafo *g){
                     visitado = true;
             }
             if(visitado)
-                if(ehArestaPonte(g, no->getId(), arco->getNodeDest()))
-                    cout << no->getId() << " e " << arco->getNodeDest() << endl; 
+                if(ehArestaPonte(g, no->getId(), arco->getNodeDest())){
+                    cont++;
+                    cout << no->getId() << " e " << arco->getNodeDest() << endl;} 
             arco = arco->getProx();
             visitado = false;
         }
@@ -287,6 +288,9 @@ void arestasPonte(Grafo *g){
         v++; 
         delete arco;
     }
+
+    if(cont == 0)
+    cout << "Nao existe aresta ponte no grafo." << endl;
 }
 
 
