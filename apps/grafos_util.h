@@ -139,24 +139,10 @@ void DFSGeral(No *noPartida, Grafo *g, int* visitado){//o no de partida é inici
     Arco *arco = noPartida->getAdjacentes();
 
     while(arco != NULL){
-        if(visitado[arco->getNodeDest() - 1] == 0){
-            No *no_aux = g->getNoInicial();
-
-            while(no_aux != NULL){
-                if(no_aux->getId() == arco->getNodeDest())
-                    break;
-                no_aux = no_aux->getProx();
-            }
-            arco = arco->getProx();
-            DFSGeral(no_aux, g, visitado);
-        }
+        if(visitado[arco->getNodeDest() - 1] == -1)
+            DFSGeral(g->findNoById(arco->getNodeDest()), g, visitado);
+        arco = arco->getProx();
     }
-
-    // for (No *no = noPartida; no != NULL; no = no->getProx())
-    // {
-    //     if(g->existeArco(noPartida->getId(),no->getId()) && visitado[no->getId()-1]  == 0)
-    //         DFSGeral(no,g,visitado);
-    // }
 }
 
 bool DFSCaminho(No *noPartida,No* Destino, Grafo *g,int* visitado){//o no de partida é iniciado como o no inicial do grafo
@@ -365,16 +351,14 @@ Grafo* criarCopia(Grafo *g){
 bool ehNoArticulacao(Grafo *g, int noId){
     Grafo *g_aux = criarCopia(g);
     g_aux->removerNo(noId);
-    int *visitado = new int[g_aux->getOrdem()];
-    for(int i = 0; i < g_aux->getOrdem(); i++){
+    int *visitado = new int[g->getOrdem()];
+    for(int i = 0; i < g->getOrdem(); i++){
         visitado[i] = -1;
     }
     DFSGeral(g_aux->getNoInicial(), g_aux, visitado);
-    for(int i = 0; i < g_aux->getOrdem(); i++){
-        if(visitado[i] != 1)
-        {
-            cout << i+1 << endl;
-        }
+    for(int i = 0; i < g->getOrdem(); i++){
+        if(visitado[i] != 1 && i != noId - 1)
+            return true;
     }
     return false;
 }
@@ -382,16 +366,14 @@ bool ehNoArticulacao(Grafo *g, int noId){
 bool ehArestaPonte(Grafo *g, int idNodeOrig, int idNodeDest){
     Grafo*g_aux = criarCopia(g);
     g_aux->removerArco(idNodeOrig, idNodeDest);
-    int *visitado = new int[g_aux->getOrdem()];
-    for(int i = 0; i < g_aux->getOrdem(); i++){
+    int *visitado = new int[g->getOrdem()];
+    for(int i = 0; i < g->getOrdem(); i++){
         visitado[i] = -1;
     }
     DFSGeral(g_aux->getNoInicial(), g_aux, visitado);
-    for(int i = 0; i < g_aux->getOrdem(); i++){
+    for(int i = 0; i < g->getOrdem(); i++){
         if(visitado[i] != 1)
-        {
-            cout << i+1 << endl;
-        }
+            return true;
     }
     return false;
 }
@@ -405,7 +387,7 @@ void nosArticulacao(Grafo *g){
     while(no != NULL){
         if(ehNoArticulacao(g, no->getId()))
         {
-            cout << no->getId() << endl;
+            cout << "O no " << no->getId() << " eh de articulacao" << endl;
             i++;
         }
         no = no->getProx();
