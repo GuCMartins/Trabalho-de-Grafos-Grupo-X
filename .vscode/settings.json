@@ -1,9 +1,10 @@
 {
-    "C_Cpp.errorSquiggles": "enable",
+    "C_Cpp.errorSquiggles": "disabled",
     "files.associations": {
         "*.embeddedhtml": "html",
         "iosfwd": "cpp",
         "iostream": "cpp",
-        "new": "cpp"
+        "new": "cpp",
+        "forward_list": "cpp"
     }
 }

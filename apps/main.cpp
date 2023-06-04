@@ -219,6 +219,14 @@ int main(int argc, char **argv)
     }
 
     Grafo *G = leituraArquivo(pathIn, ehDir, ehPondAr, ehPondNode);
+
+    Grafo* res = kruskalAlgorithm(G);
+
+    escritaArquivo(pathOut, res);
+    // cout << "Impressão da lista de nos: " << endl;
+    // G->imprimirListaNos();
+
+    // cout << "Resultado do isCycle: " << isCycle(G) << endl;
     
     //cout <<"IMPRESSÃO "<<endl;
     //G->imprimirTodosNosAdjacentes();
@@ -262,13 +270,13 @@ int main(int argc, char **argv)
     // }
     
 
-    int size = 4;
-    int *idNos = new int[size];
+    // int size = 4;
+    // int *idNos = new int[size];
     
-    idNos[0] = 1;
-    idNos[1] = 2;
-    idNos[2] = 3;
-    idNos[3] = 4;
+    // idNos[0] = 1;
+    // idNos[1] = 2;
+    // idNos[2] = 3;
+    // idNos[3] = 4;
    
     // Grafo *grafoInduzido = subgrafoInduzido(G, idNos, &size);
     // cout <<"Ordem do subgrafo: "<<grafoInduzido->getOrdem()<<endl;
@@ -290,27 +298,27 @@ int main(int argc, char **argv)
     // G2->imprimirTodosNosAdjacentes();
 
 
-    Grafo *G3 = new Grafo(3, ehDir == "1", ehPondAr == "1", ehPondNode == "1");
-    G3->inserirNo(1,1);
-    G3->inserirNo(2,1);
-    G3->inserirNo(3,1);
+    // Grafo *G3 = new Grafo(3, ehDir == "1", ehPondAr == "1", ehPondNode == "1");
+    // G3->inserirNo(1,1);
+    // G3->inserirNo(2,1);
+    // G3->inserirNo(3,1);
 
-    //G3->inserirArco(1,2,1);
-    G3->inserirArco(1,3,1);
+    // //G3->inserirArco(1,2,1);
+    // G3->inserirArco(1,3,1);
 
-    //G3->inserirArco(2,1,1);
-    G3->inserirArco(2,3,1);
+    // //G3->inserirArco(2,1,1);
+    // G3->inserirArco(2,3,1);
 
-    G3->inserirArco(3,1,1);
-    G3->inserirArco(3,2,1);
+    // G3->inserirArco(3,1,1);
+    // G3->inserirArco(3,2,1);
 
-    Grafo *grafoC = grafoComplementar(G3);
-     cout <<"Ordem do subgrafo: "<<grafoC->getOrdem()<<endl;
-    cout <<"Num de arcos: "<<grafoC->getNumArcos()<<endl;
-    grafoC->imprimirTodosNosAdjacentes();
+    // Grafo *grafoC = grafoComplementar(G3);
+    //  cout <<"Ordem do subgrafo: "<<grafoC->getOrdem()<<endl;
+    // cout <<"Num de arcos: "<<grafoC->getNumArcos()<<endl;
+    // grafoC->imprimirTodosNosAdjacentes();
 
 
-    delete idNos;
+    // delete idNos;
 
     // Continuar o tratamento para o argv
     return 0;

@@ -171,6 +171,161 @@ bool DFSCaminho(No *noPartida,No* Destino, Grafo *g,int* visitado){//o no de par
     return false;//usar para fecho transitivo direto e indireto
 }
 
+/*Verificação de Ciclos no grafo && Árvore Geradora Mínima(Algoritmo de Kruskall)*/
+
+bool isCycleAux(Grafo *g, int no, int parent, bool* visit){
+    visit[no] = true;
+    
+    No *node = g->findNoById(g->getOrdem() - no);
+    cout << "Valor do no: " << no << ", Valor id do node: " << node->getId() << endl;
+
+    for(Arco *aux = node->getAdjacentes(); aux != NULL; aux = aux->getProx()){
+        if(!visit[g->getOrdem()-aux->getNodeDest()]){
+            if(isCycleAux(g, g->getOrdem() - aux->getNodeDest(), no, visit) == true)
+                return true;
+        }else if(g->getOrdem() - aux->getNodeDest() != parent){
+            return true;
+        }
+    } 
+    return false;
+}
+
+bool isCycle(Grafo *g){
+    
+    //Marco todos os vértices como não visitados  
+    bool *visit = new bool[g->getOrdem()];
+    for(int i = 0; i < g->getOrdem(); i++){
+        visit[i] = false;
+    }
+    
+    //Chamada recursiva da função para ajudar a verificar se tem ciclo
+    for(int i = 0; i < g->getOrdem(); i++){
+        if(!visit[i]){
+            if(isCycleAux(g, i, -1, visit) == true){
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+//Estrutura para auxiliar na hora de construir a árvore geradora mínima.
+typedef struct{
+    int v1, v2;
+    float peso;
+} ArcoUtils;
+
+void swap(ArcoUtils arr[], int i, int j){
+    ArcoUtils aux;
+    aux.v1 = arr[i].v1;
+    aux.v2 = arr[i].v2;
+    aux.peso = arr[i].peso;
+    arr[i] = arr[j];
+    arr[j] = aux;
+}
+
+int partition(ArcoUtils arr[], int low, int high)
+{
+    // Choosing the pivot
+    int pivot = arr[high].peso;
+ 
+    // Index of smaller element and indicates
+    // the right position of pivot found so far
+    int i = (low - 1);
+ 
+    for (int j = low; j <= high - 1; j++) {
+ 
+        // If current element is smaller than the pivot
+        if (arr[j].peso < pivot) {
+ 
+            // Increment index of smaller element
+            i++;
+            swap(arr, i, j);
+        }
+    }
+    swap(arr, i + 1, high);
+    return (i + 1);
+}
+ 
+// The main function that implements QuickSort
+// arr[] --> Array to be sorted,
+// low --> Starting index,
+// high --> Ending index
+void quickSort(ArcoUtils arr[], int low, int high)
+{
+    if (low < high) {
+ 
+        // pi is partitioning index, arr[p]
+        // is now at right place
+        int pi = partition(arr, low, high);
+ 
+        // Separately sort elements before
+        // partition and after partition
+        quickSort(arr, low, pi - 1);
+        quickSort(arr, pi + 1, high);
+    }
+}
+
+Grafo* kruskalAlgorithm(Grafo *g){
+    //Pré-requisito -> Criar uma lista com as arestas ordenadas em ordem crescente de pesos.
+    
+    int **verifyMatrix = new int*[g->getOrdem()];
+    
+    for(int i = 0; i < g->getOrdem(); i++){
+        verifyMatrix[i] = new int[g->getOrdem()];
+        for(int j = 0; j < g->getOrdem(); j++){
+            verifyMatrix[i][j] = -1;
+        }
+    }
+    ArcoUtils* edgesHelper = new ArcoUtils[g->getNumArcos()];
+    int count = 0;
+    for(No* node = g->getNoInicial(); node != NULL; node = node->getProx()){
+        for(Arco* edge = node->getAdjacentes(); edge != NULL; edge = edge->getProx()){
+            if(verifyMatrix[node->getId()-1][edge->getNodeDest()-1] == -1 && verifyMatrix[edge->getNodeDest()-1][node->getId()-1] == -1){
+                verifyMatrix[node->getId()-1][edge->getNodeDest()-1] = 1;
+                edgesHelper[count].v1 = node->getId();
+                edgesHelper[count].v2 = edge->getNodeDest();
+                edgesHelper[count].peso = edge->getPeso();
+                count++;
+            }
+        }
+    }
+    
+    quickSort(edgesHelper, 0, g->getNumArcos()-1);
+
+    // cout << "-----------------------------------" << endl;
+    // for(int i = 0; i < g->getNumArcos(); i++){
+    //     cout << edgesHelper[i].v1 << " " << edgesHelper[i].v2<< " " << edgesHelper[i].peso << " " << endl;
+    // }
+
+    //Parte para montar a árvore geradora mínima
+    int c = 0;
+    Grafo *gAux = new Grafo(g->getOrdem(), g->ehDirecionado(), g->ehPondAr(),g->ehPondNode());
+
+    for(int i = 0; i < g->getOrdem()-1; i++){
+        while(c < g->getNumArcos()){
+            
+            gAux->inserirNo(edgesHelper[c].v1, 0);
+            gAux->inserirNo(edgesHelper[c].v2, 0);
+            gAux->inserirArco(edgesHelper[c].v1, edgesHelper[c].v2, edgesHelper[c].peso);
+            cout << "Vertices: " << edgesHelper[c].v1 << " , " << edgesHelper[c].v2 << endl;
+            if(isCycle(gAux)){
+                gAux->removerNo(edgesHelper[c].v1);
+                gAux->removerNo(edgesHelper[c].v2);
+                gAux->removerArco(edgesHelper[c].v1, edgesHelper[c].v2);
+                c++;
+            }else{
+                c++;
+                break;
+            }
+        }
+    }
+
+    return gAux;
+}
+
+/*Verificação de Nó Articulação*/
+
 Grafo* criarCopia(Grafo *g){
     Grafo* copia = new Grafo(g->getOrdem(), g->ehDir(), g->ehPondAr(), g->ehPondNode());
 
