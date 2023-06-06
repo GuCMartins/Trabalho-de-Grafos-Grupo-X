@@ -153,12 +153,14 @@ void DFSGeral(No *noPartida, Grafo *g, int* visitado){//o no de partida é inici
 
 bool DFSCaminho(No *noPartida,No* Destino, Grafo *g,int* visitado){//o no de partida é iniciado como o no inicial do grafo
     visitado[noPartida->getId() - 1] = 1;
-    for (No *no = noPartida; no != NULL; no = no->getProx())
-    {
-        if(no->getId() == Destino->getId())
+    Arco *arco = noPartida->getAdjacentes();
+
+    while(arco != NULL){
+        if(arco->getNodeDest() == Destino->getId())
             return true;
-        if(g->existeArco(noPartida->getId(),no->getId()) && visitado[no->getId() - 1] == 0)
-            DFSGeral(no,g,visitado);
+        if(visitado[arco->getNodeDest() - 1] == -1)
+            DFSGeral(g->findNoById(arco->getNodeDest()), g, visitado);
+        arco = arco->getProx();
     }
     return false;//usar para fecho transitivo direto e indireto
 }
