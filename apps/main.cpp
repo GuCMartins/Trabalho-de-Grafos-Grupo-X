@@ -220,7 +220,14 @@ int main(int argc, char **argv)
 
     Grafo *G = leituraArquivo(pathIn, ehDir, ehPondAr, ehPondNode);
 
-    floydWarshalAlgorithm(G);
+    float** matriz = floydWarshalAlgorithm(G);
+    cout << "---------------------------------------------" << endl;
+    for(int i = 0; i < G->getOrdem(); i++){
+        for(int j = 0; j < G->getOrdem(); j++){
+            cout << matriz[i][j] << " ";
+        }
+        cout << endl;
+    }
     // float* distancias = dijkstraAlgorithm(G, 4);
 
     // for(int i = 0; i < G->getOrdem(); i++){

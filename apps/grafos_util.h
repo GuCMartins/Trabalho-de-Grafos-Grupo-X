@@ -107,35 +107,35 @@ float* dijkstraAlgorithm(Grafo *g, int src){
 
 /* Parte do Algoritmo de Floyd-Warshal */
 
-void floydWarshalAlgorithm(Grafo* g){
+float** floydWarshalAlgorithm(Grafo* g){
     float** dist = new float*[g->getOrdem()];
 
     for(int i = 0; i < g->getOrdem(); i++){
         dist[i] = new float[g->getOrdem()];
         for(int j = 0; j < g->getOrdem(); j++){
-            dist[i][j] = numeric_limits<int>::max();
+            if(i == j)
+                dist[i][j] = 0;
+            else
+                dist[i][j] = numeric_limits<int>::max();
         }
     }
 
-    int i = 0;
     for(No *node = g->getNoInicial(); node != NULL; node = node->getProx()){
-        Arco* edge = node->getAdjacentes();
-        for(int j = 0; j < g->getOrdem(); j++){
-            if(i == j){
-                dist[i][j] = 0;
-            }else if(edge != NULL){
-                if(j == edge->getNodeDest()-1){
-                    dist[i][edge->getNodeDest()-1] = edge->getPeso();
-                    edge = edge->getProx();
-                }
-            }
-            
-            // cout << "Valor de i: " << i << "Valor de j: " << j << endl;
-            cout << dist[i][j] << " ";
+        for(Arco* edge = node->getAdjacentes(); edge != NULL; edge = edge->getProx()){
+            dist[node->getId()-1][edge->getNodeDest()-1] = edge->getPeso();
         }
-        i++;
-        cout << endl;
     } 
+    
+    for(int k = 0; k < g->getOrdem(); k++){
+        for(int i = 0; i < g->getOrdem(); i++){
+            for(int j = 0; j < g->getOrdem(); j++){
+                if(dist[i][j] > dist[i][k] + dist[k][j])
+                    dist[i][j] = dist[i][k] + dist[k][j];
+            }
+        }
+    }
+
+    return dist;
 }
 
 /* Parte da Busca em Profundidade */
