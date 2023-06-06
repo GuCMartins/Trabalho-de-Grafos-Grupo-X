@@ -195,12 +195,12 @@ void Grafo::removerArco(int idNoOrigem, int idNoDestino)
         auxRemoverArco(noOrigem, idNoDestino);
         
         cout<<" Chmando aux para "<<noDestino->getId()<<" e "<< noOrigem->getId()<<endl;
-        auxRemoverArco(noDestino, idNoDestino);
+        auxRemoverArco(noDestino, idNoOrigem);
         noOrigem->decrementaGrauEntrada(1);
         noDestino->decrementaGrauEntrada(1);
     }
     this->numArcos -= 1;
-    matrizAdj[idNoOrigem-1][idNoDestino-1] = 0;//modifica a matriz de adjacencia para retirar o arco
+    //matrizAdj[idNoOrigem-1][idNoDestino-1] = 0;//modifica a matriz de adjacencia para retirar o arco
 }
 
 void Grafo::auxRemoverArco(No *noOrigem, int idNoDestino)
