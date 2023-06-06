@@ -220,9 +220,17 @@ int main(int argc, char **argv)
 
     Grafo *G = leituraArquivo(pathIn, ehDir, ehPondAr, ehPondNode);
 
-    Grafo* res = kruskalAlgorithm(G);
+    floydWarshalAlgorithm(G);
+    // float* distancias = dijkstraAlgorithm(G, 4);
 
-    escritaArquivo(pathOut, res);
+    // for(int i = 0; i < G->getOrdem(); i++){
+    //     cout << "Id do no: " << i+1 << " | Caminho minimo ate ele: " << distancias[i] << endl;
+    // }
+
+    // Grafo* res = kruskalAlgorithm(G);
+    
+    // escritaArquivo(pathOut, res);
+    
     // cout << "Impressão da lista de nos: " << endl;
     // G->imprimirListaNos();
 
@@ -237,13 +245,7 @@ int main(int argc, char **argv)
     // cout <<"IMPRESSÃO APÓS REMOVER "<<endl;
     //  G->imprimirTodosNosAdjacentes();
 
-    // int* distancias = dijkstraAlgorithm(G);
-
-    // No* no = G->getNoInicial();
-    // for(int i = 0; i < G->getOrdem(); i++){
-    //     cout << "Id do no: " << no->getId() << " | Caminho minimo ate ele: " << distancias[i] << endl;
-    //     no = no->getProx();
-    // }
+    
 
     //escritaArquivo(pathOut, G); //passar o grafo modificado com base na entrada
 

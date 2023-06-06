@@ -3,6 +3,7 @@
 #include <limits>
 #include <algorithm>
 #include <iostream>
+#include <queue>
 #include "../include/Grafo.h"
 #include <forward_list>
 
@@ -62,74 +63,79 @@ bool ehTrivial(Grafo *g){
 
 /* Parte do Algoritmo de Dijkstra */
 
-int findDistMin(int* caminhoMinimo, int* visited, int tam){
-    int min = -1;
-    for(int i = 0; i < tam; i++){
-        if((caminhoMinimo[i] < min || min == -1) && visited[i] == 0){
-            min = i;
-        }
-    }
-    return min;
-}
-
-int mapIndex(No* noInicial, int index){
-    int mappedIndex = 0;
-    while(noInicial != NULL){
-        if(noInicial->getId() == index)
-            return mappedIndex;
-        mappedIndex++;
-        noInicial = noInicial->getProx();
-    }
-    return -1;
-}
-
-int mapIndexReverse(No* noInicial, int index){
-    for(int i = 0; i != index; i++){
-        noInicial = noInicial->getProx();
-    }
-    return noInicial->getId();
-}
-
-int* dijkstraAlgorithm(Grafo *g){
-    //O mapeamento envolve a ordem da lista encadeada de Nós.
-    //O primeiro nó da lista encadeada, é o primeiro nó que estará como não visitado, o segundo nó da lista encad. é o segundo como não visitado, etc. 
+//src é o nó que está sendo considerado para calcular o caminho mínimo
+float* dijkstraAlgorithm(Grafo *g, int src){
     
-    int* visited = new int[g->getOrdem()];
-    int* caminhoMinimo = new int[g->getOrdem()];
-    // int* noAnterior = new int[g->getOrdem()];
-
-    No* noInicial = g->getNoInicial();
-
-    for(int i = 0; i < g->getOrdem(); i++){
-        if(i == 0){
-            caminhoMinimo[i] = 0;
-        }else{
-            caminhoMinimo[i] = numeric_limits<int>::max();
-        }
-        visited[i] = 0; //0 significa que não foi visitado, e 1 o contrário.
-        // noAnterior[i] = -1; //Iniciando com a flag -1, por que inicialmente eles não tem nó anterior
-    }
+    bool* visited = new bool[g->getOrdem()];
+    float* distancias = new float[g->getOrdem()];
+    
+    //Cria uma min-heap
+    priority_queue<pair<float,int>, vector<pair<float,int>>, greater<pair<float,int>>> pq;
     
     for(int i = 0; i < g->getOrdem(); i++){
-        int j = findDistMin(caminhoMinimo, visited, g->getOrdem()); //Indice do cara com menor dist em relação ao nó inicial e que não foi visitado.
-        
-        visited[j] = 1; //Marco esse cara como visitado.
-        
-        cout << "Valor de j: " << j << endl;
-        int indexList = mapIndexReverse(noInicial, j);
-
-        cout << "Valor de indexList: " << indexList << endl;
-        No* noAnalisado = g->findNoById(indexList);
-
-        for(Arco *adjacentes = noAnalisado->getAdjacentes(); adjacentes != NULL; adjacentes = adjacentes->getProx()){
-            int mappedIndex = mapIndex(noInicial, adjacentes->getNodeDest()); //Valor antigo
-            float val1 = caminhoMinimo[mappedIndex];
-            float val2 = adjacentes->getPeso() + caminhoMinimo[j];
-            caminhoMinimo[mappedIndex] = min(val1, val2);
-        } 
+        distancias[i] = numeric_limits<int>::max();
+        visited[i] = false; //False significa que não foi visitado, e true o contrário.
     }
 
-    return caminhoMinimo;
+    distancias[src-1] = 0;
+    pq.push(make_pair(0, src-1));
+
+    while(!pq.empty()){
+        int id = pq.top().second;
+        pq.pop();
+
+        if(visited[id] == false){
+            visited[id] = true;
+
+            No *node = g->findNoById(id + 1);
+            for (Arco *aux = node->getAdjacentes(); aux != NULL; aux = aux->getProx())
+            {
+                int x = aux->getNodeDest()-1;
+                float custo = aux->getPeso();
+
+                if (distancias[x] > (distancias[id] + custo))
+                {
+                    distancias[x] = distancias[id] + custo;
+                    pq.push(make_pair(distancias[x], x));
+                }
+            }
+        }
+    }
+
+    return distancias;
+}
+
+/* Parte do Algoritmo de Floyd-Warshal */
+
+void floydWarshalAlgorithm(Grafo* g){
+    float** dist = new float*[g->getOrdem()];
+
+    for(int i = 0; i < g->getOrdem(); i++){
+        dist[i] = new float[g->getOrdem()];
+        for(int j = 0; j < g->getOrdem(); j++){
+            dist[i][j] = numeric_limits<int>::max();
+        }
+    }
+
+    int i = 0;
+    for(No *node = g->getNoInicial(); node != NULL; node = node->getProx()){
+        Arco* edge = node->getAdjacentes();
+        for(int j = 0; j < g->getOrdem(); j++){
+            if(i == j){
+                dist[i][j] = 0;
+            }else if(edge != NULL){
+                if(j == edge->getNodeDest()-1){
+                    dist[i][edge->getNodeDest()-1] = edge->getPeso();
+                    edge = edge->getProx();
+                }
+            }
+            
+            // cout << "Valor de i: " << i << "Valor de j: " << j << endl;
+            cout << dist[i][j] << " ";
+        }
+        i++;
+        cout << endl;
+    } 
 }
 
 /* Parte da Busca em Profundidade */
@@ -173,47 +179,39 @@ bool DFSCaminho(No *noPartida,No* Destino, Grafo *g,int* visitado){//o no de par
 
 /*Verificação de Ciclos no grafo && Árvore Geradora Mínima(Algoritmo de Kruskall)*/
 
-bool isCycleAux(Grafo *g, int no, int parent, bool* visit){
-    visit[no] = true;
-    
-    No *node = g->findNoById(g->getOrdem() - no);
-    cout << "Valor do no: " << no << ", Valor id do node: " << node->getId() << endl;
-
-    for(Arco *aux = node->getAdjacentes(); aux != NULL; aux = aux->getProx()){
-        if(!visit[g->getOrdem()-aux->getNodeDest()]){
-            if(isCycleAux(g, g->getOrdem() - aux->getNodeDest(), no, visit) == true)
-                return true;
-        }else if(g->getOrdem() - aux->getNodeDest() != parent){
-            return true;
-        }
-    } 
-    return false;
-}
-
-bool isCycle(Grafo *g){
-    
-    //Marco todos os vértices como não visitados  
-    bool *visit = new bool[g->getOrdem()];
-    for(int i = 0; i < g->getOrdem(); i++){
-        visit[i] = false;
-    }
-    
-    //Chamada recursiva da função para ajudar a verificar se tem ciclo
-    for(int i = 0; i < g->getOrdem(); i++){
-        if(!visit[i]){
-            if(isCycleAux(g, i, -1, visit) == true){
-                return true;
-            }
-        }
-    }
-    return false;
-}
-
 //Estrutura para auxiliar na hora de construir a árvore geradora mínima.
 typedef struct{
     int v1, v2;
     float peso;
 } ArcoUtils;
+
+int find(int* parents, int i){
+    if(parents[i] == i)
+        return i;
+    return find(parents, parents[i]);
+}
+
+void Union(int* parents, int x, int y){
+    parents[x] = y;
+}
+
+//x--> controla o número de arestas no edges
+bool isCycle(Grafo* g, ArcoUtils* edges, int k){
+    int* parents = new int[g->getOrdem()];
+
+    for(int i = 0; i < g->getOrdem(); i++)
+        parents[i] = i;
+
+    for(int i  = 0; i < k; i++){
+        int x = find(parents, edges[i].v1-1);
+        int y = find(parents, edges[i].v2-1);
+        if(x == y)
+            return true;
+
+        Union(parents, x, y);
+    }
+    return false;
+}
 
 void swap(ArcoUtils arr[], int i, int j){
     ArcoUtils aux;
@@ -300,21 +298,29 @@ Grafo* kruskalAlgorithm(Grafo *g){
 
     //Parte para montar a árvore geradora mínima
     int c = 0;
+
+    ArcoUtils* edgesTree = new ArcoUtils[g->getOrdem() - 1];
+    //Crio um grafo vazio, esse grafo terá no máximo V-1 arestas.
     Grafo *gAux = new Grafo(g->getOrdem(), g->ehDirecionado(), g->ehPondAr(),g->ehPondNode());
+
+    //Insiro os nós no grafo  
+    for (int i = 0; i < g->getOrdem(); i++)
+        gAux->inserirNo(i + 1, 0);
 
     for(int i = 0; i < g->getOrdem()-1; i++){
         while(c < g->getNumArcos()){
             
-            gAux->inserirNo(edgesHelper[c].v1, 0);
-            gAux->inserirNo(edgesHelper[c].v2, 0);
-            gAux->inserirArco(edgesHelper[c].v1, edgesHelper[c].v2, edgesHelper[c].peso);
-            cout << "Vertices: " << edgesHelper[c].v1 << " , " << edgesHelper[c].v2 << endl;
-            if(isCycle(gAux)){
-                gAux->removerNo(edgesHelper[c].v1);
-                gAux->removerNo(edgesHelper[c].v2);
-                gAux->removerArco(edgesHelper[c].v1, edgesHelper[c].v2);
+            //Insiro uma aresta nessa lista de arestas
+            edgesTree[i].v1 = edgesHelper[c].v1; 
+            edgesTree[i].v2 = edgesHelper[c].v2;
+            edgesTree[i].peso = edgesHelper[c].peso;
+            
+            if(isCycle(gAux, edgesTree, i+1)){
+                //Forma ciclo, essa aresta de menor peso não pode ser inserida
                 c++;
             }else{
+                //Não formou ciclo, insiro ela no grafo, e verifico as próximas
+                gAux->inserirArco(edgesHelper[c].v1, edgesHelper[c].v2, edgesHelper[c].peso);
                 c++;
                 break;
             }
