@@ -4,6 +4,10 @@
         "*.embeddedhtml": "html",
         "iosfwd": "cpp",
         "iostream": "cpp",
-        "new": "cpp"
+        "new": "cpp",
+        "forward_list": "cpp",
+        "queue": "cpp",
+        "limits": "cpp",
+        "ostream": "cpp"
     }
 }

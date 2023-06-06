@@ -13,17 +13,6 @@ Grafo::Grafo(int ordem, bool direc, bool pondAresta, bool pondNode)
     this->pondNode = pondNode;
     this->noInicial = NULL;
     this->numArcos = 0;
-    this->matrizAdj = new int*[ordem+1];
-    for(int i =1;i<ordem+1;i++){//a matriz de adjacencia é criada com uma linha e uma coluna a mais que a ordem do grafo indicando qual é a linha de determinado no
-        matrizAdj[i] = new int[ordem+1];                                                                                      //e qual é a coluna de determinado no
-        matrizAdj[0][0] = -1;//preenche o primeiro elemento com -1
-        matrizAdj[i][0] = i-1;//preenche a ultima coluna com 0
-        for(int j=1;j<ordem+1;j++){//preenche cada linha da matriz com 0
-            if(i==1)
-                matrizAdj[0][j] = j;
-            matrizAdj[i][j] = 0;
-        }
-    }
 }
 Grafo::~Grafo() {}
 
@@ -41,17 +30,6 @@ void Grafo::inserirNo(int idNode, float pesoNode)
     novoNo->setProx(antigoNoInicial);
     
     this->ordem += 1;
-    int **novaMatrizAdj = new int*[ordem+1];
-    for(int i =0;i<ordem;i++){
-        novaMatrizAdj[i] = new int[ordem+1];
-        for(int j=0;j<ordem;j++){//realoca a matriz antiga na nova matriz
-            novaMatrizAdj[i][j] = matrizAdj[i][j];
-        }
-        novaMatrizAdj[i][ordem] = 0;//preenche a ultima coluna com 0
-        novaMatrizAdj[ordem][i] = 0;//preenche a ultima linha com 0
-    }
-    novaMatrizAdj[ordem][ordem] = 0;//preenche o ultimo elemento com 0
-    matrizAdj = novaMatrizAdj;
 }
 
 void Grafo::inserirArco(int idNoOrigem, int idNoDestino, float pesoArco)
@@ -95,16 +73,6 @@ void Grafo::inserirArco(int idNoOrigem, int idNoDestino, float pesoArco)
         this->auxInserirArco(noDestino, noOrigem, pesoArco);
     }
     this->numArcos += 1;
-    int posicaoOrigem , posicaoDestino;
-    for(int i=1;i<=ordem;i++){//modifica a matriz de adjacencia para inserir o arco
-        if(matrizAdj[0][i] == idNoOrigem)
-            posicaoOrigem = i;
-        if(matrizAdj[0][i] == idNoDestino)
-            posicaoDestino = i;
-    }
-    if(!ehDir())
-        matrizAdj[posicaoDestino][posicaoOrigem] = 1;
-    matrizAdj[posicaoOrigem][posicaoDestino] = 1;
     
 }
 
@@ -195,42 +163,6 @@ void Grafo::removerNo(int idNode)
     }
 
     this->ordem -= 1;
-    int **novaMatrizAdj = new int*[ordem+1];
-
-    if(idNode == matrizAdj[0][1]){//se o no a ser removido for o primeiro da matriz de adjacencia
-        for(int i =0;i<ordem;i++){
-            novaMatrizAdj[i] = new int[ordem+1];
-            for(int j=0;j<ordem;j++){//realoca a matriz antiga na nova matriz
-                novaMatrizAdj[i+1][j+1] = matrizAdj[i+2][j+2];
-            }
-        }
-    }
-    else{
-        if(idNode == matrizAdj[0][ordem+1]){//se o no a ser removido for o ultimo da matriz de adjacencia
-            for(int i =0;i<=ordem;i++){
-                novaMatrizAdj[i] = new int[ordem+1];
-                for(int j=0;j<=ordem;j++){//realoca a matriz antiga na nova matriz
-                    novaMatrizAdj[i][j] = matrizAdj[i][j];
-                }
-            }
-        }
-        else{//se o no a ser removido for o do meio da matriz de adjacencia
-            int auxLinha = 0, auxColuna = 0;
-            for(int i =0;i<=ordem;i++){
-                auxColuna = 0;
-                novaMatrizAdj[i] = new int[ordem+1];
-                if(matrizAdj[i][0] == idNode)
-                    auxLinha = 1;
-                for(int j=0;j<=ordem;j++){//realoca a matriz antiga na nova matriz
-                    if(matrizAdj[0][j] == idNode)
-                        auxColuna = 1;
-                    novaMatrizAdj[i][j] = matrizAdj[i+auxLinha][j+auxColuna];
-                }
-            }
-        }
-    }
-    //modifica a matriz de adjacencia para retirar o no
-    matrizAdj = novaMatrizAdj;
 
     cout <<" Removendo nó "<<noRemover->getId()<<endl;
     delete noRemover;
@@ -253,20 +185,12 @@ void Grafo::removerArco(int idNoOrigem, int idNoDestino)
         auxRemoverArco(noOrigem, idNoDestino);
         
         cout<<" Chmando aux para "<<noDestino->getId()<<" e "<< noOrigem->getId()<<endl;
-        auxRemoverArco(noDestino, idNoDestino);
+        auxRemoverArco(noDestino, idNoOrigem);
         noOrigem->decrementaGrauEntrada(1);
         noDestino->decrementaGrauEntrada(1);
     }
     this->numArcos -= 1;
-    int posicaoOrigem , posicaoDestino;
-    for(int i=1;i<=ordem;i++){//modifica a matriz de adjacencia para inserir o arco
-        if(matrizAdj[0][i] == idNoOrigem)
-            posicaoOrigem = i;
-        if(matrizAdj[0][i] == idNoDestino)
-            posicaoDestino = i;
-    }
-    matrizAdj[posicaoOrigem][posicaoDestino] = 0;//modifica a matriz de adjacencia para retirar o arco
-    matrizAdj[posicaoDestino][posicaoOrigem] = 0;//modifica a matriz de adjacencia para retirar o arco
+    //matrizAdj[idNoOrigem-1][idNoDestino-1] = 0;//modifica a matriz de adjacencia para retirar o arco
 }
 
 void Grafo::auxRemoverArco(No *noOrigem, int idNoDestino)
@@ -424,19 +348,13 @@ bool Grafo::Euleriano(int *visitados){//recebe um vetor de visitados do DFS
 }
 
 bool Grafo::existeArco(int noPartida,int noDestino){//faz a busca pela matriz de adjacencia para ver se existe um arco entre os nos
-    int posicaoPartida , posicaoDestino;
-    for(int i=1;i<=ordem;i++){//modifica a matriz de adjacencia para inserir o arco
-        if(matrizAdj[0][i] == noPartida)
-            posicaoPartida = i;
-        if(matrizAdj[0][i] == noDestino)
-            posicaoDestino = i;
+    No *no = findNoById(noPartida);
+    Arco *arco = no->getAdjacentes();
+    while(arco != NULL){
+        if(arco->getNodeDest() == noDestino)
+            return true;
+        arco = arco->getProx();    
     }
-    if(direcionado)
-        if(matrizAdj[posicaoPartida][posicaoDestino] == 1)
-            return true;
-    else
-        if(matrizAdj[posicaoPartida][posicaoDestino] == 1 || matrizAdj[posicaoDestino][posicaoPartida] == 1)
-            return true;
     return false;                
 }
 
