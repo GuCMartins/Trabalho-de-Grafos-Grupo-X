@@ -141,7 +141,7 @@ float** floydWarshalAlgorithm(Grafo* g){
 /* Parte da Busca em Profundidade */
 
 void DFSGeral(No *noPartida, Grafo *g, int* visitado){//o no de partida é iniciado como o no inicial do grafo
-    visitado[noPartida->getId() - 1] = 1;
+    visitado[noPartida->getId()] = 1;
     Arco *arco = noPartida->getAdjacentes();
 
     while(arco != NULL){
@@ -152,7 +152,7 @@ void DFSGeral(No *noPartida, Grafo *g, int* visitado){//o no de partida é inici
 }
 
 bool DFSCaminho(No *noPartida,No* Destino, Grafo *g,int* visitado){//o no de partida é iniciado como o no inicial do grafo
-    visitado[noPartida->getId() - 1] = 1;
+    visitado[noPartida->getId()] = 1;
     for (No *no = noPartida; no != NULL; no = no->getProx())
     {
         if(no->getId() == Destino->getId())

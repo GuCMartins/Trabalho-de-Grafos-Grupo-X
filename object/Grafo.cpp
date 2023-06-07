@@ -42,7 +42,6 @@ void Grafo::inserirArco(int idNoOrigem, int idNoDestino, float pesoArco)
         cout <<"Grafo simples. Não é permitido self-loop."<<endl;
         return;
     }
-
     No *noOrigem = this->findNoById(idNoOrigem);
     
     if(noOrigem == NULL){
@@ -77,10 +76,6 @@ void Grafo::inserirArco(int idNoOrigem, int idNoDestino, float pesoArco)
         this->auxInserirArco(noDestino, noOrigem, pesoArco);
     }
     this->numArcos += 1;
-    if(!ehDir())
-        matrizAdj[idNoDestino-1][idNoOrigem-1] = 1;
-    matrizAdj[idNoOrigem-1][idNoDestino-1] = 1;
-    
 }
 
 void Grafo::auxInserirArco(No *noOrigem, No *noDestino, float pesoArco)
@@ -306,10 +301,10 @@ void Grafo::imprimirListaNosAdjacentes(int idNo)
 
 bool Grafo::existeArco(int noPartida,int noDestino){//faz a busca pela matriz de adjacencia para ver se existe um arco entre os nos
     if(direcionado)
-        if(matrizAdj[noPartida-1][noDestino-1] == 1)
+        if(matrizAdj[noPartida][noDestino] == 1)
             return true;
     else
-        if(matrizAdj[noPartida-1][noDestino-1] == 1 || matrizAdj[noDestino-1][noPartida-1] == 1)
+        if(matrizAdj[noPartida][noDestino] == 1 || matrizAdj[noDestino-1][noPartida-1] == 1)
             return true;
     return false;                
 }
