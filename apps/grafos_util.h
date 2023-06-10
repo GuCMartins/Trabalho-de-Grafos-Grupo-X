@@ -141,7 +141,7 @@ float** floydWarshalAlgorithm(Grafo* g){
 /* Parte da Busca em Profundidade */
 
 void DFSGeral(No *noPartida, Grafo *g, int* visitado){//o no de partida é iniciado como o no inicial do grafo
-    visitado[noPartida->getId() - 1] = 1;
+    visitado[noPartida->getId()] = 1;
     Arco *arco = noPartida->getAdjacentes();
 
     while(arco != NULL){
@@ -163,6 +163,43 @@ bool DFSCaminho(No *noPartida,No* Destino, Grafo *g,int* visitado){//o no de par
         arco = arco->getProx();
     }
     return false;//usar para fecho transitivo direto e indireto
+}
+
+/*Verificação de um grafo para ver se o mesmo é bipartido*/
+
+bool isBipartite(Grafo *g){
+
+    //Cores dos vértices
+    int *colorVertices = new int[g->getOrdem()];
+    queue <int> q;
+    for(int i = 0; i < g->getOrdem(); i++){
+        colorVertices[i] = -1; //Vértice inicializado como não colorido
+    }
+
+    colorVertices[g->getNoInicial()->getId() - 1] = 1; //Pinto o nó origem como 1
+    q.push(g->getNoInicial()->getId());
+
+    while(!q.empty()){
+        No* node = g->findNoById(q.front());
+        q.pop();
+
+        for(Arco* edge = node->getAdjacentes(); edge != NULL; edge = edge->getProx()){
+            
+            //Vértice da lista de adj. não foi pintado ainda
+            if(colorVertices[edge->getNodeDest()-1] == -1){
+                //Verificação para pintar na cor contrária a do nó cabeça de lista  
+                if(colorVertices[node->getId()-1] == 1){
+                    colorVertices[edge->getNodeDest()-1] = 0;
+                }else{
+                    colorVertices[edge->getNodeDest()-1] = 1;
+                }
+                q.push(edge->getNodeDest());
+            }else if(colorVertices[edge->getNodeDest()-1] == colorVertices[node->getId() - 1]){
+                return false;
+            }
+        }
+    }
+    return true;   
 }
 
 /*Verificação de Ciclos no grafo && Árvore Geradora Mínima(Algoritmo de Kruskall)*/

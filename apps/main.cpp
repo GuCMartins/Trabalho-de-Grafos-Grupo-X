@@ -28,56 +28,230 @@ void divideString(string s, float cut[3])
     }
 }
 
-Grafo* leituraArquivo(string path, string ehDir, string ehPondAr, string ehPondNode)
+Grafo* leituraArquivo(string path, string instance, string ehDir, string ehPondAr, string ehPondNode)
 {
     ifstream arq(path);
 
     string line;
     string numV;
+    string numCluster;
+    string clusterCapmin;
+    string clusterCapMax;
+    string clusterType;
     string auxId, auxPesoNode;
-
     
-
     if (arq.is_open())
     {
-        getline(arq, line);
-        numV = line;
-        Grafo *G = new Grafo(stoi(numV), ehDir == "1", ehPondAr == "1", ehPondNode == "1");
-        if (ehPondNode == "0")
-            for (int i = 0; i < stoi(numV); i++)
-                G->inserirNo(i+1, 0);
-        else
-            for (int i = 0; i < stoi(numV); i++)
-            {
+
+        if(instance == "Handover"){
+            getline(arq, line);
+            numV = line;
+            getline(arq, line);
+            numCluster = line;
+            getline(arq, line);
+            clusterCapmin = line;
+            clusterType = "ss";
+
+            Grafo *G = new Grafo(stoi(numV), false, true, true);
+            
+            for(int i = 0; i < stoi(numV); i++){
                 getline(arq, line);
-                float cut[3];
-                divideString(line, cut);
-                int idNode = (int)cut[0];
-                float pesoNode = cut[1];
-                G->inserirNo(idNode, pesoNode);
+                string pesoNode = line;
+                G->inserirNo(i, stof(pesoNode));
             }
-        while (getline(arq, line))
-        {
-            if (ehPondAr == "0")
-            {
-                float cut[3];
-                divideString(line, cut);
-                int idNoOrigem = (int)cut[0];
-                float idNoDestino = cut[1];
-                G->inserirArco(idNoOrigem, idNoDestino, 0);
+
+            getline(arq, line);
+            const char* matrix = line.c_str();
+            int n = stoi(numV);
+            int **M = new int *[n];
+
+            for (int i = 0; i < n; i++)
+                M[i] = new int[n];        
+
+            int i = 0, j = 0, percorre = 0;
+            char c;
+            string s = "";
+            char m = matrix[percorre];
+
+            while(j < n){
+                m = matrix[percorre];
+                percorre++;
+                if(m != ' ')
+                    s += m;
+                else{
+                    M[j][i] = stof(s);
+                    // if(s != "0"){
+                    //     cout << "inserindo: " << s << " em: " << j << "," << i << endl;
+                    // }
+                    s = "";
+                }
+                if(i < n && s == "")
+                    i++;
+                else if(i == n){
+                    i = 0;
+                    j++;
+                }
             }
-            else
-            {
-                float cut[3];
-                divideString(line, cut);
-                int idNoOrigem = (int)cut[0];
-                int idNoDestino = (int)cut[1];
-                float pesoArco = cut[2];
-                cout << idNoOrigem << " " << idNoDestino << " " << pesoArco << endl;
-                G->inserirArco(idNoOrigem, idNoDestino, pesoArco);
+
+
+           for(int k = 0; k < n; k++)
+            for(int l = 0; l < n; l++){
+                if(k != l)
+                    G->inserirArco(k, l, M[k][l]);
             }
+            return G;
         }
-        return G;
+
+        if(instance == "RanReal240" || instance == "RanReal480" || instance == "RanReal960" || "Sparse82")
+        {
+            getline(arq, line);
+            const char* linha = line.c_str();
+            int aux = 0;
+            char c = linha[aux];
+            
+            string s = "";
+            bool nC = false; //indica se pegou o numero de clusters
+            bool cT = false; //indica se pegou o tipo do cluseter
+            bool cLmin = false; //indica se pegou o limite inferior do cluster
+            bool cLmax = false; //indica se pegou o limite superior do cluster
+            bool w = false; //indica que alcançou a letra W para começar a ler os pesos dos nós
+            int id = 0; //ids dos nos
+
+
+            while(c != ' ')
+            {
+                c = linha[aux];
+                aux++;
+                s += c;
+            }
+            
+            int n = stoi(s);
+            Grafo *G = new Grafo(n, false, true, true);
+
+            c = linha[aux + 1];
+            s = "";
+
+            while(c != '\0'){
+                c = linha[aux];
+                aux++;
+
+                if(!nC){
+                    if(c != ' ')
+                        s += c;
+                    else{
+                        numCluster = s;
+                        nC = true;
+                        s = "";
+                    }
+                }
+
+                else if(nC && !cT){
+                    if(c != ' ')
+                        s += c;
+                    else{
+                        clusterType = s;
+                        cT = true;
+                        s = "";
+
+                        //cluster->type(s)
+                    }
+                }
+
+                else if(cT && !cLmin){
+                    if(c != ' ')
+                        s += c;
+                    
+                    else{
+                        clusterCapmin = s;
+                        cLmin = true;
+                        cLmax = false;
+                        s = "";
+
+                        //cluster->limiteinf(s);
+                    }
+                }
+
+                else if(cLmin && !cLmax && c != 'W'){
+                    if(c != ' ')
+                        s += c;
+                    else{
+                        clusterCapmin = s;
+                        cLmax = true;
+                        cLmin = false;
+                        s = "";
+                        //cluster->limitesup(s);
+                    }
+                }
+
+                if(c == 'W'){
+                    cLmax = true;
+                    cLmin = true;
+                    w = true;
+                    s = "";
+                    aux++;
+                }
+                if(w == true && c != 'W'){
+                    if(c != ' ')
+                        s += c;
+                    else{
+                        G->inserirNo(id, stof(s));
+                        s = "";
+                        id++;
+                    }
+                }
+            }
+
+            G->inserirNo(id, stof(s));
+
+            while (getline(arq, line))
+            {
+                    float cut[3];
+                    divideString(line, cut);
+                    int idNoOrigem = (int)cut[0];
+                    int idNoDestino = (int)cut[1];
+                    float pesoArco = cut[2];
+                    G->inserirArco(idNoOrigem, idNoDestino, pesoArco);
+            }
+
+            return G;
+
+    //     Grafo *G = new Grafo(stoi(numV), ehDir == "1", ehPondAr == "1", ehPondNode == "1");
+    //     if (ehPondNode == "0")
+    //         for (int i = 0; i < stoi(numV); i++)
+    //             G->inserirNo(i+1, 0);
+    //     else
+    //         for (int i = 0; i < stoi(numV); i++)
+    //         {
+    //             getline(arq, line);
+    //             float cut[3];
+    //             divideString(line, cut);
+    //             int idNode = (int)cut[0];
+    //             float pesoNode = cut[1];
+    //             G->inserirNo(idNode, pesoNode);
+    //         }
+    //     while (getline(arq, line))
+    //     {
+    //         if (ehPondAr == "0")
+    //         {
+    //             float cut[3];
+    //             divideString(line, cut);
+    //             int idNoOrigem = (int)cut[0];
+    //             float idNoDestino = cut[1];
+    //             G->inserirArco(idNoOrigem, idNoDestino, 0);
+    //         }
+    //         else
+    //         {
+    //             float cut[3];
+    //             divideString(line, cut);
+    //             int idNoOrigem = (int)cut[0];
+    //             int idNoDestino = (int)cut[1];
+    //             float pesoArco = cut[2];
+    //             cout << idNoOrigem << " " << idNoDestino << " " << pesoArco << endl;
+    //             G->inserirArco(idNoOrigem, idNoDestino, pesoArco);
+    //         }
+    //     }
+    //     return G;
+        }
     }
 
     else
@@ -201,9 +375,9 @@ int main(int argc, char **argv)
 {
 
     string pathIn = "", pathOut = "";
-    string ehDir, ehPondNode, ehPondAr;
+    string ehDir, ehPondNode, ehPondAr, instance;
 
-    if (argc != 6)
+    if (argc != 7)
     {
         cout << "Entrada invalida! Tente <nome_do_executavel> <arq_In> <arqOut> <direcionado[0,1]> <ponderadoNode[0,1]> <ponderadoAresta[0,1]>" << endl;
         return 0;
@@ -213,21 +387,22 @@ int main(int argc, char **argv)
     {
         pathIn = argv[1];
         pathOut = argv[2];
-        ehDir = argv[3];
-        ehPondAr = argv[4];
-        ehPondNode = argv[5];
+        instance = argv[3];
+        ehDir = argv[4];
+        ehPondAr = argv[5];
+        ehPondNode = argv[6];
     }
 
-    Grafo *G = leituraArquivo(pathIn, ehDir, ehPondAr, ehPondNode);
+    Grafo *G = leituraArquivo(pathIn, instance, "0", "1", "1");
 
-    float** matriz = floydWarshalAlgorithm(G);
-    cout << "---------------------------------------------" << endl;
-    for(int i = 0; i < G->getOrdem(); i++){
-        for(int j = 0; j < G->getOrdem(); j++){
-            cout << matriz[i][j] << " ";
-        }
-        cout << endl;
-    }
+    // float** matriz = floydWarshalAlgorithm(G);
+    // cout << "---------------------------------------------" << endl;
+    // for(int i = 0; i < G->getOrdem(); i++){
+    //     for(int j = 0; j < G->getOrdem(); j++){
+    //         cout << matriz[i][j] << " ";
+    //     }
+    //     cout << endl;
+    // }
     // float* distancias = dijkstraAlgorithm(G, 4);
 
     // for(int i = 0; i < G->getOrdem(); i++){
@@ -236,7 +411,8 @@ int main(int argc, char **argv)
 
     // Grafo* res = kruskalAlgorithm(G);
     
-    // escritaArquivo(pathOut, res);
+    
+    escritaArquivo(pathOut, G);
     
     // cout << "Impressão da lista de nos: " << endl;
     // G->imprimirListaNos();
