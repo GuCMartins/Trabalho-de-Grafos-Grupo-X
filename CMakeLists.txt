@@ -9,7 +9,8 @@ add_library(lib-Trabalho_de_Grafos
             ../include/Grafo.h
             ../object/Grafo.cpp
             ../include/No.h
-            ../object/No.cpp)
+            ../object/No.cpp
+            ../apps/grafos_util.h)
 
 add_executable(Grupo_1 apps/main.cpp)
 

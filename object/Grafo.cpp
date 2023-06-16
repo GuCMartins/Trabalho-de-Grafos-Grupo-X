@@ -1,5 +1,4 @@
 #include "../include/Grafo.h"
-#include "../apps/grafos_util.h"
 
 #include <iostream>
 
@@ -356,6 +355,31 @@ bool Grafo::existeArco(int noPartida,int noDestino){//faz a busca pela matriz de
         arco = arco->getProx();    
     }
     return false;                
+}
+
+bool Grafo::DFSCaminho(No *noPartida,No* Destino, Grafo *g,int* visitado){//o no de partida é iniciado como o no inicial do grafo
+    visitado[noPartida->getId() - 1] = 1;
+    Arco *arco = noPartida->getAdjacentes();
+
+    while(arco != NULL){
+        if(arco->getNodeDest() == Destino->getId())
+            return true;
+        if(visitado[arco->getNodeDest() - 1] == -1)
+            DFSGeral(g->findNoById(arco->getNodeDest()), g, visitado);
+        arco = arco->getProx();
+    }
+    return false;//usar para fecho transitivo direto e indireto
+}
+
+void Grafo::DFSGeral(No *noPartida, Grafo *g, int* visitado){//o no de partida é iniciado como o no inicial do grafo
+    visitado[noPartida->getId()] = 1;
+    Arco *arco = noPartida->getAdjacentes();
+
+    while(arco != NULL){
+        if(visitado[arco->getNodeDest() - 1] == -1)
+            DFSGeral(g->findNoById(arco->getNodeDest()), g, visitado);
+        arco = arco->getProx();
+    }
 }
 
 int* Grafo::FechoTransitivoDireto(int idNo){ //o conjunto dos vértices de um grafo alcançáveis a partir de v.
