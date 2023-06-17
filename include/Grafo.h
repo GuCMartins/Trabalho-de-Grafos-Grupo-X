@@ -44,5 +44,7 @@ public:
 
     int* FechoTransitivoDireto(int idNo);
     int* FechoTransitivoIndireto(int idNo);
+    bool DFSCaminho(No *noPartida,No* Destino, Grafo *g,int* visitado);
+    void DFSGeral(No *noPartida, Grafo *g, int* visitado);
 };
 #endif // GRAFO_H
