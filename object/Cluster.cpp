@@ -18,25 +18,29 @@ Cluster::~Cluster()
 {
 }
 
-bool Cluster::setSVertices(int idNodeFonte,int idNode,  float pesoNode)
+bool Cluster::setSVertices(int* NodeOriDest, Grafo *grafoGeral)
 {
-    if(this->SVertices + pesoNode <= this->max)
+    No* NoDest = grafoGeral->findNoById(NodeOriDest[1]);
+
+    if(this->SVertices + NoDest->getPeso() <= this->max && NoDest->getEmCluster() == false)
     {
-        this->SVertices += pesoNode;
+        this->SVertices += NoDest->getPeso();
 
-        this->grafo->inserirNo(idNode, pesoNode);
+        this->grafo->inserirNo(NodeOriDest[1], NoDest->getPeso());
 
-        Arco *arco = this->grafo->findNoById(idNodeFonte)->getAdjacente();
+        this->grafo->findNoById(NodeOriDest[1])->setEmCluster();
+
+        Arco *arco = this->grafo->findNoById(NodeOriDest[0])->getAdjacente();
 
        while(arco != NULL){
-            if(arco->getNodeDest() == idNode)
+            if(arco->getNodeDest() == NodeOriDest[1])//encontra o arco que liga o no fonte ao no a ser adicionado
                 break;
             arco = arco->getProx();    
         }
 
         float pesoArco = arco->getPeso();
 
-        this->grafo->inserirArco(idNodeFonte, idNode, pesoArco);
+        this->grafo->inserirArco(NodeOriDest[0], NodeOriDest[1], pesoArco);
         
         setSArestas(pesoArco);
 
@@ -47,23 +51,28 @@ bool Cluster::setSVertices(int idNodeFonte,int idNode,  float pesoNode)
     return false;
 }
 
-int* Cluster::melhorEscolha(Grafo* grafoGeral)
-{
-    int *melhorEscolha = new int[2];
-    melhorEscolha[0] = this->grafo->getNoInicial()->getId();
+void DFSAnalisar_arestas(No *noPartida, Grafo *grafoGeral, int* visitado,float maiorPeso,int* NodeOriDest){//o no de partida é iniciado como o no inicial do grafo
+    visitado[noPartida->getId()] = 1;
+    Arco *arco = noPartida->getAdjacentes();
 
-    No *noFonteGeral = grafoGeral->findNoById(melhorEscolha[0]);
-
-    No *noGeral = noFonteGeral->getProx();
-
-    while(noGeral != NULL)//analisar os nos adjacentes a partir do inicial para encontrar um
-    {                //que tenha uma aresta com o no inicial com o maior peso
-
-        if(this->grafo->findNoById(noGeral->getId()) != NULL)//se o no ja estiver no cluster
-        {
-            noGeral = noGeral->getProx();
+    while(arco != NULL){
+        for(int i =0;i<noPartida->getGrauSaida();i++){
+            if(arco->getPeso() > maiorPeso && noPartida->getEmCluster() == false && grafoGeral->findNoById(arco->getNodeDest())->getEmCluster() == false){
+                maiorPeso = arco->getPeso();
+                NodeOriDest[0] = noPartida->getId();
+                NodeOriDest[1] = arco->getNodeDest();
+            }
         }
-    }
+        if(visitado[arco->getNodeDest() - 1] == -1)//se o no segguinte nao foi visitado
+            DFSAnalisar_arestas(grafoGeral->findNoById(arco->getNodeDest()), grafoGeral, visitado,maiorPeso,NodeOriDest);
+        arco = arco->getProx();
+    }//a ideia é alterar o vetor de Nos ideias para retornar os que ainda nao estão ocupados
+}
+
+int* Cluster::melhorEscolha(Grafo* grafoGeral)//busca a aresta livre de maior peso para adicionar ao cluster, verificando se os nos que fazem parte dela
+{                                             // ja estao no cluster e se a soma dos pesos de seus nos fazem com que o cluster esteja dentro do intervalo
+    int *melhorEscolha = new int[2];
+    DFSAnalisar_arestas(grafoGeral->getNoInicial(),grafoGeral,new int[grafoGeral->getOrdem()],0,melhorEscolha);//retorna os dois melhores nos para serem inseridos no cluster
 
     return melhorEscolha;//terminar a funcao
 }

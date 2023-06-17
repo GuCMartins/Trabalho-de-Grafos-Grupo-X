@@ -13,6 +13,7 @@ private:
     float peso;
     No *proximo;
     Arco *adjacentes;
+    bool emCluster = false;
 
 public:
     No(int id, int x, int y, float peso);
@@ -35,6 +36,9 @@ public:
     void setAdjacente(Arco *arco){ this->adjacentes = arco;}
 
     Arco* existeNoAdjacente(int idNo);
+
+    void setEmCluster(){this->emCluster = true;};
+    bool getEmCluster(){return emCluster;};
 };
 
 #endif // NO_H

@@ -24,7 +24,7 @@ public:
     bool getDentroIntervalo(){return dentroIntervalo;};
     Grafo *getGrafo(){return grafo;};
 
-    bool setSVertices(int idNodeFonte, int idNode,  float pesoNode);
+    bool setSVertices(int* NodeOriDest, Grafo *grafoGeral);
 
     void setSArestas(float pesoAresta){this->SArestas += pesoAresta;};
 
