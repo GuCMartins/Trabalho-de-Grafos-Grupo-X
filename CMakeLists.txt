@@ -9,7 +9,11 @@ add_library(lib-Trabalho_de_Grafos
             ../include/Grafo.h
             ../object/Grafo.cpp
             ../include/No.h
-            ../object/No.cpp)
+            ../object/No.cpp
+            ../include/Cluster.h
+            ../object/Cluster.cpp
+            ../apps/grafos_util.h
+            ../apps/greedy_algorithms.h)
 
 add_executable(Grupo_1 apps/main.cpp)
 

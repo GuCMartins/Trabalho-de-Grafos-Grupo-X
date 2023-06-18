@@ -2,39 +2,50 @@
 #define CLUSTER_H
 
 #include "Grafo.h"
-#include "No.h"
-#include "Arco.h"
+#include <forward_list>
 
 class Cluster
 {
-
 private:
-    int min, max;
-    bool dentroIntervalo = false;
-    Grafo *grafo;
-    float SVertices = 0, SArestas = 0;
+    int min, max; // min <= Sum(Peso dos nós do cluster) <= max (Constraint do problema)
+    Grafo *cluster_graph; //Grafo que será induzido pelos nós que já se encontram no cluster
+    std::forward_list<int> inseridos; //Guarda o valor inteiro dos ids dos nós que já estão dentro do cluster
+    float sumVertices, sumArestas; //Soma dos pesos dos nós do cluster e soma dos pesos das arestas do cluster
+    bool dentroIntervalo; //Verifica a constraint do intervalo
+    bool confereNosInseridos(int val); //Função auxiliar na inserção
 public:
     Cluster(int min, int max, Grafo *grafo);
     ~Cluster();
 
     int getMin(){return min;};
     int getMax(){return max;};
-    float getSVertices(){return SVertices;};
-    float getSArestas(){return SArestas;};
-    bool getDentroIntervalo(){return dentroIntervalo;};
-    Grafo *getGrafo(){return grafo;};
 
-    bool setSVertices(int idNodeFonte, int idNode,  float pesoNode);
+    float getSumVertices(){return sumVertices;};
+    float getSumArestas(){return sumArestas;};
 
-    void setSArestas(float pesoAresta){this->SArestas += pesoAresta;};
+    int getOrdem(){return cluster_graph->getOrdem();};
 
-    int getOrdem(){return grafo->getOrdem();};
+    void inserirNoCluster(No* nodeToInsert); //Nó que será adicionado ao cluster
 
-    int* melhorEscolha(Grafo* grafoGeral);//primeira posicao é o id do no fonte e a segunda é o id do no a ser adicionado
-        //funcao que escolhe o no a ser adicionado em seguida baseado no peso da aresta
+    Grafo *getGrafo(){return cluster_graph;};
 
-    void imprimirListaNos();
-    void imprimirListaNosAdjacentes(int idNo);
-    void imprimirTodosNosAdjacentes();
+    //Métodos do Gustavo.
+
+    // bool setSumVertices(int idNodeFonte, int idNode,  float pesoNode);
+
+    // void setSumArestas(float pesoAresta){this->SArestas += pesoAresta;};
+
+    // int* melhorEscolha(Grafo* grafoGeral);//primeira posicao é o id do no fonte e a segunda é o id do no a ser adicionado
+    //     //funcao que escolhe o no a ser adicionado em seguida baseado no peso da aresta
+
+    void imprimirListaNos(){
+        this->cluster_graph->imprimirListaNos();
+    };
+    void imprimirListaNosAdjacentes(int idNo){
+        this->cluster_graph->imprimirListaNosAdjacentes(idNo);
+    }
+    void imprimirTodosNosAdjacentes(){
+        this->cluster_graph->imprimirTodosNosAdjacentes();
+    }
 };
 #endif // CLUSTER_H

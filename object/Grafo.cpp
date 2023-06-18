@@ -14,7 +14,9 @@ Grafo::Grafo(int ordem, bool direc, bool pondAresta, bool pondNode)
     this->noInicial = NULL;
     this->numArcos = 0;
 }
-Grafo::~Grafo() {}
+Grafo::~Grafo() {
+    //Percorrer e ficar dando delete nesse treco
+}
 
 void Grafo::inserirNo(int idNode, float pesoNode)
 {
