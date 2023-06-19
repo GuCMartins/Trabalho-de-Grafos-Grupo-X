@@ -102,8 +102,8 @@ Grafo* leituraArquivo(string path, string instance, string ehDir, string ehPondA
             return G;
         }
 
-        if(instance == "RanReal240" || instance == "RanReal480" || instance == "RanReal960" || "Sparse82")
-        {
+        if(instance == "RanReal240" || instance == "RanReal480" || instance == "RanReal960" || instance == "Sparse82")
+        {   
             getline(arq, line);
             const char* linha = line.c_str();
             int aux = 0;
@@ -191,17 +191,21 @@ Grafo* leituraArquivo(string path, string instance, string ehDir, string ehPondA
                     aux++;
                 }
                 if(w == true && c != 'W'){
-                    if(c != ' ')
+                    if(isdigit(c))
                         s += c;
                     else{
-                        G->inserirNo(id, stof(s));
-                        s = "";
-                        id++;
+                        if(c == ' ' && s != ""){
+                            G->inserirNo(id, stof(s));
+                            s = "";
+                            id++;
+                        }
                     }
                 }
             }
 
-            G->inserirNo(id, stof(s));
+            if(s != ""){
+                G->inserirNo(id, stof(s));
+            }
 
             while (getline(arq, line))
             {
@@ -214,43 +218,6 @@ Grafo* leituraArquivo(string path, string instance, string ehDir, string ehPondA
             }
 
             return G;
-
-    //     Grafo *G = new Grafo(stoi(numV), ehDir == "1", ehPondAr == "1", ehPondNode == "1");
-    //     if (ehPondNode == "0")
-    //         for (int i = 0; i < stoi(numV); i++)
-    //             G->inserirNo(i+1, 0);
-    //     else
-    //         for (int i = 0; i < stoi(numV); i++)
-    //         {
-    //             getline(arq, line);
-    //             float cut[3];
-    //             divideString(line, cut);
-    //             int idNode = (int)cut[0];
-    //             float pesoNode = cut[1];
-    //             G->inserirNo(idNode, pesoNode);
-    //         }
-    //     while (getline(arq, line))
-    //     {
-    //         if (ehPondAr == "0")
-    //         {
-    //             float cut[3];
-    //             divideString(line, cut);
-    //             int idNoOrigem = (int)cut[0];
-    //             float idNoDestino = cut[1];
-    //             G->inserirArco(idNoOrigem, idNoDestino, 0);
-    //         }
-    //         else
-    //         {
-    //             float cut[3];
-    //             divideString(line, cut);
-    //             int idNoOrigem = (int)cut[0];
-    //             int idNoDestino = (int)cut[1];
-    //             float pesoArco = cut[2];
-    //             cout << idNoOrigem << " " << idNoDestino << " " << pesoArco << endl;
-    //             G->inserirArco(idNoOrigem, idNoDestino, pesoArco);
-    //         }
-    //     }
-    //     return G;
         }
     }
 
