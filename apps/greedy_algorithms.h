@@ -42,34 +42,55 @@ fim função
 */
 
 bool solucao(Cluster* clusters, int num_clusters){
+    clusters[0].getDentroIntervalo();
     for(int i = 0; i < num_clusters; i++){
-        if(!clusters[i]->getDentroIntervalo())
+        if(!(clusters[i].getDentroIntervalo()))
             return false;
     }
     return true;
 }
 
-bool compareNo(No *a, No *b) {
-    return a->grauEntrada() <= b.grauEntrada();
+bool compareArco(Arco *a, Arco *b) {
+    return a->getPeso() <= b->getPeso();
 }
 
-forward_list ordenaGrafoPorGrau(Grafo *g){
-    std::forward_list<No*> nos;
-    for(No *no=g->getNoInicial();no!NULL;no=no->getProx()){
-        nos->push_front(no);
+std::forward_list<Arco*> ordenaGrafoPorPesoAresta(Grafo *g,int max){
+    std::forward_list<Arco*> arcos;
+    No* noOrigem, *noDestino;
+    int** matriz = new int*[g->getOrdem()];
+    for(int i = 0; i < g->getOrdem(); i++){
+        matriz[i] = new int[g->getOrdem()];
     }
-    
-    nos.sort(compareNo);
-    return nos;
+    for(int i = 0; i < g->getOrdem(); i++){
+        noOrigem = g->findNoById(i);
+        for(int j = 0; j < g->getOrdem(); j++){
+            noDestino = g->findNoById(j);
+            matriz[i][j] = 0;
+            Arco *arco = noOrigem->getAdjacentes();
+            while(arco != nullptr && j>i){//analisar apenas a parte superior triangular superior da matriz para nao inserir arestas repetidas
+                if(arco->getNodeDest() == noDestino->getId()){
+                    matriz[i][j] = arco->getPeso();
+                    if(g->findNoById(i)->getPeso() + g->findNoById(j)->getPeso() <= max){//caso os dois nos que compoem a aresta estejam dentro do intervalo
+                        arcos.push_front(arco);
+                    }
+                    break;
+                }
+                arco = arco->getProx();
+            }
+        }
+    }
+
+    arcos.sort(compareArco);
+    return arcos;
 }
 
-void guloso(Grafo *g, Cluster* clusters, int num_clusters){
+void guloso(Grafo *g, Cluster* clusters, int num_clusters,int min,int max){
     int cont = 0;
-    std::forward_list<No*> listaGraus = ordenaGrafoPorGrau(g); 
+    std::forward_list<Arco*> listaArestaPorPeso = ordenaGrafoPorPesoAresta(g,max); //obtem as arestas viaveis ordenadas por peso
     while(cont < g->getOrdem() && solucao(clusters, num_clusters)){
         if(cont < num_clusters){
-            clusters[cont]->inserirNoCluster(g->findNoById(listaGraus.push_front();))
-            listaGraus.pop_front();
+            clusters[cont].inserirNoCluster(g->findNoById(listaArestaPorPeso.front()->getNodeDest()),listaArestaPorPeso.front());
+            listaArestaPorPeso.pop_front();
         }else{
             //
         }
