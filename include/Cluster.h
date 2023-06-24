@@ -9,9 +9,8 @@ class Cluster
 private:
     int min, max; // min <= Sum(Peso dos nós do cluster) <= max (Constraint do problema)
     Grafo *cluster_graph; //Grafo que será induzido pelos nós que já se encontram no cluster
-    Grafo *grafoGeral; //Grafo que contém todos os nós e arestas do problema
     std::forward_list<int> inseridos; //Guarda o valor inteiro dos ids dos nós que já estão dentro do cluster
-    float sumPesoVertices, sumPesoArestas; //Soma dos pesos dos nós do cluster e soma dos pesos das arestas do cluster
+    float sumVertices, sumArestas; //Soma dos pesos dos nós do cluster e soma dos pesos das arestas do cluster
     bool dentroIntervalo; //Verifica a constraint do intervalo
     bool confereNosInseridos(int val); //Função auxiliar na inserção
 public:
@@ -23,18 +22,18 @@ public:
 
     bool getDentroIntervalo(){return dentroIntervalo;};
 
-    float getSumVertices(){return sumPesoVertices;};
-    float getSumArestas(){return sumPesoArestas;};
+    float getSumVertices(){return sumVertices;};
+    float getSumArestas(){return sumArestas;};
 
     int getOrdem(){return cluster_graph->getOrdem();};
 
-    void inserirNoCluster(No* nodeToInsert,Arco* ArcoInicial); //Nó que será adicionado ao cluster
+    void inserirNoCluster(No* nodeToInsert); //Nó que será adicionado ao cluster
 
     Grafo *getGrafo(){return cluster_graph;};
 
     //Métodos do Gustavo.
 
-    bool VerificaNoInserir(int idNodeFonte, int idNode,  float pesoNode);
+    // bool setSumVertices(int idNodeFonte, int idNode,  float pesoNode);
 
     // void setSumArestas(float pesoAresta){this->SArestas += pesoAresta;};
 
