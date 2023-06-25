@@ -3,6 +3,7 @@
 
 #include "Grafo.h"
 #include <forward_list>
+#include <string>
 
 class Cluster
 {
@@ -13,12 +14,15 @@ private:
     float sumVertices, sumArestas; //Soma dos pesos dos nós do cluster e soma dos pesos das arestas do cluster
     bool dentroIntervalo; //Verifica a constraint do intervalo
     bool confereNosInseridos(int val); //Função auxiliar na inserção
+    std::string type;
 public:
-    Cluster(int min, int max, Grafo *grafo);
+    Cluster(int min, int max, Grafo *grafo, std::string type);
     ~Cluster();
 
     int getMin(){return min;};
     int getMax(){return max;};
+
+    bool getDentroIntervalo(){return dentroIntervalo;};
 
     float getSumVertices(){return sumVertices;};
     float getSumArestas(){return sumArestas;};

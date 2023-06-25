@@ -2,12 +2,13 @@
 #include "../include/No.h"
 #include "../include/Grafo.h"
 #include "../include/Cluster.h"
+#include <string>
 
 #include <iostream>
 
 using namespace std;
 
-Cluster::Cluster(int min, int max, Grafo *grafo)
+Cluster::Cluster(int min, int max, Grafo *grafo, std::string type)
 {
     //Inicialização dos valores do cluster
     this->min = min;
@@ -15,6 +16,7 @@ Cluster::Cluster(int min, int max, Grafo *grafo)
     this->sumVertices = 0;
     this->sumArestas = 0;
     this->dentroIntervalo = false;
+    this->type = type;
     this->cluster_graph = new Grafo(grafo->getOrdem(), grafo->ehDir(), grafo->ehPondAr(), grafo->ehPondNode()); //Grafo que será induzido a paritr dos nós que serão adicionados no cluster
 }
 
@@ -98,4 +100,3 @@ void Cluster::inserirNoCluster(No* nodeToInsert){
 
 //     return melhorEscolha;//terminar a funcao
 // }
-

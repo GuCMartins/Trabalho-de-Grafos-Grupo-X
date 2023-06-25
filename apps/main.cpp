@@ -5,8 +5,11 @@
 #include "../include/No.h"
 #include "../include/Arco.h"
 #include "grafos_util.h"
+#include "../include/Cluster.h"
 
 using namespace std;
+
+Cluster** clusters;
 
 void divideString(string s, float cut[3])
 {
@@ -49,10 +52,18 @@ Grafo* leituraArquivo(string path, string instance, string ehDir, string ehPondA
             getline(arq, line);
             numCluster = line;
             getline(arq, line);
-            clusterCapmin = line;
+            clusterCapMax = line;
             clusterType = "ss";
 
+            clusters = new Cluster*[stoi(numCluster)];
+
+
             Grafo *G = new Grafo(stoi(numV), false, true, true);
+            
+            for(int i = 0 ; i < stoi(numCluster); i++){
+            
+                clusters[i] = new Cluster(0, stoi(clusterCapMax), G, clusterType);
+            }
             
             for(int i = 0; i < stoi(numV); i++){
                 getline(arq, line);
@@ -116,7 +127,7 @@ Grafo* leituraArquivo(string path, string instance, string ehDir, string ehPondA
             bool cLmax = false; //indica se pegou o limite superior do cluster
             bool w = false; //indica que alcançou a letra W para começar a ler os pesos dos nós
             int id = 0; //ids dos nos
-
+            int contadorCluster = 0; //auxiliar para indicar o cluster que ele está atribuindo os parâmetros
 
             while(c != ' ')
             {
@@ -126,6 +137,7 @@ Grafo* leituraArquivo(string path, string instance, string ehDir, string ehPondA
             }
             
             int n = stoi(s);
+
             Grafo *G = new Grafo(n, false, true, true);
 
             c = linha[aux + 1];
@@ -142,6 +154,7 @@ Grafo* leituraArquivo(string path, string instance, string ehDir, string ehPondA
                         numCluster = s;
                         nC = true;
                         s = "";
+                        clusters = new Cluster*[stoi(numCluster)];
                     }
                 }
 
@@ -151,9 +164,7 @@ Grafo* leituraArquivo(string path, string instance, string ehDir, string ehPondA
                     else{
                         clusterType = s;
                         cT = true;
-                        s = "";
-
-                        //cluster->type(s)
+                        s = ""; 
                     }
                 }
 
@@ -166,8 +177,6 @@ Grafo* leituraArquivo(string path, string instance, string ehDir, string ehPondA
                         cLmin = true;
                         cLmax = false;
                         s = "";
-
-                        //cluster->limiteinf(s);
                     }
                 }
 
@@ -175,11 +184,12 @@ Grafo* leituraArquivo(string path, string instance, string ehDir, string ehPondA
                     if(c != ' ')
                         s += c;
                     else{
-                        clusterCapmin = s;
+                        clusterCapMax = s;
                         cLmax = true;
                         cLmin = false;
                         s = "";
-                        //cluster->limitesup(s);
+                        clusters[contadorCluster] = new Cluster(stoi(clusterCapmin), stoi(clusterCapMax), G, clusterType);
+                        contadorCluster++;
                     }
                 }
 
@@ -227,7 +237,6 @@ Grafo* leituraArquivo(string path, string instance, string ehDir, string ehPondA
     arq.close();
     return NULL;
 }
-
 void escritaArquivo(string pathOut, Grafo *G){
 
     ofstream arqSaida(pathOut);
@@ -379,7 +388,7 @@ int main(int argc, char **argv)
     // Grafo* res = kruskalAlgorithm(G);
     
     
-    escritaArquivo(pathOut, G);
+    //escritaArquivo(pathOut, G);
     
     // cout << "Impressão da lista de nos: " << endl;
     // G->imprimirListaNos();
