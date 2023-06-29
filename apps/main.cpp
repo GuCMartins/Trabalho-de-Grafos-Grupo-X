@@ -7,6 +7,8 @@
 #include "grafos_util.h"
 #include "../include/Cluster.h"
 #include "greedy_algorithms.h"
+// #include <unistd.h>
+
 
 using namespace std;
 
@@ -371,10 +373,11 @@ int main(int argc, char **argv)
     }
 
     Grafo *G = leituraArquivo(pathIn, instance, "0", "1", "1");
-    
     // G->imprimirTodosNosAdjacentes();
+    // cout << G->getOrdem();
     
-    guloso(G, clusters, 3, 3, 5);
+    cout << "Chegou no guloso\n";
+    guloso(G, clusters, 12, 75, 125);
     // float** matriz = floydWarshalAlgorithm(G);
     // cout << "---------------------------------------------" << endl;
     // for(int i = 0; i < G->getOrdem(); i++){
