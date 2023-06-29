@@ -15,9 +15,12 @@ private:
     bool dentroIntervalo; //Verifica a constraint do intervalo
     bool confereNosInseridos(int val); //Função auxiliar na inserção
     std::string type;
+    int numVertices;
 public:
     Cluster(int min, int max, Grafo *grafo, std::string type);
     ~Cluster();
+
+    std::forward_list<int> getInseridos() {return inseridos;};
 
     int getMin(){return min;};
     int getMax(){return max;};
@@ -40,8 +43,9 @@ public:
     // void setSumArestas(float pesoAresta){this->SArestas += pesoAresta;};
 
     // int* melhorEscolha(Grafo* grafoGeral);//primeira posicao é o id do no fonte e a segunda é o id do no a ser adicionado
-    //     //funcao que escolhe o no a ser adicionado em seguida baseado no peso da aresta
 
+    //     //funcao que escolhe o no a ser adicionado em seguida baseado no peso da aresta
+    
     void imprimirListaNos(){
         this->cluster_graph->imprimirListaNos();
     };

@@ -29,8 +29,7 @@ void Grafo::inserirNo(int idNode, float pesoNode)
     No *antigoNoInicial = noInicial;
     this->noInicial = novoNo;
     novoNo->setProx(antigoNoInicial);
-    
-    this->ordem += 1;
+  
 }
 
 void Grafo::inserirArco(int idNoOrigem, int idNoDestino, float pesoArco)
