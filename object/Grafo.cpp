@@ -289,7 +289,7 @@ void Grafo::imprimirListaNosAdjacentes(int idNo)
     cout << "Nós adjacentes ao nó: " << idNo << endl;
     while (arco != NULL)
     {
-        cout << "NO DESTINO ID: " << arco->getNodeDest() << endl;
+        cout << "NO DESTINO ID: " << arco->getNodeDest() << " PESO DA ARESTA: " << arco->getPeso() << endl;
         arco = arco->getProx();
     }
 }

@@ -110,8 +110,10 @@ Grafo* leituraArquivo(string path, string instance, string ehDir, string ehPondA
 
            for(int k = 0; k < n; k++)
             for(int l = 0; l < n; l++){
-                if(k != l)
-                    G->inserirArco(k, l, M[k][l]);
+                if(M[k][l] != 0){
+                    if(k != l)
+                        G->inserirArco(k, l, M[k][l]);
+                }
             }
             return G;
         }
@@ -373,7 +375,7 @@ int main(int argc, char **argv)
     }
 
     Grafo *G = leituraArquivo(pathIn, instance, "0", "1", "1");
-    // G->imprimirTodosNosAdjacentes();
+    G->imprimirTodosNosAdjacentes();
     // cout << G->getOrdem();
     
     cout << "Chegou no guloso\n";

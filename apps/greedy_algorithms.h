@@ -58,7 +58,7 @@ bool compareArco(NoNoArco a, NoNoArco b) {
     return a.pesoAresta > b.pesoAresta;
 }
 
-std::forward_list<NoNoArco> ordenaGrafoPorPesoAresta(Grafo *g,int max,int **matriz){
+std::forward_list<NoNoArco> ordenaGrafoPorPesoAresta(Grafo *g,float max,int **matriz){
     std::forward_list<NoNoArco> OriDestPeso;
     No *noOrigem;
     Arco *arco;
@@ -72,7 +72,10 @@ std::forward_list<NoNoArco> ordenaGrafoPorPesoAresta(Grafo *g,int max,int **matr
         while(arco != nullptr){
             if(arco->getNodeDest() > noOrigem->getId()){
                 //Caso os dois nós que compoem a aresta estejam dentro do intervalo
+                cout << arco->getNodeDest() << " " << noOrigem->getId() << endl;
+                cout << "Soma: " << noOrigem->getPeso() + g->findNoById(arco->getNodeDest())->getPeso() << " E o MAX: " << max << endl;
                 if(noOrigem->getPeso() + g->findNoById(arco->getNodeDest())->getPeso() <= max){
+                    cout << "Entrou pra ser inserido " << endl;
                     NoNoArco obj;
                     obj.NoOrigem = noOrigem->getId();
                     obj.NoDest = arco->getNodeDest();
@@ -93,7 +96,7 @@ bool compareCandidatos(std::tuple<int, int, float> a, std::tuple<int, int, float
     return std::get<2>(a) > std::get<2>(b);
 }
 
-std::forward_list<std::tuple<int, int, float>> rankeiaCandidatos(Grafo *g, Cluster** clusters, int* nosInseridos, int** matriz, int num_clusters,int min,int max){
+std::forward_list<std::tuple<int, int, float>> rankeiaCandidatos(Grafo *g, Cluster** clusters, int* nosInseridos, int** matriz, int num_clusters,float min,float max){
     
     std::forward_list<std::tuple<int, int, float>> candidatos;
     float auxContribuicao;
@@ -136,7 +139,7 @@ std::forward_list<std::tuple<int, int, float>> rankeiaCandidatos(Grafo *g, Clust
 }
 
 
-std::forward_list<std::tuple<int, int, float>> atualizaCandidatos(Grafo *g, Cluster** clusters, int* nosInseridos, int num_clusters,int min,int max, std::forward_list<std::tuple<int, int, float>> candidatos, int **matriz, int ultimoInserido, int idClusterUltimoInserido){
+std::forward_list<std::tuple<int, int, float>> atualizaCandidatos(Grafo *g, Cluster** clusters, int* nosInseridos, int num_clusters,float min,float max, std::forward_list<std::tuple<int, int, float>> candidatos, int **matriz, int ultimoInserido, int idClusterUltimoInserido){
     //Atualizar a lista de candidatos em relação a esse cara que foi o último a ser inserido.
     std::forward_list<std::tuple<int, int, float>> newCandidatos;
 
@@ -168,7 +171,7 @@ std::forward_list<std::tuple<int, int, float>> atualizaCandidatos(Grafo *g, Clus
     ? param num_clusters: Inteiro que representa o tamanho do vetor de clusters
     ? param min, max: Inteiros que representam o valor máximo e mínimo do intervalo dos clusters
 */
-void guloso(Grafo *g, Cluster** clusters, int num_clusters,int min,int max){
+void guloso(Grafo *g, Cluster** clusters, int num_clusters,float min,float max){
     
     int cont = 0;
     int **matriz = new int*[g->getOrdem()];
@@ -190,39 +193,52 @@ void guloso(Grafo *g, Cluster** clusters, int num_clusters,int min,int max){
 
     
     // Obtem as arestas viaveis ordenadas por peso  
+    cout << "---------------------------------------------" << endl;
     std::forward_list<NoNoArco> listaArestaPorPeso = ordenaGrafoPorPesoAresta(g,max,matriz); 
     
-    // for(std::forward_list<NoNoArco>::iterator it = listaArestaPorPeso.begin(); it != listaArestaPorPeso.end(); it++){
-    //     cout << (*it).NoOrigem << " " << (*it).NoDest << " " << (*it).pesoAresta << endl;
-    // }
-
+    for(std::forward_list<NoNoArco>::iterator it = listaArestaPorPeso.begin(); it != listaArestaPorPeso.end(); it++){
+        cout << (*it).NoOrigem << " " << (*it).NoDest << " " << (*it).pesoAresta << endl;
+    }
+cout << "---------------------------------------------" << endl;
     /*
     A partir daqui, tem-se:
     listaArestaPorPeso: lista de arestas ordenadas por peso, sendo que peso(i) + peso(j) <= max
     matriz: matriz de adjacencia do grafo g, onde cada posicao [i][j] contem o peso da aresta que liga o no i ao no j
     */
-
+    bool flagVazio = false;
     while(cont < g->getOrdem()){
         
-        if(cont < 2*num_clusters){
+        if(cont < 2*num_clusters && !flagVazio){
             //Parte da inserção dos 2 * (num_clusters) vértices;
             
-            while(nosInseridos[listaArestaPorPeso.front().NoOrigem] != -1 || nosInseridos[listaArestaPorPeso.front().NoDest] != -1) {
+            cout << "Entrando no while..." << endl;
+            for (int i = 0; i < g->getOrdem(); i++)
+            {
+                cout << nosInseridos[i] << " ";
+            }
+            cout << endl;
+            while(!listaArestaPorPeso.empty() && (nosInseridos[listaArestaPorPeso.front().NoOrigem] != -1 || nosInseridos[listaArestaPorPeso.front().NoDest] != -1)) {
                 //Se algum dos caras da aresta tem valor diferente de -1, significa que já estão presentes em algum cluster. 
+                cout << listaArestaPorPeso.front().NoOrigem << " " << listaArestaPorPeso.front().NoDest << endl;
                 listaArestaPorPeso.pop_front();
             }
 
-            clusters[cont/2]->inserirNoCluster(g->findNoById(listaArestaPorPeso.front().NoOrigem));
-            nosInseridos[listaArestaPorPeso.front().NoOrigem] = cont/2;
-            clusters[cont/2]->inserirNoCluster(g->findNoById(listaArestaPorPeso.front().NoDest));
-            cout << listaArestaPorPeso.front().NoDest << endl;
-            nosInseridos[listaArestaPorPeso.front().NoDest] = cont/2;
-            listaArestaPorPeso.pop_front();
-            
-            cont += 2;
+            if(!listaArestaPorPeso.empty()){
+                
+                clusters[cont / 2]->inserirNoCluster(g->findNoById(listaArestaPorPeso.front().NoOrigem));
+                nosInseridos[listaArestaPorPeso.front().NoOrigem] = cont / 2;
+                clusters[cont / 2]->inserirNoCluster(g->findNoById(listaArestaPorPeso.front().NoDest));
+                nosInseridos[listaArestaPorPeso.front().NoDest] = cont / 2;
+                listaArestaPorPeso.pop_front();
+                cont += 2;
+                cout << "->" << cont << endl;
+            }else{
+                flagVazio = true;
+            }
         }else{
-            
-            if(cont == 2*num_clusters)
+            cout << cont << endl;
+            cout << "Chegou aqi" << endl;
+            if(cont == 2*num_clusters || flagVazio)
                 candidatos = rankeiaCandidatos(g, clusters, nosInseridos, matriz, num_clusters, min, max);
 
             
@@ -231,20 +247,22 @@ void guloso(Grafo *g, Cluster** clusters, int num_clusters,int min,int max){
             //     cout << std::get<0>(*it) << " " << std::get<1>(*it) << " " << std::get<2>(*it) << endl;
             // }
             // cout << "-------------------------><>" << endl;
-
-            // cout << "debug1" << endl;
-            // cout << candidatos.empty() << endl;
+            cout << "Candidatos" << endl;
+            for(std::forward_list<std::tuple<int, int, float>>::iterator it = candidatos.begin(); it != candidatos.end(); it++){
+                cout << std::get<0>(*it) << " " << std::get<1>(*it) << " " << std::get<2>(*it) << endl;
+            }
+            cout << endl;
             top = candidatos.front();
-            // cout << "debug2" << endl;
+            cout << "2" << endl;
             clusters[std::get<1>(top)]->inserirNoCluster(g->findNoById(std::get<0>(top)));
-            // cout << "debug3" << endl;
+            cout << "3" << endl;
             nosInseridos[std::get<0>(top)] = std::get<1>(top);
-            // cout << "debug4" << endl;
+            cout << "4" << endl;
             candidatos = atualizaCandidatos(g, clusters, nosInseridos, num_clusters, min, max, candidatos, matriz, std::get<0>(top), std::get<1>(top));
             cont++;
         }
     }
-    // cout << "Chegou aqui ?" << endl;
+
     float qualidadeSolucao = 0;
     for(int i = 0; i < num_clusters; i++){
         clusters[i]->getGrafo()->imprimirTodosNosAdjacentes();
@@ -253,17 +271,11 @@ void guloso(Grafo *g, Cluster** clusters, int num_clusters,int min,int max){
     }
     cout << "Qualidade desse negócio: " << qualidadeSolucao << endl;
     cout << solucao(clusters, num_clusters) << endl;
-    // cout << "Impressão da Solução" << endl;
-    // for(int i = 0; i < num_clusters; i++)
-    // {
-    //     cout << clusters[i]->getInseridos().max_size() << endl;
-    //     while(!clusters[i]->getInseridos().empty()){
-    //         cout << clusters[i]->getInseridos().front() << " ";
-    //         clusters[i]->getInseridos().pop_front();
-    //     }
-
-    //     cout << endl;
-    // }
+    for(int i = 0; i < num_clusters; i++){
+        cout << "Valor da soma de vertices: " << clusters[i]->getSumVertices() << endl;
+            
+    }
+    
 }
 
 
