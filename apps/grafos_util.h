@@ -579,4 +579,63 @@ Grafo *grafoComplementar(Grafo *grafo){
     return novoGrafo;
 }
 
+void criarArquivoDot(Grafo* grafo, const string& nomeArquivo) {
+    ofstream arquivo(nomeArquivo);
+    
+    if (!arquivo.is_open()) {
+        cout << "Erro ao criar o arquivo " << nomeArquivo << endl;
+        return;
+    }
+    
+    // Escrever cabeçalho do arquivo
+    arquivo << "graph Grafo {" << endl;  // Utilizamos "graph" em vez de "digraph"
+    
+    // Escrever nós
+    No* noAtual = grafo->getNoInicial();
+    while (noAtual != nullptr) {
+        arquivo << "    " << noAtual->getId() << " [label=\"" << noAtual->getId() << "\", ";
+        
+        // Se o nó tiver peso, escrever o atributo "peso"
+        if (grafo->ehPondNode()) {
+            arquivo << "peso=" << noAtual->getPeso() << "]";
+        } else {
+            arquivo << "]";
+        }
+        
+        arquivo << ";" << endl;
+        noAtual = noAtual->getProx();
+    }
+    
+    // Escrever arcos (arestas)
+    noAtual = grafo->getNoInicial();
+    while (noAtual != nullptr) {
+        Arco* arcoAtual = noAtual->getAdjacentes();
+        while (arcoAtual != nullptr) {
+            // Verificamos se o arco já foi visitado antes de escrever a aresta correspondente
+            // Para um grafo não direcionado, consideramos apenas um sentido para cada par de nós
+            if(noAtual->getId()<arcoAtual->getNodeDest()){
+                arquivo << "    " << noAtual->getId() << " -- " << grafo->findNoById(arcoAtual->getNodeDest())->getId();
+                
+                // Se a aresta (arco) tiver peso, escrever o atributo "peso"
+                if (grafo->ehPondAr()) {
+                    arquivo << " [label="<<arcoAtual->getPeso()<<", weight=" << arcoAtual->getPeso() << "]";
+                }
+                
+                arquivo << ";" << endl;
+            }   
+            
+            
+            arcoAtual = arcoAtual->getProx();
+        }
+        
+        noAtual = noAtual->getProx();
+    }
+    
+    // Fechar arquivo
+    arquivo << "}" << endl;
+    arquivo.close();
+    
+    cout << "Arquivo " << nomeArquivo << " criado com sucesso!" << endl;
+}
+
 #endif
