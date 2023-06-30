@@ -378,8 +378,7 @@ int main(int argc, char **argv)
     G->imprimirTodosNosAdjacentes();
     // cout << G->getOrdem();
     
-    cout << "Chegou no guloso\n";
-    guloso(G, clusters, 12, 75, 125);
+    guloso(G, clusters, 3, 3, 5);
     // float** matriz = floydWarshalAlgorithm(G);
     // cout << "---------------------------------------------" << endl;
     // for(int i = 0; i < G->getOrdem(); i++){
