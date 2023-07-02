@@ -16,7 +16,10 @@ Cluster::Cluster(int min, int max, Grafo *grafo, std::string type)
     this->sumVertices = 0;
     this->sumArestas = 0;
     this->numVertices = 0;
-    this->dentroIntervalo = false;
+    if(this->sumVertices <= max && this->sumVertices >= min)
+        this->dentroIntervalo = true;
+    else
+        this->dentroIntervalo = false;
     this->type = type;
     this->cluster_graph = new Grafo(grafo->getOrdem(), grafo->ehDir(), grafo->ehPondAr(), grafo->ehPondNode()); //Grafo que será induzido a paritr dos nós que serão adicionados no cluster
 }
@@ -36,6 +39,20 @@ bool Cluster::confereNosInseridos(int val){
     return false;
 }
 
+void Cluster::zeraCluster(Grafo *grafo){
+    this->cluster_graph = new Grafo(grafo->getOrdem(), grafo->ehDir(), grafo->ehPondAr(), grafo->ehPondNode());
+    while(!this->inseridos.empty()){
+        this->inseridos.pop_front();
+    }
+    this->sumVertices = 0;
+    this->sumArestas = 0;
+    this->numVertices = 0;
+    if(this->sumVertices <= max && this->sumVertices >= min)
+        this->dentroIntervalo = true;
+    else
+        this->dentroIntervalo = false;
+}
+
 void Cluster::inserirNoCluster(No* nodeToInsert){
     this->cluster_graph->inserirNo(nodeToInsert->getId(), nodeToInsert->getPeso());
     
@@ -47,18 +64,14 @@ void Cluster::inserirNoCluster(No* nodeToInsert){
     }
     
     sumVertices += nodeToInsert->getPeso();
+
     if(sumVertices >= this->min && sumVertices <= this->max)
         this->dentroIntervalo = true;
     else
         this->dentroIntervalo = false;
     
     this->inseridos.push_front(nodeToInsert->getId());
-    //! entender depois o problema grave relacionado a esse print
-    // for(std::forward_list<int>::iterator it = this->inseridos.begin(); it != this->inseridos.end(); it++){
-    //             cout << (*it) << " ";
-    // }
-    // cout << endl;
-    // cout << "--------" << endl;
+    
     this->numVertices++; 
 }
 

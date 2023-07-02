@@ -10,7 +10,8 @@
 #include <stdlib.h>     /* srand, rand */
 #include <time.h>       /* time */
 #include <sstream>
-
+#include <iostream>
+#include <cmath>
 using namespace std;
 
 //Algoritmo Guloso
@@ -130,7 +131,6 @@ std::forward_list<std::tuple<int, int, float, int>> rankeiaCandidatos(Grafo *g, 
                         float residuo = max - clusters[j]->getSumVertices() - analisado->getPeso();
                         float criterioAux = (auxContribuicao * residuo) / analisado->getPeso();
 
-                        //* Tupla consiste na quadrupla: id do nó que ainda não foi inserido em nenhum cluster, id do cluster, contribuição para o cluster, peso do nó.
                         std::tuple<int, int, float, int> tup;
                         
                         tup = std::make_tuple(i, j, criterioAux, analisado->getPeso());
@@ -292,7 +292,7 @@ void guloso(Grafo *g, Cluster** clusters, int num_clusters,float min,float max){
         qualidadeSolucao += clusters[i]->getSumArestas();
 
         }
-
+        
         arq << "É uma solução ? " << boolalpha << solucao(clusters, num_clusters) << endl;
         arq << "Qualidade da nossa solução: " << qualidadeSolucao << endl;
         for(int i = 0; i < num_clusters; i++){
@@ -303,31 +303,383 @@ void guloso(Grafo *g, Cluster** clusters, int num_clusters,float min,float max){
     
 }
 
+int randomRange(int num_candidatos, float alfa){
+    int mod = ceil(alfa * num_candidatos);
+    return rand() % mod;
+}
 
+//Função para copiar o cluster.
+Cluster** copiaClusters(Cluster **cluster, int num_clusters, Grafo *g){
+    Cluster** newCluster = new Cluster*[num_clusters];
+    for(int i = 0; i < num_clusters; i++){
+        std::forward_list<int> nosInseridos = cluster[i]->getInseridos();
+        newCluster[i] = new Cluster(cluster[i]->getMin(), cluster[i]->getMax(), g, cluster[i]->getType());
+        
+        for(std::forward_list<int>::iterator it = nosInseridos.begin(); it != nosInseridos.end(); it++){
+            newCluster[i]->inserirNoCluster(g->findNoById((*it)));
+        }
+    }
+    return newCluster;
+}
 
-//Algoritmo Guloso Randomizado
-void gulosoRandomizado(){
-// int nosNaoInseridos = 0;
-// for(int i = 0; i < g->getOrdem(); i++){
-//     if(nosInseridos[i] == -1){
-//         nosNaoInseridos++;
-//     }
-// }
-// float **matrizDecisao = new float*[nosNaoInseridos];
-// for(int i = 0; i < nosNaoInseridos; i++){
-//     matrizDecisao[i] = new float[num_clusters];
-//     for(int j = 0; j < num_clusters; j++){
-//         matrizDecisao[i][j] = 0;
-//     }
-// }
+float calculaQualidadeSolucao(Cluster **cluster, int num_clusters){
+    float qualidade = 0;
+    for(int i = 0; i < num_clusters; i++){
+        qualidade += cluster[i]->getSumArestas();
+    }
+    return qualidade;
 }
 
 
+/*
+    '''Dado um grafo g e um vetor com os clusters, essa função será capaz de devolver em um arquivo .txt uma solução aproximada para o problema de clusterização capacitada. Nesse arquivo, estarão contidos a soma dos pesos das arestas de cada cluster, nós que cada cluster possui, e soma total das arestas dos clusters (Qualidade da solução).''' 
 
-//Algoritmo Guloso Randomizado Reativo
-void gulosoRandomizadoReativo(){
+    ? g: Grafo que será analisado
+    ? param clusters: Vetor de clusters instanciado durante a leitura do arquivo de instâncias do problema
+    ? param num_clusters: Inteiro que representa o tamanho do vetor de clusters
+    ? param min, max: Inteiros que representam o valor máximo e mínimo do intervalo dos clusters
+*/
+void gulosoRandomizado(Grafo *g, Cluster **clusters, int num_clusters, int min, int max, float alfa, int num_iteracoes){
 
+    srand(time(NULL));
+
+    // Matriz para saber o peso da aresta entre os nós i e j
+    int **matriz = new int *[g->getOrdem()];
+
+    std::tuple<int, int, float, int> top;
+
+    std::forward_list<std::tuple<int, int, float, int>> candidatos;
+
+    for (int i = 0; i < g->getOrdem(); i++)
+    {
+        matriz[i] = new int[g->getOrdem()];
+        for (int j = 0; j < g->getOrdem(); j++)
+        {
+            matriz[i][j] = 0;
+        }
+    }
+    inicializaMatriz(g, max, matriz);
+
+    int *inicializacaoIndices = new int[num_clusters];
+
+    int *nosInseridos = new int[g->getOrdem()];
+    for (int i = 0; i < g->getOrdem(); i++)
+    {
+        nosInseridos[i] = -1; // Flag -1 indica que ainda não foi inserido
+    }
+
+    for (int i = 0; i < num_clusters; i++)
+    {
+        int idRandom = rand() % g->getOrdem(); //Id de um nó
+        while (nosInseridos[idRandom] != -1)
+        {
+            idRandom = rand() % g->getOrdem();
+        }
+        inicializacaoIndices[i] = idRandom; //Para cada indice que representa o indice de um cluster, nessa posição estará o valor de qual nó que o inicializará. 
+        nosInseridos[idRandom] = i; //Na posição idRandom que é o id de um nó eu taco qual cluster que ele vai entrar
+    }
+
+    int k = 0;
+
+    Cluster** melhorSolucao = nullptr;
+
+    while (k < num_iteracoes)
+    {
+        cout << "Valor de k -> "  << k << endl;
+
+        // Inicialização dos num_clusters com nós aleatórios.
+        int cont;
+        for (cont = 0; cont < num_clusters; cont++)
+        {
+            clusters[cont]->inserirNoCluster(g->findNoById(inicializacaoIndices[cont]));
+            nosInseridos[inicializacaoIndices[cont]] = cont; //Reinicializar de novo
+        }
+
+        // Cont vai chegar aqui valendo num_clusters
+
+        candidatos = rankeiaCandidatos(g, clusters, nosInseridos, matriz, num_clusters, min, max);
+
+        
+        while (cont < g->getOrdem() && !candidatos.empty())
+        {
+
+            // cout << "~~~~~~~~~~~~~~~~Candidatos~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+            // for (std::forward_list<std::tuple<int, int, float, int>>::iterator it = candidatos.begin(); it != candidatos.end(); it++)
+            // {
+            //     cout << "Id nó: " << std::get<0>(*it) << " Id do cluster: " << std::get<1>(*it) << " Contribuição: " << std::get<2>(*it) << endl;
+            // }
+            // cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+
+            // cout << "Debug 1\n";
+            
+            int index = randomRange(std::distance(candidatos.begin(), candidatos.end()), alfa);
+            std::tuple<int, int, float, int> top;
+            int contador = 0;
+
+            for (std::forward_list<std::tuple<int, int, float, int>>::iterator it = candidatos.begin(); it != candidatos.end(); it++)
+            {
+                if (index == contador)
+                {
+                    top = (*it);
+                    break;
+                }
+                else
+                {
+                    contador++;
+                }
+            }
+
+            // cout << "Id do nó que está inserindo: " << std::get<0>(top) << endl;
+            clusters[std::get<1>(top)]->inserirNoCluster(g->findNoById(std::get<0>(top)));
+
+            // cout << "Debug 3\n";
+            nosInseridos[std::get<0>(top)] = std::get<1>(top);
+
+            // cout << "Debug 4\n";
+            candidatos = atualizaCandidatos(g, clusters, nosInseridos, num_clusters, min, max, candidatos, matriz, std::get<0>(top), std::get<1>(top));
+
+            cont += 1;
+        }
+
+        if(melhorSolucao == nullptr && solucao(clusters, num_clusters)){
+            melhorSolucao = copiaClusters(clusters, num_clusters, g);
+        }else{
+            if(solucao(clusters, num_clusters) && calculaQualidadeSolucao(clusters, num_clusters) > calculaQualidadeSolucao(melhorSolucao, num_clusters)){
+                melhorSolucao = copiaClusters(clusters, num_clusters, g);
+            }
+        }
+
+        k++;
+
+        //Zera todos os clusters para a próxima iteração.
+        for(int i = 0; i < g->getOrdem(); i++){
+            if(i < num_clusters){
+                clusters[i]->zeraCluster(g); 
+            }
+            nosInseridos[i] = -1; //Resetar
+        }
+
+    }
+
+    if(melhorSolucao == nullptr)
+        cout << "Avisando que saiu do laço while mais cabuloso\n";
+
+
+    float qualidadeSolucao = 0;
+
+    ofstream arq("../saidaGuloso2.txt");
+    if (arq.is_open())
+    {
+
+        for (int i = 0; i < num_clusters; i++)
+        {
+            arq << "-------------Cluster Analisado: " << i << "--------------------" << endl;
+
+            No *aux = melhorSolucao[i]->getGrafo()->getNoInicial();
+
+            if (aux != NULL)
+            {
+                while (aux != NULL)
+                {
+                    Arco *arcoAux = aux->getAdjacentes();
+                    arq << "Nós adjacentes ao nó: " << aux->getId() << endl;
+                    while (arcoAux != NULL)
+                    {
+                        arq << "NO DESTINO ID: " << arcoAux->getNodeDest() << " PESO DA ARESTA: " << arcoAux->getPeso() << endl;
+                        arcoAux = arcoAux->getProx();
+                    }
+                    aux = aux->getProx();
+                }
+            }
+
+            qualidadeSolucao += melhorSolucao[i]->getSumArestas();
+        }
+
+        arq << "É uma solução ? " << boolalpha << solucao(melhorSolucao, num_clusters) << endl;
+        arq << "Qualidade da nossa solução: " << qualidadeSolucao << endl;
+        for (int i = 0; i < num_clusters; i++)
+        {
+            arq << "Valor da soma de vertices-> " << melhorSolucao[i]->getSumVertices() << " para o cluster de id ->" << i << endl;
+        }
+    }
+    
+    arq.close();
 }
+
+
+/*
+    '''Dado um grafo g e um vetor com os clusters, essa função será capaz de devolver em um arquivo .txt uma solução aproximada para o problema de clusterização capacitada. Nesse arquivo, estarão contidos a soma dos pesos das arestas de cada cluster, nós que cada cluster possui, e soma total das arestas dos clusters (Qualidade da solução).''' 
+
+    ? g: Grafo que será analisado
+    ? param clusters: Vetor de clusters instanciado durante a leitura do arquivo de instâncias do problema
+    ? param num_clusters: Inteiro que representa o tamanho do vetor de clusters
+    ? param min, max: Inteiros que representam o valor máximo e mínimo do intervalo dos clusters
+*/
+// void gulosoRandomizadoReativo(Grafo *g, Cluster **clusters, int num_clusters, int min, int max, float *alfa, int num_iteracoes, int bloco){
+//     srand(time(NULL));
+
+//     // Matriz para saber o peso da aresta entre os nós i e j
+//     int **matriz = new int *[g->getOrdem()];
+
+//     std::tuple<int, int, float, int> top;
+
+//     std::forward_list<std::tuple<int, int, float, int>> candidatos;
+
+//     for (int i = 0; i < g->getOrdem(); i++)
+//     {
+//         matriz[i] = new int[g->getOrdem()];
+//         for (int j = 0; j < g->getOrdem(); j++)
+//         {
+//             matriz[i][j] = 0;
+//         }
+//     }
+//     inicializaMatriz(g, max, matriz);
+
+//     int *inicializacaoIndices = new int[num_clusters];
+
+//     int *nosInseridos = new int[g->getOrdem()];
+//     for (int i = 0; i < g->getOrdem(); i++)
+//     {
+//         nosInseridos[i] = -1; // Flag -1 indica que ainda não foi inserido
+//     }
+
+//     for (int i = 0; i < num_clusters; i++)
+//     {
+//         int idRandom = rand() % g->getOrdem(); //Id de um nó
+//         while (nosInseridos[idRandom] != -1)
+//         {
+//             idRandom = rand() % g->getOrdem();
+//         }
+//         inicializacaoIndices[i] = idRandom; //Para cada indice que representa o indice de um cluster, nessa posição estará o valor de qual nó que o inicializará. 
+//         nosInseridos[idRandom] = i; //Na posição idRandom que é o id de um nó eu taco qual cluster que ele vai entrar
+//     }
+
+//     int k = 0;
+
+//     Cluster** melhorSolucao = nullptr;
+
+//     while (k < num_iteracoes)
+//     {
+//         cout << "Valor de k -> "  << k << endl;
+
+//         // Inicialização dos num_clusters com nós aleatórios.
+//         int cont;
+//         for (cont = 0; cont < num_clusters; cont++)
+//         {
+//             clusters[cont]->inserirNoCluster(g->findNoById(inicializacaoIndices[cont]));
+//             nosInseridos[inicializacaoIndices[cont]] = cont; //Reinicializar de novo
+//         }
+
+//         // Cont vai chegar aqui valendo num_clusters
+
+//         candidatos = rankeiaCandidatos(g, clusters, nosInseridos, matriz, num_clusters, min, max);
+
+        
+//         while (cont < g->getOrdem() && !candidatos.empty())
+//         {
+
+//             // cout << "~~~~~~~~~~~~~~~~Candidatos~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+//             // for (std::forward_list<std::tuple<int, int, float, int>>::iterator it = candidatos.begin(); it != candidatos.end(); it++)
+//             // {
+//             //     cout << "Id nó: " << std::get<0>(*it) << " Id do cluster: " << std::get<1>(*it) << " Contribuição: " << std::get<2>(*it) << endl;
+//             // }
+//             // cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+
+//             // cout << "Debug 1\n";
+            
+//             int index = randomRange(std::distance(candidatos.begin(), candidatos.end()), alfa);
+//             std::tuple<int, int, float, int> top;
+//             int contador = 0;
+
+//             for (std::forward_list<std::tuple<int, int, float, int>>::iterator it = candidatos.begin(); it != candidatos.end(); it++)
+//             {
+//                 if (index == contador)
+//                 {
+//                     top = (*it);
+//                     break;
+//                 }
+//                 else
+//                 {
+//                     contador++;
+//                 }
+//             }
+
+//             // cout << "Id do nó que está inserindo: " << std::get<0>(top) << endl;
+//             clusters[std::get<1>(top)]->inserirNoCluster(g->findNoById(std::get<0>(top)));
+
+//             // cout << "Debug 3\n";
+//             nosInseridos[std::get<0>(top)] = std::get<1>(top);
+
+//             // cout << "Debug 4\n";
+//             candidatos = atualizaCandidatos(g, clusters, nosInseridos, num_clusters, min, max, candidatos, matriz, std::get<0>(top), std::get<1>(top));
+
+//             cont += 1;
+//         }
+
+//         if(melhorSolucao == nullptr && solucao(clusters, num_clusters)){
+//             melhorSolucao = copiaClusters(clusters, num_clusters, g);
+//         }else{
+//             if(solucao(clusters, num_clusters) && calculaQualidadeSolucao(clusters, num_clusters) > calculaQualidadeSolucao(melhorSolucao, num_clusters)){
+//                 melhorSolucao = copiaClusters(clusters, num_clusters, g);
+//             }
+//         }
+
+//         k++;
+
+//         //Zera todos os clusters para a próxima iteração.
+//         for(int i = 0; i < g->getOrdem(); i++){
+//             if(i < num_clusters){
+//                 clusters[i]->zeraCluster(g); 
+//             }
+//             nosInseridos[i] = -1; //Resetar
+//         }
+
+//     }
+
+//     if(melhorSolucao == nullptr)
+//         cout << "Avisando que saiu do laço while mais cabuloso\n";
+
+
+//     float qualidadeSolucao = 0;
+
+//     ofstream arq("../saidaGuloso2.txt");
+//     if (arq.is_open())
+//     {
+
+//         for (int i = 0; i < num_clusters; i++)
+//         {
+//             arq << "-------------Cluster Analisado: " << i << "--------------------" << endl;
+
+//             No *aux = melhorSolucao[i]->getGrafo()->getNoInicial();
+
+//             if (aux != NULL)
+//             {
+//                 while (aux != NULL)
+//                 {
+//                     Arco *arcoAux = aux->getAdjacentes();
+//                     arq << "Nós adjacentes ao nó: " << aux->getId() << endl;
+//                     while (arcoAux != NULL)
+//                     {
+//                         arq << "NO DESTINO ID: " << arcoAux->getNodeDest() << " PESO DA ARESTA: " << arcoAux->getPeso() << endl;
+//                         arcoAux = arcoAux->getProx();
+//                     }
+//                     aux = aux->getProx();
+//                 }
+//             }
+
+//             qualidadeSolucao += melhorSolucao[i]->getSumArestas();
+//         }
+
+//         arq << "É uma solução ? " << boolalpha << solucao(melhorSolucao, num_clusters) << endl;
+//         arq << "Qualidade da nossa solução: " << qualidadeSolucao << endl;
+//         for (int i = 0; i < num_clusters; i++)
+//         {
+//             arq << "Valor da soma de vertices-> " << melhorSolucao[i]->getSumVertices() << " para o cluster de id ->" << i << endl;
+//         }
+//     }
+    
+//     arq.close();
+// }
 
 
 

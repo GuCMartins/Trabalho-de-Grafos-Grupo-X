@@ -24,11 +24,18 @@ public:
 
     int getMin(){return min;};
     int getMax(){return max;};
-
-    bool getDentroIntervalo(){return dentroIntervalo;};
+    std::string getType() {return this->type;};
+    bool getDentroIntervalo(){
+        if(this->sumVertices <= max && this->sumVertices >= min) 
+            return true; 
+        else 
+            return false;
+    };
 
     float getSumVertices(){return sumVertices;};
     float getSumArestas(){return sumArestas;};
+
+    void zeraCluster(Grafo *grafo);
 
     int getOrdem(){return cluster_graph->getOrdem();};
 

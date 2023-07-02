@@ -379,7 +379,8 @@ int main(int argc, char **argv)
     G->imprimirTodosNosAdjacentes();
     // cout << G->getOrdem();
     
-    cout << "Entrou no guloso\n";
-    guloso(G, clusters, 8, 25, 75);   
+    cout << "Entrou no guloso randomizado\n";
+    guloso(G, clusters, 12, 75, 125);
+    // gulosoRandomizado(G, clusters, 12, 75, 125, 0.35, 30);   
     return 0;
 }
