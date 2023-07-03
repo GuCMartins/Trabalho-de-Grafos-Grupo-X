@@ -14,7 +14,19 @@ Grafo::Grafo(int ordem, bool direc, bool pondAresta, bool pondNode)
     this->numArcos = 0;
 }
 Grafo::~Grafo() {
-    //Percorrer e ficar dando delete nesse treco
+    No *aux = noInicial;
+    if (aux != NULL)
+    {
+        while (aux != NULL)
+        {
+            this->removerNo(aux->getId());
+            aux = aux->getProx();
+        }
+    }
+    else
+    {
+        cout << "Grafo não tem nó inicial..." << endl;
+    }
 }
 
 void Grafo::inserirNo(int idNode, float pesoNode)
@@ -104,7 +116,7 @@ void Grafo::removerNo(int idNode)
     //se não encontrar, retorna; 
     if (noRemover == NULL)
     {
-        cout << "O nó " << idNode << " não existe no grafo e não pode ser removido..." << endl;
+        //cout << "O nó " << idNode << " não existe no grafo e não pode ser removido..." << endl;
         return;
     }
 
@@ -114,7 +126,7 @@ void Grafo::removerNo(int idNode)
     // removo o nó e retorno
     if (adjacentes == NULL)
     {
-        cout << "Nó não tem arcos, removendo só o nó " << idNode << endl;
+        //cout << "Nó não tem arcos, removendo só o nó " << idNode << endl;
         
         //removendo do meio da lista, então atualizo o proximo do nó anterior
         if (predecessor != NULL)
@@ -130,7 +142,7 @@ void Grafo::removerNo(int idNode)
         // removo todas as ocorrências do nó nas outras adjacências
         No *aux;
         while(adjacentes!=NULL){
-            cout <<"Removendo ocorrencias do  "<<idNode<<" no nó"<<adjacentes->getNodeDest()<<endl;
+            // cout <<"Removendo ocorrencias do  "<<idNode<<" no nó"<<adjacentes->getNodeDest()<<endl;
             
             aux = findNoById(adjacentes->getNodeDest());
             auxRemoverArco(aux, idNode);
@@ -139,8 +151,7 @@ void Grafo::removerNo(int idNode)
             adjacentes = adjacentes->getProx();
         }
     }else{
-        //TODO: decrementar grau de entrada dos nós adjacentes removidos
-        No *auxNo ;
+        No *auxNo;
         Arco *auxAdj = adjacentes;
         while (adjacentes != NULL)
         {
@@ -148,7 +159,7 @@ void Grafo::removerNo(int idNode)
             auxNo->decrementaGrauEntrada(1);
             
             auxAdj = adjacentes->getProx();
-            cout <<"DELETANDO "<<adjacentes->getNodeDest()<<endl;
+            //cout <<"DELETANDO "<<adjacentes->getNodeDest()<<endl;
             delete adjacentes;
             adjacentes = auxAdj;
         }
@@ -199,7 +210,7 @@ void Grafo::auxRemoverArco(No *noOrigem, int idNoDestino)
     Arco *busca = noOrigem->getAdjacentes();
     if (busca == NULL)
     {
-        cout << "Nó " << noOrigem->getId() << " não tem adjacente..." << endl;
+        //cout << "Nó " << noOrigem->getId() << " não tem adjacente..." << endl;
         return;
     }
 
@@ -213,13 +224,13 @@ void Grafo::auxRemoverArco(No *noOrigem, int idNoDestino)
 
     if (busca->getNodeDest() != idNoDestino)
     {
-        cout << "O arco " << idNoDestino << " não existe como adjacente do no " << noOrigem->getId() << endl;
+        //cout << "O arco " << idNoDestino << " não existe como adjacente do no " << noOrigem->getId() << endl;
         return;
     }
 
     if (predecessor == NULL)
     {
-        cout << "Removendo primeiro adjacente..." << endl;
+        //cout << "Removendo primeiro adjacente..." << endl;
         noOrigem->setAdjacente(busca->getProx());
         delete busca;
         return;
@@ -271,6 +282,13 @@ void Grafo::imprimirTodosNosAdjacentes()
     }
 }
 
+void Grafo::imprimirInfo(){
+    cout <<"Ordem: "<<this->getOrdem()<<endl;
+    cout <<"Num Arcos: "<<this->getNumArcos()<<endl;
+    cout <<"Eh direcionado: "<<boolalpha<<this->ehDirecionado()<<endl;
+    cout <<"Eh ponderado nas Arestas: "<<boolalpha<<this->ehPondAr()<<endl;
+    cout <<"Eh ponderado nos nós: "<<boolalpha<<this->ehPondNode()<<endl;
+}
 void Grafo::imprimirListaNosAdjacentes(int idNo)
 {
     No *no = findNoById(idNo);
@@ -289,7 +307,7 @@ void Grafo::imprimirListaNosAdjacentes(int idNo)
     cout << "Nós adjacentes ao nó: " << idNo << endl;
     while (arco != NULL)
     {
-        cout << "NO DESTINO ID: " << arco->getNodeDest() << " PESO DA ARESTA: " << arco->getPeso() << endl;
+        cout << "\tNO DESTINO ID: " << arco->getNodeDest() << " PESO DA ARESTA: " << arco->getPeso() << endl;
         arco = arco->getProx();
     }
 }

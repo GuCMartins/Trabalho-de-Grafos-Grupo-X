@@ -27,6 +27,7 @@ public:
     void imprimirListaNos();
     void imprimirListaNosAdjacentes(int idNo);
     void imprimirTodosNosAdjacentes();
+    void imprimirInfo();
 
     bool ehDirecionado() {return direcionado;};
     void setNumArcos(int numArcos) { this->numArcos = numArcos;};
