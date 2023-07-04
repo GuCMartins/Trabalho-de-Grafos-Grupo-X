@@ -120,7 +120,6 @@ std::forward_list<std::tuple<int, int, float, int>> rankeiaCandidatos(Grafo *g, 
     // Para cada nó
     for (int i = 0; i < g->getOrdem(); i++)
     {
-
         melhorContribuicao = 0;
         melhorCluster = 0;
         // Se não estiver em algum cluster
@@ -129,6 +128,7 @@ std::forward_list<std::tuple<int, int, float, int>> rankeiaCandidatos(Grafo *g, 
 
             // Para cada cluster
             No *analisado = g->findNoById(i); //-> Nó que está sendo analisado no momento
+
             for (int j = 0; j < num_clusters; j++)
             {
 
@@ -381,6 +381,9 @@ Cluster **copiaClusters(Cluster **cluster, int num_clusters, Grafo *g)
     return newCluster;
 }
 
+/*
+    Soma o peso das arestas de cada cluster
+*/
 float calculaQualidadeSolucao(Cluster **cluster, int num_clusters)
 {
     float qualidade = 0;
@@ -406,8 +409,6 @@ void gulosoRandomizado(Grafo *g, Cluster **clusters, int num_clusters, int min, 
 
     // Matriz para saber o peso da aresta entre os nós i e j
     int **matriz = new int *[g->getOrdem()];
-
-    std::tuple<int, int, float, int> top;
 
     std::forward_list<std::tuple<int, int, float, int>> candidatos;
 
@@ -580,36 +581,43 @@ void gulosoRandomizado(Grafo *g, Cluster **clusters, int num_clusters, int min, 
     arq.close();
 }
 
-void inicializaVetores(float *P, float *M, int *escolhasAlpha,float *somaSolucoes,BestSol *solBest, int m)
+void inicializaVetores(float *P, float *M, int *escolhasAlfa, float *somaSolucoes, BestSol *solBest, int m)
 {
     for (int i = 0; i < m; i++)
     {
-        
-        P[i] = 1.0 / m;
+
+        P[i] = 1.0 / m; // inicia todos com a mesma probabilidade
         M[i] = 0;
-        escolhasAlpha[i] = 0;
+        escolhasAlfa[i] = 0;
         somaSolucoes[i] = 0;
         solBest[i].melhorSolucao = 0;
     }
 }
 
-void atualizaProbabilidades(float *P, float *medias, float *alfa, BestSol *solBest, int m)
+void atualizaProbabilidades(float *P, float *medias, float *alfa, BestSol solBest, int m)
 {
-
     float q[m];
     float soma = 0;
     for (int i = 0; i < m; i++)
     {
-        if(medias[i]!=0){
-            q[i] = pow(solBest[i].melhorSolucao / medias[i], 10);
+        q[i] = 0;
+        if (medias[i] != 0)
+        {
+            q[i] = solBest.melhorSolucao / medias[i];
+            q[i] = pow(q[i], 10);
             soma += q[i];
         }
     }
 
-    for (int j = 0; j < m; j++)
+    for (int i = 0; i < m; i++)
     {
-        if(soma!=0)
-            P[j] = q[j] / soma;
+        // apenas se calculou o q[i], ou seja, se o vetor de médias é diferente de 0
+        // muda a probabilidade de todos os alfas
+        if (q[i] != 0)
+        {
+            // cout <<"atualizou"<<endl;
+            P[i] = q[i] / soma;
+        }
     }
 }
 
@@ -625,18 +633,20 @@ int escolheAlfa(float *P, int tamVetAlfa)
             return i;
         }
     }
-    cout <<"Erro: Não era para ter caido aqui: "<<endl;
-    cout<<"K SORTEADO: "<<k<<endl;
-    cout<<"SOMA: "<<soma<<endl;
-    for (int i = 0; i < tamVetAlfa; i++){
-        cout <<"P[i]: "<<P[i]<<endl;
+
+    cout << "Erro: Não era para ter caido aqui " << endl;
+    cout << "K SORTEADO: " << k << endl;
+    cout << "SOMA: " << soma << endl;
+    for (int i = 0; i < tamVetAlfa; i++)
+    {
+        cout << "P[i]: " << P[i] << endl;
     }
     exit(1);
     return 0;
 }
 
-void atualizaMedias(float *M, float s, float *alfas){
-
+void atualizaMedias(float *M, float s, float *alfas)
+{
 }
 
 /*
@@ -654,15 +664,16 @@ void gulosoRandomizadoReativo(Grafo *g, Cluster **clusters, int num_clusters, in
     // Matriz para saber o peso da aresta entre os nós i e j
     int **matriz = new int *[g->getOrdem()];
 
-    float P[m];//probabilidades dos alfas
-    float somaSolucoes[m];//soma acumulado das soluções
-    float medias[m];// Média para cada alfa
-    int escolhasAlpha[m];//armazena em cada posição quantas vezes o alfa i foi escolhido => fazer a média posteriormente
+    float P[m];            // probabilidades dos alfas
+    float somaSolucoes[m]; // soma acumulada das soluções
+    float medias[m];       // Média para cada alfa
+    int escolhasAlfa[m];   // armazena em cada posição quantas vezes o alfa i foi escolhido => fazer a média posteriormente
     BestSol solBest[m];
+    BestSol melhorSolucaoGeral;
+    melhorSolucaoGeral.melhorSolucao = 0;
 
-    inicializaVetores(P, medias, escolhasAlpha, somaSolucoes, solBest, m);
 
-    std::tuple<int, int, float, int> top;
+    inicializaVetores(P, medias, escolhasAlfa, somaSolucoes, solBest, m);
 
     std::forward_list<std::tuple<int, int, float, int>> candidatos;
 
@@ -674,7 +685,7 @@ void gulosoRandomizadoReativo(Grafo *g, Cluster **clusters, int num_clusters, in
             matriz[i][j] = 0;
         }
     }
-   
+
     inicializaMatriz(g, matriz);
 
     int *inicializacaoIndices = new int[num_clusters];
@@ -697,22 +708,23 @@ void gulosoRandomizadoReativo(Grafo *g, Cluster **clusters, int num_clusters, in
     }
 
     int k = 0;
-
     Cluster **melhorSolucao = nullptr;
-
+    ofstream arqAlfas("../alfas.txt");
+    
+    int indexAlfa;
+    float alfa;
     while (k < num_iteracoes)
     {
-        cout << "Valor de k -> " << k << endl;
+        // cout << "Valor de k -> " << k << endl;
+
         // k != 0 para evitar divisão por 0 na primeira iteração
         if (k % bloco && k != 0)
         {
-            //Atualização das médias
-            for(int i=0;i<m;i++){
-                if(escolhasAlpha[i]!=0){
-                    medias[i] = somaSolucoes[i] / escolhasAlpha[i];
-                }
-            }
-            atualizaProbabilidades(P, medias, alfas, solBest, m);
+            // DÚVIDA: só atualizar as probabilidades quando a solucao for melhorada???
+            //   a cada iteração as medias são atualizadas, mas não necessariamente o solBest é atualizado
+            medias[indexAlfa] = somaSolucoes[indexAlfa] / escolhasAlfa[indexAlfa]; // som das solucoes pelo numero de vezes que o alfa i foi escolhido
+            //atualizaProbabilidades(P, medias, alfas, solBest, m);
+            atualizaProbabilidades(P, medias, alfas, melhorSolucaoGeral, m);
         }
 
         // Inicialização dos num_clusters com nós aleatórios.
@@ -727,13 +739,20 @@ void gulosoRandomizadoReativo(Grafo *g, Cluster **clusters, int num_clusters, in
 
         candidatos = rankeiaCandidatos(g, clusters, nosInseridos, matriz, num_clusters, min, max);
 
-        int indexAlfa = escolheAlfa(P, m);
-        escolhasAlpha[indexAlfa] = escolhasAlpha[indexAlfa]+1;
-        float alfa = alfas[indexAlfa];
+        indexAlfa = escolheAlfa(P, m);
+        alfa = alfas[indexAlfa];
 
+        arqAlfas << "ALFA ESCOLHIDO: " << alfa << endl;
+        arqAlfas << "Probabilidades" << endl;
+        for (int i = 0; i < m; i++)
+        {
+            arqAlfas << "\t[" << alfas[i] << " , " << P[i] << "]" << endl;
+        }
+        arqAlfas << endl;
+
+        // Loop para encontrar uma solução com alfa e armazenar na variável clusters
         while (cont < g->getOrdem() && !candidatos.empty())
         {
-
             // cout << "~~~~~~~~~~~~~~~~Candidatos~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
             // for (std::forward_list<std::tuple<int, int, float, int>>::iterator it = candidatos.begin(); it != candidatos.end(); it++)
             // {
@@ -770,30 +789,40 @@ void gulosoRandomizadoReativo(Grafo *g, Cluster **clusters, int num_clusters, in
             candidatos = atualizaCandidatos(g, clusters, nosInseridos, num_clusters, min, max, candidatos, matriz, std::get<0>(top), std::get<1>(top));
 
             cont += 1;
-        
         }
 
-        if(solucao(clusters, num_clusters)){
-            float qualidadeSol = calculaQualidadeSolucao(clusters, num_clusters);
-            somaSolucoes[indexAlfa] = somaSolucoes[indexAlfa]+qualidadeSol;
-            if(solBest[indexAlfa].melhorSolucao<qualidadeSol){
-                solBest[indexAlfa].melhorSolucao = qualidadeSol;
-            }
-        }
+        if (solucao(clusters, num_clusters))
+        {
+            // cout <<"Encontrou uma solução para alfa = "<<alfa<<" na iteração k = "<<k<<endl;
+            float qualidadeSolAtual = calculaQualidadeSolucao(clusters, num_clusters);
+            escolhasAlfa[indexAlfa] = escolhasAlfa[indexAlfa] + 1;                 // só incrementa o alfa utilizado, se for encontrada uma solução viável
+            somaSolucoes[indexAlfa] = somaSolucoes[indexAlfa] + qualidadeSolAtual; // acumula a soma das soluções para esse alfa escolhido
 
-        if (melhorSolucao == nullptr && solucao(clusters, num_clusters))
-        {
-            melhorSolucao = copiaClusters(clusters, num_clusters, g);
-        }
-        else
-        {
-            if (solucao(clusters, num_clusters) && calculaQualidadeSolucao(clusters, num_clusters) > calculaQualidadeSolucao(melhorSolucao, num_clusters))
+            if (melhorSolucao == nullptr) // primeira solução
             {
                 melhorSolucao = copiaClusters(clusters, num_clusters, g);
+                // solBest[indexAlfa].melhorSolucao = qualidadeSolAtual;
+                melhorSolucaoGeral.melhorSolucao = qualidadeSolAtual;
             }
+            else if (qualidadeSolAtual > calculaQualidadeSolucao(melhorSolucao, num_clusters))
+            {
+                melhorSolucao = copiaClusters(clusters, num_clusters, g);
+                //solBest[indexAlfa].melhorSolucao = qualidadeSolAtual;
+                melhorSolucaoGeral.melhorSolucao = qualidadeSolAtual;
+            }
+
+            // DÚVIDA: só calcular média se achar solução?
+            // medias[indexAlfa] = somaSolucoes[indexAlfa] / escolhasAlfa[indexAlfa]; // som das solucoes pelo numero de vezes que o alfa i foi escolhido
         }
 
-        k++;
+        // //Atualização das médias de todos alfas
+        // for (int i = 0; i < m; i++)
+        // {
+        //     if (escolhasAlfa[i] != 0)
+        //     {
+        //         medias[i] = somaSolucoes[i] / escolhasAlfa[i];
+        //     }
+        // }
 
         // Zera todos os clusters para a próxima iteração.
         for (int i = 0; i < g->getOrdem(); i++)
@@ -804,13 +833,15 @@ void gulosoRandomizadoReativo(Grafo *g, Cluster **clusters, int num_clusters, in
             }
             nosInseridos[i] = -1; // Resetar
         }
-    }
 
-    if (melhorSolucao == nullptr){
-        cout <<"Não encontrou solução..."<<endl;
+        k++;
+    }
+    arqAlfas.close();
+    if (melhorSolucao == nullptr)
+    {
+        cout << "Não encontrou solução..." << endl;
         exit(1);
     }
-        
 
     float qualidadeSolucao = 0;
 
