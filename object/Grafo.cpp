@@ -175,7 +175,7 @@ void Grafo::removerNo(int idNode)
 
     this->ordem -= 1;
 
-    cout <<" Removendo nó "<<noRemover->getId()<<endl;
+    //cout <<" Removendo nó "<<noRemover->getId()<<endl;
     delete noRemover;
 }
 
