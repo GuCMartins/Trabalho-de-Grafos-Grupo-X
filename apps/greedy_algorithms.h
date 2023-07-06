@@ -598,6 +598,7 @@ void atualizaProbabilidades(float *P, float *medias, float *alfa, BestSol solBes
 {
     float q[m];
     float soma = 0;
+    int cont = 0;
     for (int i = 0; i < m; i++)
     {
         q[i] = 0;
@@ -605,8 +606,10 @@ void atualizaProbabilidades(float *P, float *medias, float *alfa, BestSol solBes
         {
             // q[i] = solBest[i].melhorSolucao / medias[i];
             q[i] = solBest.melhorSolucao / medias[i];
-            q[i] = pow(q[i], 10);
+            q[i] = pow(q[i], 100);
             soma += q[i];
+        }else{
+            cont++;
         }
     }
 
@@ -617,7 +620,9 @@ void atualizaProbabilidades(float *P, float *medias, float *alfa, BestSol solBes
         if (q[i] != 0)
         {
             // cout <<"atualizou"<<endl;
-            P[i] = q[i] / soma;
+            P[i] = ((q[i] / soma)-cont*0.01);
+        }else{
+            P[i] = 0.01;
         }
     }
 }
@@ -626,8 +631,8 @@ int escolheAlfa(float *P, int tamVetAlfa)
 {
     float k = rand() % 101;
     float soma = 0;
-    
-    for (int i = 0; i < tamVetAlfa; i++)
+    int i = 0;
+    for (i = 0; i < tamVetAlfa; i++)
     {
         soma += (P[i] * 100);
         if (soma >= k)
@@ -636,14 +641,8 @@ int escolheAlfa(float *P, int tamVetAlfa)
         }
     }
 
-    cout << "Erro: Não era para ter caido aqui " << endl;
-    cout << "K SORTEADO: " << k << endl;
-    cout << "SOMA: " << soma << endl;
-    for (int i = 0; i < tamVetAlfa; i++)
-    {
-        cout << "P[i]: " << P[i] << endl;
-    }
-   
+    return i;
+
     exit(1);
     return 0;
 }
@@ -725,10 +724,6 @@ void gulosoRandomizadoReativo(Grafo *g, Cluster **clusters, int num_clusters, in
             if (escolhasAlfa[indexAlfa] != 0)
             {
                 medias[indexAlfa] = somaSolucoes[indexAlfa] / escolhasAlfa[indexAlfa]; // soma das solucoes pelo numero de vezes que o alfa i foi escolhido
-
-                // DÚVIDA: só atualizar as probabilidades quando a solucao for melhorada???
-                // a cada iteração as medias são atualizadas, mas não necessariamente o solBest é atualizado
-                // atualizaProbabilidades(P, medias, alfas, solBest, m);
                 atualizaProbabilidades(P, medias, alfas, melhorSolucaoGeral, m);
             }
         }

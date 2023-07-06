@@ -395,7 +395,7 @@ int main(int argc, char **argv)
     //alfa = 0 ==> vai pegar sempre o primeiro do vetor de candidatos (guloso)
     float alfas[] = {0.05, 0.1, 0.15, 0.3, 0.5};
     // gulosoRandomizadoReativo(G, clusters, 5, 0, 106.704002, alfas, 500, 50, 5);//cmake .. && make && ./Grupo_1 ../instancias/20_5_270001 ../saida.txt Handover 0 1 0
-    gulosoRandomizadoReativo(G, clusters, 10, 0, 53.351898, alfas, 500, 50, 5);// cmake .. && make && ./Grupo_1 ../instancias/20_10_270001 ../saida.txt Handover 0 1 0
+    // gulosoRandomizadoReativo(G, clusters, 10, 0, 53.351898, alfas, 500, 50, 5);// cmake .. && make && ./Grupo_1 ../instancias/20_10_270001 ../saida.txt Handover 0 1 0
     
     // gulosoRandomizadoReativo(G, clusters, 12, 75, 125, alfas, 500, 50, 5);// cmake .. && make && ./Grupo_1 ../instancias/RanReal240_01.txt ../saida.txt RanReal240 0 1 0
     //gulosoRandomizadoReativo(G, clusters, 12, 75, 125, alfas, 500, 50, 5);// cmake .. && make && ./Grupo_1 ../instancias/RanReal240_04.txt ../saida.txt RanReal240 0 1 0
