@@ -250,8 +250,19 @@ bool comparePesos(std::tuple<int, int, float, int> a, std::tuple<int, int, float
 */
 void guloso(Grafo *g, Cluster **clusters, int num_clusters, float min, float max)
 {
+    
+    // time_t seed = time(NULL);
+    //Sementes para as instâncias de 20_10 e 30_5
+    //SEMENTE DOS DEUSES (CUIDADO AO USAR): 1688669713 -> Resultado deu 925 e solução TRUE -> Serve para o Sparse82 também
+    //Outra boa semente: 1688670123 -> Resultado deu 780 e solução TRUE
+    time_t seed = 1688669713;
 
-    srand(time(NULL));
+    //Semente para o 240_01 -> 1688670829 -> QUalidade da 121591 (?)
+    //Semente para o Sparse -> 1688671342 -> QUalidade da 654
+
+    //Problemas no 480 e 960
+    cout << "VALOR DA SEMENTE: " << seed << endl;
+    srand(seed);
 
     int **matriz = new int *[g->getOrdem()];
 

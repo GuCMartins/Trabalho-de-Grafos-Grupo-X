@@ -64,8 +64,8 @@ Grafo* leituraArquivo(string path, string instance, string ehDir, string ehPondA
             Grafo *G = new Grafo(stoi(numV), false, true, true);
             
             for(int i = 0 ; i < stoi(numCluster); i++){
-            
-                clusters[i] = new Cluster(0, stoi(clusterCapMax), G, clusterType);
+                
+                clusters[i] = new Cluster(0, stof(clusterCapMax), G, clusterType);
             }
             
             for(int i = 0; i < stoi(numV); i++){
@@ -193,7 +193,7 @@ Grafo* leituraArquivo(string path, string instance, string ehDir, string ehPondA
                         cLmax = true;
                         cLmin = false;
                         s = "";
-                        clusters[contadorCluster] = new Cluster(stoi(clusterCapmin), stoi(clusterCapMax), G, clusterType);
+                        clusters[contadorCluster] = new Cluster(stoi(clusterCapmin), stof(clusterCapMax), G, clusterType);
                         contadorCluster++;
                     }
                 }
@@ -381,10 +381,13 @@ int main(int argc, char **argv)
     // cout << "Entrou no guloso randomizado\n";
     //gulosoRandomizado(G, clusters, 12, 75, 125, 0.35, 500);
     //cout << "Entrou no guloso\n";
-    //guloso(G, clusters, 5, 0, 106.704002);//20_5_270001  cmake .. && make && ./Grupo_1 ../instancias/20_5_270001 ../saida.txt Handover 0 1 0
-    //guloso(G, clusters, 10, 0, 53.351898);//20_10_270001 cmake .. && make && ./Grupo_1 ../instancias/20_10_270001 ../saida.txt Handover 0 1 0
+    // guloso(G, clusters, 5, 0, 106.704002);//20_5_270001  cmake .. && make && ./Grupo_1 ../instancias/20_5_270001 ../saida.txt Handover 0 1 0
+    
+    guloso(G, clusters, 10, 0, 53.351898);//20_10_270001 cmake .. && make && ./Grupo_1 ../instancias/20_10_270001 ../saida.txt Handover 0 1 0
     // guloso(G, clusters, 5, 0, 172.378006);//30_5_270003 cmake .. && make && ./Grupo_1 ../instancias/30_5_270003 ../saida.txt Handover 0 1 0
-    //guloso(G, clusters, 12, 75, 125);//RanReal240_01 cmake .. && make && ./Grupo_1 ../instancias/RanReal240_01.txt ../saida.txt RanReal240 0 1 0
+    // guloso(G, clusters, 8, 25, 75);//Sparse_82_02 cmake .. && make && ./Grupo_1 ../instancias/Sparse82_02.txt ../saida.txt Sparse82 0 1 0
+    // guloso(G, clusters, 20, 100, 150);//RanReal480_01 cmake .. && make && ./Grupo_1 ../instancias/RanReal480_01.txt ../saida.txt RanReal480 0 1 0
+    // guloso(G, clusters, 30, 120, 180);//RanReal960_01 cmake .. && make && ./Grupo_1 ../instancias/RanReal960_01.30.txt ../saida.txt RanReal960 0 1 0
     
     // gulosoRandomizado(G, clusters, 10, 0, 53.351898, 0.3, 500);20_10_270001
     // gulosoRandomizado(G, clusters, 5, 0,172.378006, 0.05, 500);//30_5_270003

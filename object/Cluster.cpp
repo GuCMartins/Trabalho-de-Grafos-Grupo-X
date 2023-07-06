@@ -8,7 +8,7 @@
 
 using namespace std;
 
-Cluster::Cluster(int min, int max, Grafo *grafo, std::string type)
+Cluster::Cluster(float min, float max, Grafo *grafo, std::string type)
 {
     //Inicialização dos valores do cluster->
     this->min = min;
