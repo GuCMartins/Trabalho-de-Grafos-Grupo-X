@@ -377,6 +377,8 @@ int main(int argc, char **argv)
     Grafo *G = leituraArquivo(pathIn, instance, "0", "1", "1");
     //G->imprimirTodosNosAdjacentes();
     G->imprimirInfo();
+    criarArquivoDot(G, "../resultados/20_10_270001.dot");
+
     
     // cout << "Entrou no guloso randomizado\n";
     //gulosoRandomizado(G, clusters, 12, 75, 125, 0.35, 500);
@@ -389,7 +391,7 @@ int main(int argc, char **argv)
     // guloso(G, clusters, 20, 100, 150);//RanReal480_01 cmake .. && make && ./Grupo_1 ../instancias/RanReal480_01.txt ../saida.txt RanReal480 0 1 0
     // guloso(G, clusters, 30, 120, 180);//RanReal960_01 cmake .. && make && ./Grupo_1 ../instancias/RanReal960_01.30.txt ../saida.txt RanReal960 0 1 0
     
-    // gulosoRandomizado(G, clusters, 10, 0, 53.351898, 0.75, 500);//20_10_270001
+    gulosoRandomizado(G, clusters, 10, 0, 53.351898, 0.75, 500);//20_10_270001 cmake .. && make && ./Grupo_1 ../instancias/20_10_270001 ../saida.txt Handover 0 1 0
     // gulosoRandomizado(G, clusters, 5, 0,172.378006, 0.45, 500);//30_5_270003
     // gulosoRandomizado(G, clusters, 12, 75, 125, 0.5, 50);//RanReal240_01 cmake .. && make && ./Grupo_1 ../instancias/RanReal240_01.txt ../saida.txt RanReal240 0 1 0
     // gulosoRandomizado(G, clusters, 20, 100, 150, 0.55, 250);//RanReal480_01 cmake .. && make && ./Grupo_1 ../instancias/RanReal480_01.txt ../saida.txt RanReal480 0 1 0
@@ -406,7 +408,7 @@ int main(int argc, char **argv)
     //gulosoRandomizadoReativo(G, clusters, 12, 75, 125, alfas, 500, 50, 5);// cmake .. && make && ./Grupo_1 ../instancias/RanReal240_04.txt ../saida.txt RanReal240 0 1 0
     // gulosoRandomizadoReativo(G, clusters, 12, 75, 125, alfas, 500, 50, 5);// cmake .. && make && ./Grupo_1 ../instancias/RanReal240_07.txt ../saida.txt RanReal240 0 1 0
     
-    gulosoRandomizadoReativo(G, clusters, 20, 100, 150, alfas, 500, 50, 10);// cmake .. && make && ./Grupo_1 ../instancias/RanReal480_01.txt ../saida.txt RanReal480 0 1 0
+    // gulosoRandomizadoReativo(G, clusters, 20, 100, 150, alfas, 500, 50, 10);// cmake .. && make && ./Grupo_1 ../instancias/RanReal480_01.txt ../saida.txt RanReal480 0 1 0
     // gulosoRandomizadoReativo(G, clusters, 20, 100, 150, alfas, 500, 50, 5);// cmake .. && make && ./Grupo_1 ../instancias/RanReal480_04.txt ../saida.txt RanReal480 0 1 0
     // gulosoRandomizadoReativo(G, clusters, 30, 120, 180, alfas, 500, 50, 5);// cmake .. && make && ./Grupo_1 ../instancias/RanReal960_01.30.txt ../saida.txt RanReal960 0 1 0
     

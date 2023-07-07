@@ -57,6 +57,97 @@ typedef struct
     int *pesodeCadaCluster;
 } BestSol;
 
+void escreveNosCluster(Cluster **clusters, int num_clusters){
+   ofstream nosCluster("../nosClusters.txt", ios::app);
+   float solucao = 0;
+   for(int i=0;i<num_clusters;i++){
+       nosCluster <<"Cluster "<<i<<endl;
+       std::forward_list<int> inseridos = clusters[i]->getInseridos();
+       nosCluster<<"\tSoma Vértices: "<<clusters[i]->getSumVertices()<<endl;
+       nosCluster<<"\tSoma Arestas: "<<clusters[i]->getSumArestas()<<endl;
+       solucao+=clusters[i]->getSumArestas();
+       for (std::forward_list<int>::iterator it = inseridos.begin(); it != inseridos.end(); it++)
+       {
+           nosCluster<<"\t"<<(*it);  
+       }
+       nosCluster<<endl;
+   }
+   nosCluster<<"-------------- SOLUÇÃO: "<<solucao<<" --------------"<<endl;
+   nosCluster.close();
+}
+
+
+void criarArquivoDotClusters(Cluster **clusters,int num_clusters, const string &nomeArquivo)
+{
+   ofstream arquivo(nomeArquivo);
+
+
+   if (!arquivo.is_open())
+   {
+       cout << "Erro ao criar o arquivo " << nomeArquivo << endl;
+       return;
+   }
+
+
+   // Escrever cabeçalho do arquivo
+   arquivo << "graph Grafo {" << endl; // Utilizamos "graph" em vez de "digraph"
+
+
+   for(int i=0;i<num_clusters;i++){
+       std::forward_list<int> inseridos = clusters[i]->getInseridos();
+       for (std::forward_list<int>::iterator it = inseridos.begin(); it != inseridos.end(); it++)
+       {
+             arquivo << "    " << (*it) << " [label=\"" << (*it) << "\"];";
+       }
+    
+   }
+
+
+   for (int i = 0; i < num_clusters; i++)
+   {
+       Grafo *grafo = clusters[i]->getGrafo();
+       // Escrever arcos (arestas)
+       No *noAtual = grafo->getNoInicial();
+       while (noAtual != nullptr)
+       {
+             Arco *arcoAtual = noAtual->getAdjacentes();
+             while (arcoAtual != nullptr)
+             {
+               // Verificamos se o arco já foi visitado antes de escrever a aresta correspondente
+               // Para um grafo não direcionado, consideramos apenas um sentido para cada par de nós
+               if (noAtual->getId() < arcoAtual->getNodeDest())
+               {
+                   arquivo << "    " << noAtual->getId() << " -- " << grafo->findNoById(arcoAtual->getNodeDest())->getId();
+
+
+                   // Se a aresta (arco) tiver peso, escrever o atributo "peso"
+                   if (grafo->ehPondAr())
+                   {
+                       arquivo << " [label=" << arcoAtual->getPeso() << ", weight=" << arcoAtual->getPeso() << "]";
+                   }
+
+
+                   arquivo << ";" << endl;
+               }
+
+
+               arcoAtual = arcoAtual->getProx();
+             }
+
+
+             noAtual = noAtual->getProx();
+       }
+   }
+
+
+   // Fechar arquivo
+   arquivo << "}" << endl;
+   arquivo.close();
+
+
+   cout << "Arquivo " << nomeArquivo << " criado com sucesso!" << endl;
+}
+
 bool solucao(Cluster **clusters, int num_clusters)
 {
     for (int i = 0; i < num_clusters; i++)
@@ -546,6 +637,9 @@ void gulosoRandomizado(Grafo *g, Cluster **clusters, int num_clusters, float min
         exit(1);
     }
 
+    escreveNosCluster(clusters, num_clusters);
+    string nomeArquivo = "../resultados/20_5_270001_clusters_"+to_string(calculaQualidadeSolucao(melhorSolucao, num_clusters))+".dot";
+    criarArquivoDotClusters(melhorSolucao, num_clusters,nomeArquivo);
     float qualidadeSolucao = 0;
 
     ofstream arq("../saidaGuloso2.txt");
