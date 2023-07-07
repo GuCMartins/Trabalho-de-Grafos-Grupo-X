@@ -61,8 +61,12 @@ bool solucao(Cluster **clusters, int num_clusters)
 {
     for (int i = 0; i < num_clusters; i++)
     {
-        if (!clusters[i]->getDentroIntervalo())
+        if (clusters[i]->getSumVertices() > clusters[i]->getMax() || clusters[i]->getSumVertices()<clusters[i]->getMin()){
+            // cout <<"MAX: "<<clusters[i]->getMax()<<endl;
+            // cout <<"MIN: "<<clusters[i]->getMin()<<endl;
+            // cout <<"Soma Vertices: "<<clusters[i]->getSumVertices()<<endl;
             return false;
+        }
     }
     return true;
 }
@@ -193,9 +197,6 @@ std::forward_list<std::tuple<int, int, float, int>> atualizaCandidatos(Grafo *g,
         // último a ser inserido não pode continuar na lista de candidatos.
         if (std::get<0>(*it) != ultimoInserido)
         {
-
-            No *analisado = g->findNoById(std::get<0>(*it));
-
             if (std::get<1>(*it) != idClusterUltimoInserido)
             {
                 // Esse nó pode continuar pois não alterou nada pra ele a última inserção.
@@ -203,6 +204,7 @@ std::forward_list<std::tuple<int, int, float, int>> atualizaCandidatos(Grafo *g,
             }
             else
             {
+                No *analisado = g->findNoById(std::get<0>(*it));
                 // Tem relação com o último cluster que foi inserido.
 
                 if (clusters[std::get<1>(*it)]->getSumVertices() + analisado->getPeso() < min)
@@ -408,7 +410,7 @@ float calculaQualidadeSolucao(Cluster **cluster, int num_clusters)
     ? param num_clusters: Inteiro que representa o tamanho do vetor de clusters
     ? param min, max: Inteiros que representam o valor máximo e mínimo do intervalo dos clusters
 */
-void gulosoRandomizado(Grafo *g, Cluster **clusters, int num_clusters, int min, int max, float alfa, int num_iteracoes)
+void gulosoRandomizado(Grafo *g, Cluster **clusters, int num_clusters, float min, float max, float alfa, int num_iteracoes)
 {
 
     time_t seed = time(NULL);
@@ -629,7 +631,9 @@ void atualizaProbabilidades(float *P, float *medias, float *alfa, BestSol solBes
         if (q[i] != 0)
         {
             // cout <<"atualizou"<<endl;
-            P[i] = ((q[i] / soma)-cont*0.01);
+            P[i] = ((q[i] / soma)-0.01);
+            if(P[i]<=0)
+                P[i] = 0.01;
         }else{
             P[i] = 0.01;
         }
@@ -668,9 +672,11 @@ void atualizaMedias(float *M, float s, float *alfas)
     ? param num_clusters: Inteiro que representa o tamanho do vetor de clusters
     ? param min, max: Inteiros que representam o valor máximo e mínimo do intervalo dos clusters
 */
-void gulosoRandomizadoReativo(Grafo *g, Cluster **clusters, int num_clusters, int min, int max, float *alfas, int num_iteracoes, int bloco, int m)
+void gulosoRandomizadoReativo(Grafo *g, Cluster **clusters, int num_clusters, float min, float max, float *alfas, int num_iteracoes, int bloco, int m)
 {
-    srand(time(NULL));
+    time_t seed = time(NULL);
+    srand(seed);
+    cout << "VALOR DA SEMENTE: " << seed << endl;
 
     // Matriz para saber o peso da aresta entre os nós i e j
     int **matriz = new int *[g->getOrdem()];
@@ -728,8 +734,9 @@ void gulosoRandomizadoReativo(Grafo *g, Cluster **clusters, int num_clusters, in
         // cout << "Valor de k -> " << k << endl;
 
         // k != 0 para evitar divisão por 0 na primeira iteração
-        if (k % bloco && k != 0)
+        if (k % bloco == 0 && k != 0)
         {
+            cout <<"Iteração :"<<k<<endl;
             if (escolhasAlfa[indexAlfa] != 0)
             {
                 medias[indexAlfa] = somaSolucoes[indexAlfa] / escolhasAlfa[indexAlfa]; // soma das solucoes pelo numero de vezes que o alfa i foi escolhido
@@ -804,7 +811,6 @@ void gulosoRandomizadoReativo(Grafo *g, Cluster **clusters, int num_clusters, in
         if (solucao(clusters, num_clusters))
         {
             float qualidadeSolAtual = calculaQualidadeSolucao(clusters, num_clusters);
-            cout << "Encontrou uma solução para alfa = " << alfa << " na iteração k = " << k << "Qualidade: " << qualidadeSolAtual << endl;
             escolhasAlfa[indexAlfa] = escolhasAlfa[indexAlfa] + 1;                 // só incrementa o alfa utilizado, se for encontrada uma solução viável
             somaSolucoes[indexAlfa] = somaSolucoes[indexAlfa] + qualidadeSolAtual; // acumula a soma das soluções para esse alfa escolhido
 
@@ -816,6 +822,7 @@ void gulosoRandomizadoReativo(Grafo *g, Cluster **clusters, int num_clusters, in
             }
             else if (qualidadeSolAtual > calculaQualidadeSolucao(melhorSolucao, num_clusters))
             {
+                cout << "Melhor solução para alfa = " << alfa << " na iteração k = " << k << "Qualidade: " << qualidadeSolAtual << endl;
                 melhorSolucao = copiaClusters(clusters, num_clusters, g);
                 // solBest[indexAlfa].melhorSolucao = qualidadeSolAtual;
                 melhorSolucaoGeral.melhorSolucao = qualidadeSolAtual;
