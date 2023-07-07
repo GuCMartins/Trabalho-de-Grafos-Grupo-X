@@ -521,6 +521,7 @@ void gulosoRandomizado(Grafo *g, Cluster **clusters, int num_clusters, float min
         {
             if (solucao(clusters, num_clusters) && calculaQualidadeSolucao(clusters, num_clusters) > calculaQualidadeSolucao(melhorSolucao, num_clusters))
             {
+                cout << "Nova melhor solução para alfa = " << alfa << " na iteração k = " << k << " Qualidade: " << calculaQualidadeSolucao(clusters, num_clusters) << endl;
                 melhorSolucao = copiaClusters(clusters, num_clusters, g);
             }
         }
@@ -822,7 +823,7 @@ void gulosoRandomizadoReativo(Grafo *g, Cluster **clusters, int num_clusters, fl
             }
             else if (qualidadeSolAtual > calculaQualidadeSolucao(melhorSolucao, num_clusters))
             {
-                cout << "Melhor solução para alfa = " << alfa << " na iteração k = " << k << "Qualidade: " << qualidadeSolAtual << endl;
+                cout << "Nova melhor solução para alfa = " << alfa << " na iteração k = " << k << "Qualidade: " << qualidadeSolAtual << endl;
                 melhorSolucao = copiaClusters(clusters, num_clusters, g);
                 // solBest[indexAlfa].melhorSolucao = qualidadeSolAtual;
                 melhorSolucaoGeral.melhorSolucao = qualidadeSolAtual;
