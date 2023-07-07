@@ -3,6 +3,7 @@
 #include <limits>
 #include <algorithm>
 #include <iostream>
+#include <stack>
 #include <queue>
 #include "../include/Grafo.h"
 #include <forward_list>
@@ -577,6 +578,101 @@ Grafo *grafoComplementar(Grafo *grafo){
     }
 
     return novoGrafo;
+}
+
+Grafo *getGrafoTransposto(Grafo *grafo){
+    Grafo *grafoTransposto = new Grafo(grafo->getOrdem(), grafo->ehDir(), grafo->ehPondAr(), grafo->ehPondNode());
+    No *no = grafo->getNoInicial();
+
+    while(no != NULL){
+        grafoTransposto->inserirNo(no->getId(), no->getPeso());
+        no = no->getProx();
+    }
+
+    no = grafo->getNoInicial(); 
+    while(no != NULL){
+        Arco *adjacentes = no->getAdjacentes();
+        while(adjacentes != NULL){
+            grafoTransposto->inserirArco(adjacentes->getNodeDest(), no->getId(), adjacentes->getPeso());
+            adjacentes = adjacentes->getProx();
+        }
+        no = no->getProx();     
+    }
+
+    return grafoTransposto;
+}
+
+
+
+
+void DFSComponentesFormenteConexasPilha(No *noPartida, Grafo *g, int* visitado, stack<int> &pilhaIdNos){
+    // cout <<"P1: "<<noPartida->getId()<<endl;
+    visitado[noPartida->getId()] = 1;
+    Arco *arco = noPartida->getAdjacentes();
+    
+    while(arco != NULL){
+        if(visitado[arco->getNodeDest()] == -1){
+            DFSComponentesFormenteConexasPilha(g->findNoById(arco->getNodeDest()), g, visitado, pilhaIdNos);
+        }
+        arco = arco->getProx();
+    }
+    pilhaIdNos.push(noPartida->getId());
+}
+
+void DFSComponentesFormenteConexas(No *noPartida, Grafo *g, int* visitado, stack<int> &pilhaIdNos){
+    visitado[noPartida->getId()] = 1;
+
+    cout <<noPartida->getId()<<" ";
+
+    Arco *arco = noPartida->getAdjacentes();
+    while(arco != NULL){
+        if(visitado[arco->getNodeDest()] == -1){
+            DFSComponentesFormenteConexas(g->findNoById(arco->getNodeDest()), g, visitado, pilhaIdNos);
+        }
+        arco = arco->getProx();
+    }
+}
+
+void componentesFortementeConexas(Grafo *grafo){
+    cout <<"Componentes fortemente conexas: "<<endl;
+    //Rodar DFS a fim de obter os vertices visitados e os colocar na pilha
+    stack<int> pilhaIdNos;
+    int *visitado = new int[grafo->getOrdem()];
+    for(int i = 0; i < grafo->getOrdem(); i++){
+        visitado[i] = -1;
+    }
+
+    No *no = grafo->getNoInicial();
+    while(no != NULL){
+        Arco *arco = no->getAdjacentes();
+        while(arco!=NULL){
+            if(visitado[arco->getNodeDest()] == -1)
+                DFSComponentesFormenteConexasPilha(grafo->findNoById(arco->getNodeDest()), grafo, visitado, pilhaIdNos);
+            arco = arco->getProx();
+        }
+       no = no->getProx();
+    }
+
+    
+    //Pegar o Grafo transposto, de forma que se no grafo a aresta vai de A para B, no transposto vai de B para A
+    Grafo *grafoT = getGrafoTransposto(grafo);
+
+    
+    //Rodar o DFS no grafo transposto na ordem reversa dos vertices visitados
+
+    for(int i = 0; i < grafo->getOrdem(); i++){
+        visitado[i] = -1;
+    }
+
+    while(!pilhaIdNos.empty()){
+        No *no = grafo->findNoById(pilhaIdNos.top());
+        pilhaIdNos.pop();
+
+        if(visitado[no->getId()] == -1){
+            DFSComponentesFormenteConexas(no, grafoT, visitado, pilhaIdNos);
+            cout <<endl;
+        }
+    }
 }
 
 void criarArquivoDot(Grafo* grafo, const string& nomeArquivo) {
