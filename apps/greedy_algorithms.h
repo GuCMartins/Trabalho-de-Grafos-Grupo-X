@@ -10,7 +10,7 @@
 #include <stdlib.h> /* srand, rand */
 #include <time.h>   /* time */
 #include <sstream>
-#include <iostream>
+#include <fstream>
 #include <cmath>
 using namespace std;
 
@@ -140,10 +140,8 @@ std::forward_list<std::tuple<int, int, float, int>> rankeiaCandidatos(Grafo *g, 
                     auxContribuicao = 0;
                     std::forward_list<int> inseridos = clusters[j]->getInseridos();
 
-                    for (std::forward_list<int>::iterator it = inseridos.begin(); it != inseridos.end(); it++)
-                    {
-                        auxContribuicao += matriz[*it][i];
-                    }
+                    auxContribuicao += matriz[inseridos.front()][i];
+                    
                 }
                 else
                 {
@@ -153,10 +151,7 @@ std::forward_list<std::tuple<int, int, float, int>> rankeiaCandidatos(Grafo *g, 
                         auxContribuicao = 0;
                         std::forward_list<int> inseridos = clusters[j]->getInseridos();
 
-                        for (std::forward_list<int>::iterator it = inseridos.begin(); it != inseridos.end(); it++)
-                        {
-                            auxContribuicao += matriz[*it][i];
-                        }
+                        auxContribuicao += matriz[inseridos.front()][i];
 
                         float residuo = max - clusters[j]->getSumVertices() - analisado->getPeso();
                         auxContribuicao = (auxContribuicao * residuo) / analisado->getPeso();
@@ -416,7 +411,10 @@ float calculaQualidadeSolucao(Cluster **cluster, int num_clusters)
 void gulosoRandomizado(Grafo *g, Cluster **clusters, int num_clusters, int min, int max, float alfa, int num_iteracoes)
 {
 
-    srand(time(NULL));
+    time_t seed = time(NULL);
+    srand(seed);
+    //SEMENTE DOS DEUSES -> 1688687961
+    cout << "VALOR DA SEMENTE: " << seed << endl;
 
     // Matriz para saber o peso da aresta entre os nós i e j
     int **matriz = new int *[g->getOrdem()];
