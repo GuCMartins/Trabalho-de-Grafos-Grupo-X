@@ -1,0 +1,22 @@
+Para compilar e testar:
+
+1. Crie uma pasta chamada build
+
+2. Entre na pasta build
+
+3. Altere o arquivo chamado "Cmakelists.txt". Caso queira rodar as funções da primeira parte, descomente a linha 18. Senão, caso queira rodar os Algoritmos Gulosos, descomente a linha 20.
+
+3.1 Ao testar os algoritmos gulosos, certifique-se de descomentar as linhas no arquivo "main2.cpp" disponível na pasta apps. Como exemplo, na linha 44, basta descomentá-la e rodar o comando no terminal para obter a saída desejada.
+
+4. (Etapa 1) No terminal, com os arquivos de entrada e saída no caminho da sua preferência, rode o comando como exemplificado a seguir: 
+    a) cmake .. && make && ./Grupo_1 path/entrada.txt path/saida.txt 0 1 0
+
+5. (Etapa 2) No terminal, com os arquivos de entrada e saída no caminho da sua preferência, rode o comando como exemplificado a seguir: 
+    a) cmake .. && make && ./Grupo_1 path/nome_instancia path/saida.txt tipo_instancia 0 1 0
+
+5.1) (Etapa 2) Para os tipos das instâncias, adicione o seguinte, conforme o arquivo que deseje testar:
+    a) 20_5_270001/20_10_270001/30_5_270003 -> Handover
+    b) RanReal240_01.txt/RanReal240_04.txt/RanReal240_07.txt -> RanReal240
+    c) RanReal480_01.txt/RanReal480_04.txt -> RanReal480
+    d) RanReal960_01.txt -> RanReal960
+    e) Sparse_82_02.txt -> Sparse82

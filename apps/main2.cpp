@@ -441,23 +441,35 @@ int main(int argc, char **argv)
 
     /*Algoritmo Guloso*/
     
-    // guloso(G, clusters, 5, 0, 106.704002); //20_5_270001  cmake .. && make && ./Grupo_1 ../instancias/20_5_270001 ../saida.txt Handover 0 1 0
-    // guloso(G, clusters, 10, 0, 53.351898); //20_10_270001 cmake .. && make && ./Grupo_1 ../instancias/20_10_270001 ../saida.txt Handover 0 1 0
-    // guloso(G, clusters, 5, 0, 172.378006);//30_5_270003 cmake .. && make && ./Grupo_1 ../instancias/30_5_270003 ../saida.txt Handover 0 1 0
-    // guloso(G, clusters, 8, 25, 75);//Sparse_82_02 cmake .. && make && ./Grupo_1 ../instancias/Sparse82_02.txt ../saida.txt Sparse82 0 1 0
-    // guloso(G, clusters, 12, 75, 125);//RanReal240_01 cmake .. && make && ./Grupo_1 ../instancias/RanReal240_01.txt ../saida.txt RanReal240 0 1 0
-    // guloso(G, clusters, 20, 100, 150);//RanReal480_01 cmake .. && make && ./Grupo_1 ../instancias/RanReal480_01.txt ../saida.txt RanReal480 0 1 0
-    // guloso(G, clusters, 30, 120, 180);//RanReal960_01 cmake .. && make && ./Grupo_1 ../instancias/RanReal960_01.30.txt ../saida.txt RanReal960 0 1 0
+    guloso(G, clusters, 5, 0, 106.704002, pathOut); //20_5_270001  cmake .. && make && ./Grupo_1 ../instancias/20_5_270001 ../saida.txt Handover 0 1 0
+    
+    // guloso(G, clusters, 10, 0, 53.351898, pathOut); //20_10_270001 cmake .. && make && ./Grupo_1 ../instancias/20_10_270001 ../saida.txt Handover 0 1 0
+    
+    // guloso(G, clusters, 5, 0, 172.378006, pathOut);//30_5_270003 cmake .. && make && ./Grupo_1 ../instancias/30_5_270003 ../saida.txt Handover 0 1 0
+    
+    // guloso(G, clusters, 8, 25, 75, pathOut);//Sparse_82_02 cmake .. && make && ./Grupo_1 ../instancias/Sparse82_02.txt ../saida.txt Sparse82 0 1 0
+    
+    // guloso(G, clusters, 12, 75, 125, pathOut);//RanReal240_01 cmake .. && make && ./Grupo_1 ../instancias/RanReal240_01.txt ../saida.txt RanReal240 0 1 0
+    
+    // guloso(G, clusters, 20, 100, 150, pathOut);//RanReal480_01 cmake .. && make && ./Grupo_1 ../instancias/RanReal480_01.txt ../saida.txt RanReal480 0 1 0
+    
+    // guloso(G, clusters, 30, 120, 180, pathOut);//RanReal960_01 cmake .. && make && ./Grupo_1 ../instancias/RanReal960_01.30.txt ../saida.txt RanReal960 0 1 0
     
     /*Algoritmo Guloso Randomizado*/
 
-    // gulosoRandomizado(G, clusters, 5, 0, 106.704002, 0.05, 500);//20_5_270001  cmake .. && make && ./Grupo_1 ../instancias/20_5_270001 ../saida.txt Handover 0 1 0
-    // gulosoRandomizado(G, clusters, 10, 0, 53.351898, 0.35, 500);//20_10_270001 cmake .. && make && ./Grupo_1 ../instancias/20_10_270001 ../saida.txt Handover 0 1 0
-    // gulosoRandomizado(G, clusters, 5, 0, 172.378006, 0.05, 500);//30_5_270003 cmake .. && make && ./Grupo_1 ../instancias/30_5_270003 ../saida.txt Handover 0 1 0
-    // gulosoRandomizado(G, clusters, 8, 25, 75, 0.05, 500);//Sparse_82_02 cmake .. && make && ./Grupo_1 ../instancias/Sparse82_02.txt ../saida.txt Sparse82 0 1 0
-    // gulosoRandomizado(G, clusters, 12, 75, 125, 0.05, 500);//RanReal240_01 cmake .. && make && ./Grupo_1 ../instancias/RanReal240_01.txt ../saida.txt RanReal240 0 1 0
-    // gulosoRandomizado(G, clusters, 20, 100, 150, 0.05, 500);//RanReal480_01 cmake .. && make && ./Grupo_1 ../instancias/RanReal480_01.txt ../saida.txt RanReal480 0 1 0
-    // gulosoRandomizado(G, clusters, 30, 120, 180, 0.05, 500);//RanReal960_01 cmake .. && make && ./Grupo_1 ../instancias/RanReal960_01.30.txt ../saida.txt RanReal960 0 1 0
+    // gulosoRandomizado(G, clusters, 5, 0, 106.704002, 0.05, 500, pathOut);//20_5_270001  cmake .. && make && ./Grupo_1 ../instancias/20_5_270001 ../saida.txt Handover 0 1 0
+    
+    // gulosoRandomizado(G, clusters, 10, 0, 53.351898, 0.35, 500, pathOut);//20_10_270001 cmake .. && make && ./Grupo_1 ../instancias/20_10_270001 ../saida.txt Handover 0 1 0
+    
+    // gulosoRandomizado(G, clusters, 5, 0, 172.378006, 0.05, 500, pathOut);//30_5_270003 cmake .. && make && ./Grupo_1 ../instancias/30_5_270003 ../saida.txt Handover 0 1 0
+    
+    // gulosoRandomizado(G, clusters, 8, 25, 75, 0.05, 500, pathOut);//Sparse_82_02 cmake .. && make && ./Grupo_1 ../instancias/Sparse82_02.txt ../saida.txt Sparse82 0 1 0
+
+    // gulosoRandomizado(G, clusters, 12, 75, 125, 0.05, 500, pathOut);//RanReal240_01 cmake .. && make && ./Grupo_1 ../instancias/RanReal240_01.txt ../saida.txt RanReal240 0 1 0
+
+    // gulosoRandomizado(G, clusters, 20, 100, 150, 0.05, 500, pathOut);//RanReal480_01 cmake .. && make && ./Grupo_1 ../instancias/RanReal480_01.txt ../saida.txt RanReal480 0 1 0
+
+    // gulosoRandomizado(G, clusters, 30, 120, 180, 0.05, 500, pathOut);//RanReal960_01 cmake .. && make && ./Grupo_1 ../instancias/RanReal960_01.30.txt ../saida.txt RanReal960 0 1 0
 
     /*Algoritmo Guloso Randomizado Adaptativo Reativo*/ 
 
@@ -467,13 +479,19 @@ int main(int argc, char **argv)
     /*Vetor com alfas escolhidos para teste*/  
     float alfas[] = {0.08, 0.18, 0.28, 0.37, 0.53,0.22, 0.64, 0.89, 0.77, 0.45};
 
-    // gulosoRandomizadoReativo(G, clusters, 5, 0, 106.704002, alfas, 500, 50, 5);//20_5_270001  cmake .. && make && ./Grupo_1 ../instancias/20_5_270001 ../saida.txt Handover 0 1 0
-    // gulosoRandomizadoReativo(G, clusters, 10, 0, 53.351898, alfas, 500, 50, 5);//20_10_270001 cmake .. && make && ./Grupo_1 ../instancias/20_10_270001 ../saida.txt Handover 0 1 0
-    // gulosoRandomizadoReativo(G, clusters, 5, 0, 172.378006, alfas, 500, 50, 5);//30_5_270003 cmake .. && make && ./Grupo_1 ../instancias/30_5_270003 ../saida.txt Handover 0 1 0
-    // gulosoRandomizadoReativo(G, clusters, 8, 25, 75, alfas, 500, 50, 5);//Sparse_82_02 cmake .. && make && ./Grupo_1 ../instancias/Sparse82_02.txt ../saida.txt Sparse82 0 1 0
-    // gulosoRandomizadoReativo(G, clusters, 12, 75, 125, alfas, 500, 50, 5);//RanReal240_01 cmake .. && make && ./Grupo_1 ../instancias/RanReal240_01.txt ../saida.txt RanReal240 0 1 0
-    // gulosoRandomizadoReativo(G, clusters, 20, 100, 150, alfas, 500, 50, 5);//RanReal480_01 cmake .. && make && ./Grupo_1 ../instancias/RanReal480_01.txt ../saida.txt RanReal480 0 1 0
-    // gulosoRandomizadoReativo(G, clusters, 30, 120, 180, alfas, 500, 50, 5);//RanReal960_01 cmake .. && make && ./Grupo_1 ../instancias/RanReal960_01.30.txt ../saida.txt RanReal960 0 1 0
+    // gulosoRandomizadoReativo(G, clusters, 5, 0, 106.704002, alfas, 500, 50, 5, pathOut);//20_5_270001  cmake .. && make && ./Grupo_1 ../instancias/20_5_270001 ../saida.txt Handover 0 1 0
+    
+    // gulosoRandomizadoReativo(G, clusters, 10, 0, 53.351898, alfas, 500, 50, 5, pathOut);//20_10_270001 cmake .. && make && ./Grupo_1 ../instancias/20_10_270001 ../saida.txt Handover 0 1 0
+    
+    // gulosoRandomizadoReativo(G, clusters, 5, 0, 172.378006, alfas, 500, 50, 5, pathOut);//30_5_270003 cmake .. && make && ./Grupo_1 ../instancias/30_5_270003 ../saida.txt Handover 0 1 0
+    
+    // gulosoRandomizadoReativo(G, clusters, 8, 25, 75, alfas, 500, 50, 5, pathOut);//Sparse_82_02 cmake .. && make && ./Grupo_1 ../instancias/Sparse82_02.txt ../saida.txt Sparse82 0 1 0
+    
+    // gulosoRandomizadoReativo(G, clusters, 12, 75, 125, alfas, 500, 50, 5, pathOut);//RanReal240_01 cmake .. && make && ./Grupo_1 ../instancias/RanReal240_01.txt ../saida.txt RanReal240 0 1 0
+    
+    // gulosoRandomizadoReativo(G, clusters, 20, 100, 150, alfas, 500, 50, 5, pathOut);//RanReal480_01 cmake .. && make && ./Grupo_1 ../instancias/RanReal480_01.txt ../saida.txt RanReal480 0 1 0
+    
+    // gulosoRandomizadoReativo(G, clusters, 30, 120, 180, alfas, 500, 50, 5, pathOut);//RanReal960_01 cmake .. && make && ./Grupo_1 ../instancias/RanReal960_01.30.txt ../saida.txt RanReal960 0 1 0
 
     return 0;
 }

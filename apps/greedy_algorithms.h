@@ -40,10 +40,10 @@ bool solucao(Cluster **clusters, int num_clusters)
     return true;
 }
 
-void escreveNosCluster(Cluster **clusters, int num_clusters){
+void escreveNosCluster(Cluster **clusters, int num_clusters, string pathOut){
    if(solucao(clusters, num_clusters))
    {
-    ofstream nosCluster("../nosClusters.txt", ios::app);
+    ofstream nosCluster(pathOut);
    float solucao = 0;
    for(int i=0;i<num_clusters;i++){
        nosCluster <<"Cluster "<<i<<endl;
@@ -313,7 +313,7 @@ bool comparePesos(std::tuple<int, int, float, int> a, std::tuple<int, int, float
     ? param num_clusters: Inteiro que representa o tamanho do vetor de clusters
     ? param min, max: Inteiros que representam o valor máximo e mínimo do intervalo dos clusters
 */
-void guloso(Grafo *g, Cluster **clusters, int num_clusters, float min, float max)
+void guloso(Grafo *g, Cluster **clusters, int num_clusters, float min, float max, string pathOut)
 {
 
     time_t seed = time(NULL);
@@ -379,7 +379,7 @@ void guloso(Grafo *g, Cluster **clusters, int num_clusters, float min, float max
         cont += 1;
     }
 
-    escreveNosCluster(clusters, num_clusters);
+    escreveNosCluster(clusters, num_clusters, pathOut);
 }
 
 int randomRange(int num_candidatos, float alfa)
@@ -426,7 +426,7 @@ float calculaQualidadeSolucao(Cluster **cluster, int num_clusters)
     ? param num_clusters: Inteiro que representa o tamanho do vetor de clusters
     ? param min, max: Inteiros que representam o valor máximo e mínimo do intervalo dos clusters
 */
-void gulosoRandomizado(Grafo *g, Cluster **clusters, int num_clusters, float min, float max, float alfa, int num_iteracoes)
+void gulosoRandomizado(Grafo *g, Cluster **clusters, int num_clusters, float min, float max, float alfa, int num_iteracoes, string pathOut)
 {
 
     time_t seed = time(NULL);
@@ -544,7 +544,7 @@ void gulosoRandomizado(Grafo *g, Cluster **clusters, int num_clusters, float min
     {
         cout << "Solução não encontrada..." << endl;
     }else{
-        escreveNosCluster(melhorSolucao, num_clusters);
+        escreveNosCluster(melhorSolucao, num_clusters, pathOut);
     }   
 }
 
@@ -626,7 +626,7 @@ void atualizaMedias(float *M, float s, float *alfas)
     ? param num_clusters: Inteiro que representa o tamanho do vetor de clusters
     ? param min, max: Inteiros que representam o valor máximo e mínimo do intervalo dos clusters
 */
-void gulosoRandomizadoReativo(Grafo *g, Cluster **clusters, int num_clusters, float min, float max, float *alfas, int num_iteracoes, int bloco, int m)
+void gulosoRandomizadoReativo(Grafo *g, Cluster **clusters, int num_clusters, float min, float max, float *alfas, int num_iteracoes, int bloco, int m, string pathOut)
 {
     time_t seed = time(NULL);
     srand(seed);
@@ -794,7 +794,7 @@ void gulosoRandomizadoReativo(Grafo *g, Cluster **clusters, int num_clusters, fl
     {
         cout << "Não encontrou NENHUMA solução..." << endl;
     }else{
-        escreveNosCluster(melhorSolucao, num_clusters);
+        escreveNosCluster(melhorSolucao, num_clusters, pathOut);
     }
 }
 
