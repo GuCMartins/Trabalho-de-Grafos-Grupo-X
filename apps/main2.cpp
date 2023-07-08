@@ -468,7 +468,7 @@ int main(int argc, char **argv)
     float alfas[] = {0.08, 0.18, 0.28, 0.37, 0.53,0.22, 0.64, 0.89, 0.77, 0.45};
 
     // gulosoRandomizadoReativo(G, clusters, 5, 0, 106.704002, alfas, 500, 50, 5);//20_5_270001  cmake .. && make && ./Grupo_1 ../instancias/20_5_270001 ../saida.txt Handover 0 1 0
-    gulosoRandomizadoReativo(G, clusters, 10, 0, 53.351898, alfas, 500, 50, 5);//20_10_270001 cmake .. && make && ./Grupo_1 ../instancias/20_10_270001 ../saida.txt Handover 0 1 0
+    // gulosoRandomizadoReativo(G, clusters, 10, 0, 53.351898, alfas, 500, 50, 5);//20_10_270001 cmake .. && make && ./Grupo_1 ../instancias/20_10_270001 ../saida.txt Handover 0 1 0
     // gulosoRandomizadoReativo(G, clusters, 5, 0, 172.378006, alfas, 500, 50, 5);//30_5_270003 cmake .. && make && ./Grupo_1 ../instancias/30_5_270003 ../saida.txt Handover 0 1 0
     // gulosoRandomizadoReativo(G, clusters, 8, 25, 75, alfas, 500, 50, 5);//Sparse_82_02 cmake .. && make && ./Grupo_1 ../instancias/Sparse82_02.txt ../saida.txt Sparse82 0 1 0
     // gulosoRandomizadoReativo(G, clusters, 12, 75, 125, alfas, 500, 50, 5);//RanReal240_01 cmake .. && make && ./Grupo_1 ../instancias/RanReal240_01.txt ../saida.txt RanReal240 0 1 0
