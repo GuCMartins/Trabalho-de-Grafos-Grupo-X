@@ -41,7 +41,7 @@ public:
     bool existeArco(int noPartida,int noDestino);
     int* vizinhancaAberta(int idNo);
     int* vizinhancaFechada(int idNo);
-    bool Euleriano(int* visitados);
+    bool Euleriano();
 
     int* FechoTransitivoDireto(int idNo);
     int* FechoTransitivoIndireto(int idNo);

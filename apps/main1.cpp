@@ -34,7 +34,65 @@ void divideString(string s, float cut[3])
     }
 }
 
-Grafo* leituraArquivo(string path, string instance, string ehDir, string ehPondAr, string ehPondNode)
+Grafo* leituraArquivoFase1(string path, string ehDir, string ehPondAr, string ehPondNode)
+{
+    ifstream arq(path);
+
+    string line;
+    string numV;
+    string auxId, auxPesoNode;
+
+    if (arq.is_open())
+    {
+        getline(arq, line);
+        numV = line;
+        Grafo *G = new Grafo(stoi(numV), ehDir == "1", ehPondAr == "1", ehPondNode == "1");
+        if (ehPondNode == "0")
+            for (int i = 0; i < stoi(numV); i++)
+                G->inserirNo(i+1, 0);
+        else
+            for (int i = 0; i < stoi(numV); i++)
+            {
+                getline(arq, line);
+                float cut[3];
+                divideString(line, cut);
+                int idNode = (int)cut[0];
+                float pesoNode = cut[1];
+                G->inserirNo(idNode, pesoNode);
+            }
+        while (getline(arq, line))
+        {
+            if (ehPondAr == "0")
+            {
+                float cut[3];
+                divideString(line, cut);
+                int idNoOrigem = (int)cut[0];
+                float idNoDestino = cut[1];
+                G->inserirArco(idNoOrigem, idNoDestino, 0);
+            }
+            else
+            {
+                float cut[3];
+                divideString(line, cut);
+                int idNoOrigem = (int)cut[0];
+                int idNoDestino = (int)cut[1];
+                float pesoArco = cut[2];
+                cout << idNoOrigem << " " << idNoDestino << " " << pesoArco << endl;
+                G->inserirArco(idNoOrigem, idNoDestino, pesoArco);
+            }
+        }
+        return G;
+    }
+
+    else
+        cerr << "Erro ao tentar abrir o arquivo de entrada" << endl;
+
+    arq.close();
+    return NULL;
+}
+
+
+Grafo* leituraArquivoFase2(string path, string instance, string ehDir, string ehPondAr, string ehPondNode)
 {
     ifstream arq(path);
 
@@ -358,60 +416,114 @@ int main(int argc, char **argv)
     string pathIn = "", pathOut = "";
     string ehDir, ehPondNode, ehPondAr, instance;
 
-    if (argc != 7)
+    if (argc != 6)
     {
         cout << "Entrada invalida! Tente <nome_do_executavel> <arq_In> <arqOut> <direcionado[0,1]> <ponderadoNode[0,1]> <ponderadoAresta[0,1]>" << endl;
+        
+        // cout << argv[0] << endl;
+        // cout << argv[1] << endl;
+        // cout << argv[2] << endl;
+        // cout << argv[3] << endl;
+        // cout << argv[4] << endl;
+        // cout << argv[5] << endl;
+        // cout << argv[6] << endl;
         return 0;
-    }
-
-    else
+    }else
     {
         pathIn = argv[1];
         pathOut = argv[2];
-        instance = argv[3];
-        ehDir = argv[4];
-        ehPondAr = argv[5];
-        ehPondNode = argv[6];
+        ehDir = argv[3];
+        ehPondAr = argv[4];
+        ehPondNode = argv[5];
     }
 
-    Grafo *G = leituraArquivo(pathIn, instance, "0", "1", "1");
-    //G->imprimirTodosNosAdjacentes();
-    G->imprimirInfo();
-    criarArquivoDot(G, "../resultados/20_10_270001.dot");
 
+    //Usar o que está abaixo para ler e escreve o grafo dos algoritmos da primeira etapa.
+    Grafo *G = leituraArquivoFase1(pathIn, ehDir, ehPondAr, ehPondNode);
+    escritaArquivo(pathOut, G);
+    G->imprimirTodosNosAdjacentes();
     
-    // cout << "Entrou no guloso randomizado\n";
-    //gulosoRandomizado(G, clusters, 12, 75, 125, 0.35, 500);
-    //cout << "Entrou no guloso\n";
-    // guloso(G, clusters, 5, 0, 106.704002);//20_5_270001  cmake .. && make && ./Grupo_1 ../instancias/20_5_270001 ../saida.txt Handover 0 1 0
+    char opcao = ' ';
     
-    // guloso(G, clusters, 10, 0, 53.351898);//20_10_270001 cmake .. && make && ./Grupo_1 ../instancias/20_10_270001 ../saida.txt Handover 0 1 0
-    // guloso(G, clusters, 5, 0, 172.378006);//30_5_270003 cmake .. && make && ./Grupo_1 ../instancias/30_5_270003 ../saida.txt Handover 0 1 0
-    // guloso(G, clusters, 8, 25, 75);//Sparse_82_02 cmake .. && make && ./Grupo_1 ../instancias/Sparse82_02.txt ../saida.txt Sparse82 0 1 0
-    // guloso(G, clusters, 20, 100, 150);//RanReal480_01 cmake .. && make && ./Grupo_1 ../instancias/RanReal480_01.txt ../saida.txt RanReal480 0 1 0
-    // guloso(G, clusters, 30, 120, 180);//RanReal960_01 cmake .. && make && ./Grupo_1 ../instancias/RanReal960_01.30.txt ../saida.txt RanReal960 0 1 0
-    
-    gulosoRandomizado(G, clusters, 10, 0, 53.351898, 0.75, 500);//20_10_270001 cmake .. && make && ./Grupo_1 ../instancias/20_10_270001 ../saida.txt Handover 0 1 0
-    // gulosoRandomizado(G, clusters, 5, 0,172.378006, 0.45, 500);//30_5_270003
-    // gulosoRandomizado(G, clusters, 12, 75, 125, 0.5, 50);//RanReal240_01 cmake .. && make && ./Grupo_1 ../instancias/RanReal240_01.txt ../saida.txt RanReal240 0 1 0
-    // gulosoRandomizado(G, clusters, 20, 100, 150, 0.55, 250);//RanReal480_01 cmake .. && make && ./Grupo_1 ../instancias/RanReal480_01.txt ../saida.txt RanReal480 0 1 0
+    while(opcao != 'n'){
+        cout << "Digite qual a letra, dentre as avaliativas, da função que você deseja utilizar. Digite a letra 'n' a qualquer momento para pausar o display..." << endl;
+        cin >> opcao;
+        int idNo;
+        int noOrigem, noDestino;
+        switch(opcao){
+            case 'h': 
+            {cout << "Digite o id do no que será avaliada a vizinhança aberta: " << endl;
+            cin >> idNo;
+            G->vizinhancaAberta(idNo);
+            break;}
+            case 'i': 
+            {cout << "Digite o id do no que será avaliada a vizinhança fechada: "<< endl;
+            cin >> idNo;
+            G->vizinhancaFechada(idNo);
+            break;}
+            case 'l':
+            {cout << "O grafo lido é bipartido ? " << isBipartite(G) << endl;
+            break;}
+            case 'o':
+            {cout << "Digite o id do no que será avaliada o fecho transitivo direto: "<< endl;
+            cin >> idNo;
+            G->FechoTransitivoDireto(idNo);
+            break;}
+            case 'p':
+            {cout << "Digite o id do no que será avaliada a fecho transitivo indireto: "<< endl;
+            cin >> idNo;
+            G->FechoTransitivoIndireto(idNo);
+            break;}
+            case 'r':
+            {//Caso queira utilizar essa função, preencha, por favor, o vetor com os valores e o respectivo tamanho do mesmo.
+            int *idNosVet = {};
+            int size;
+            Grafo *induzido = subgrafoInduzido(G, idNosVet, size);
+            induzido->imprimirTodosNosAdjacentes();
+            break;}
+            case 't':
+            {componentesFortementeConexas(G);
+            break;}
+            case 'u':
+            {cout << "É euleriano ? " << G->Euleriano() << endl;
+            break;}
+            case 'v':
+            {cout << "Digite o id do no que sera verificado a propriedade: "<< endl;
+            cin >> idNo;
+            cout << "É nó de articulação ? " << ehNoArticulacao(G, idNo) << endl;
+            break;}
+            case 'w':
+            {cout << "Digite o id do nó de origem: "<< endl;
+            cin >> noOrigem;
+            cout << "Digite o id do nó de destino: "<< endl;
+            cin >> noDestino;
+            cout << "É aresta ponte ? " << ehArestaPonte(G, noOrigem, noDestino) << endl;
+            break;}
+            case 'y':
+            {Grafo *g = kruskalAlgorithm(G);
+            g->imprimirTodosNosAdjacentes();
+            break;}
+            case 'z':
+            {char opt;
+            cout << "Qual o nó de origem ?" << endl;
+            cin >> noOrigem;
+            cout << "Qual o nó de destino ?" << endl;
+            cin >> noDestino;
+            cout << "Deseja utilizar o algoritmo de Dijkstra(d) ou de Floyd(f)?" << endl;
+            cin >> opt;
+            if(opt == 'd'){
+                float* valores = dijkstraAlgorithm(G, noOrigem);
+                cout << "Valor do caminho mínimo: " << valores[noDestino] << endl;
+            }else if(opt == 'f'){
+                float** valores = floydWarshalAlgorithm(G);
+                cout << "Valor do caminho mínimo: " << valores[noOrigem][noDestino] << endl; 
+            }
+            break;}
+            case 'n':
+            {cout << "Saindo do display..." << endl;
+            break;}
+        }
+    }
 
-    //alfa = 1 ==> vai sortear qualquer indice do vetor de candidatos
-    //alfa = 0 ==> vai pegar sempre o primeiro do vetor de candidatos (guloso)
-    float alfas[] = {0.08, 0.18, 0.28, 0.37, 0.53,0.22, 0.64, 0.89, 0.77, 0.45};
-    // float alfas[] = {0.05, 0.1, 0.15, 0.3, 0.5,0.18,0.28,0.37,0.22,0.53};
-    // gulosoRandomizadoReativo(G, clusters, 5, 0, 106.704002, alfas, 500, 50, 5);//cmake .. && make && ./Grupo_1 ../instancias/20_5_270001 ../saida.txt Handover 0 1 0
-    // gulosoRandomizadoReativo(G, clusters, 10, 0, 53.351898, alfas, 500, 10, 10);// cmake .. && make && ./Grupo_1 ../instancias/20_10_270001 ../saida.txt Handover 0 1 0
-    // gulosoRandomizadoReativo(G, clusters, 5, 0, 172.378006, alfas, 100, 10, 5);// cmake .. && make && ./Grupo_1 ../instancias/30_5_270003 ../saida.txt Handover 0 1 0
-    
-    // gulosoRandomizadoReativo(G, clusters, 12, 75, 125, alfas, 100, 10, 5);// cmake .. && make && ./Grupo_1 ../instancias/RanReal240_01.txt ../saida.txt RanReal240 0 1 0
-    //gulosoRandomizadoReativo(G, clusters, 12, 75, 125, alfas, 500, 50, 5);// cmake .. && make && ./Grupo_1 ../instancias/RanReal240_04.txt ../saida.txt RanReal240 0 1 0
-    // gulosoRandomizadoReativo(G, clusters, 12, 75, 125, alfas, 500, 50, 5);// cmake .. && make && ./Grupo_1 ../instancias/RanReal240_07.txt ../saida.txt RanReal240 0 1 0
-    
-    // gulosoRandomizadoReativo(G, clusters, 20, 100, 150, alfas, 500, 50, 10);// cmake .. && make && ./Grupo_1 ../instancias/RanReal480_01.txt ../saida.txt RanReal480 0 1 0
-    // gulosoRandomizadoReativo(G, clusters, 20, 100, 150, alfas, 500, 50, 5);// cmake .. && make && ./Grupo_1 ../instancias/RanReal480_04.txt ../saida.txt RanReal480 0 1 0
-    // gulosoRandomizadoReativo(G, clusters, 30, 120, 180, alfas, 500, 50, 5);// cmake .. && make && ./Grupo_1 ../instancias/RanReal960_01.30.txt ../saida.txt RanReal960 0 1 0
-    
-    // gulosoRandomizadoReativo(G, clusters, 8, 25, 75, alfas, 500, 50, 5);// cmake .. && make && ./Grupo_1 ../instancias/Sparse82_02.txt ../saida.txt Sparse82 0 1 0
     return 0;
 }

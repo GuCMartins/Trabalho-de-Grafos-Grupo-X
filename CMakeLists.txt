@@ -15,7 +15,9 @@ add_library(lib-Trabalho_de_Grafos
             ../apps/grafos_util.h
             ../apps/greedy_algorithms.h)
 
-add_executable(Grupo_1 apps/main.cpp)
+# add_executable(Grupo_1 apps/main1.cpp)
+#Descomente a de baixo e comente a de cima para executar os algoritmos gulosos
+add_executable(Grupo_1 apps/main2.cpp)
 
 set(CPACK_PROJECT_NAME ${PROJECT_NAME})
 set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})

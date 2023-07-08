@@ -11,8 +11,8 @@
 using namespace std;    
 
 
-/*
-    => Verifico se a quantidade de arestas no grafo corresponde a n*(n-1)/2,
+/*for(int i = 0; i < size; i++){
+        cout << vizinhanca[i] << endl;
     visto que se um grafo é completo. Além disso, é necessário verificar se
     o grafo é multigrafo ou não, pois a primeira verificação fura se desconsi-
     derar multigrafos.
@@ -506,13 +506,13 @@ bool ehKRegular(Grafo *g, int k){
     return true;
 }
 
-Grafo* subgrafoInduzido(Grafo *grafo, int *idNos, int *size){
+Grafo* subgrafoInduzido(Grafo *grafo, int *idNos, int size){
     //1. Inserir os nós no subrafoInduzido que existem no grafo original
-    Grafo *subGrafoInduzido = new Grafo(*size, grafo->ehDir(), grafo->ehPondAr(), grafo->ehPondNode());
+    Grafo *subGrafoInduzido = new Grafo(size, grafo->ehDir(), grafo->ehPondAr(), grafo->ehPondNode());
     forward_list<int> idNosInseridos;
     int countNosInseridos = 0;
 
-    for (int i = 0; i < *size; i++) {
+    for (int i = 0; i < size; i++) {
         No *no = grafo->findNoById(idNos[i]);
         if(no != NULL){
             subGrafoInduzido->inserirNo(no->getId(),no->getPeso());

@@ -312,7 +312,7 @@ void Grafo::imprimirListaNosAdjacentes(int idNo)
     }
 }
 
-int *Grafo::vizinhancaAberta(int idNo){
+int* Grafo::vizinhancaAberta(int idNo){
     int size = 0;
     No* no = findNoById(idNo);
     if(direcionado)
@@ -327,6 +327,10 @@ int *Grafo::vizinhancaAberta(int idNo){
             vizinhanca[i] = arco->getProx()->getNodeDest();
             i++;
         }
+    }
+
+    for(int i = 0; i < size; i++){
+        cout << vizinhanca[i] << endl;
     }
     return vizinhanca;
 }
@@ -345,12 +349,16 @@ int *Grafo::vizinhancaFechada(int idNo)
     for(int i =0;i<size;i++)
         vizinhanca[i] = vizinhancaAux[i];
     vizinhanca[size] = idNo;
+    
+    for(int i = 0; i < size; i++){
+        cout << vizinhanca[i] << endl;
+    }
     return vizinhanca;
 }
 
-bool Grafo::Euleriano(int *visitados){//recebe um vetor de visitados do DFS
+bool Grafo::Euleriano(){//recebe um vetor de visitados do DFS
 //Teorema: Um multigrafo M é euleriano se e somente se M é conexo e cada vértice de M tem grau par.
-    
+    int *visitados = new int[this->ordem];
     if(ordem == 0)
         return false;//se o grafo nao tiver nos, nao eh euleriano
     if(ordem == 1)
@@ -417,6 +425,10 @@ int* Grafo::FechoTransitivoDireto(int idNo){ //o conjunto dos vértices de um gr
         for(int k=0;k<ordem;k++)
         visitados[k] = 0;
     }
+    
+    for(int i = 0; i < ordem; i++){
+        cout << fecho[i] << endl;
+    }
     return fecho;
 }
 
@@ -435,6 +447,9 @@ int* Grafo::FechoTransitivoIndireto(int idNo){ //o conjunto dos vértices de um 
         }
         for(int k=0;k<ordem;k++)
         visitados[k] = 0;
+    }
+    for(int i = 0; i < ordem; i++){
+        cout << fecho[i] << endl;
     }
     return fecho;
 }
