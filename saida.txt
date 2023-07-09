@@ -1,0 +1,61 @@
+Cluster 0
+	Soma Vértices: 85
+	Soma Arestas: 5870.65
+	Nós adicionados no cluster
+	161	80	9	32	52	158	87	179	115	99	174	17	37	133	164
+Cluster 1
+	Soma Vértices: 88
+	Soma Arestas: 8986.67
+	Nós adicionados no cluster
+	42	113	20	175	107	57	208	163	236	237	144	150	227	70	225	162	187	235
+Cluster 2
+	Soma Vértices: 122
+	Soma Arestas: 12607.8
+	Nós adicionados no cluster
+	120	14	230	76	131	77	134	218	122	72	111	84	229	86	49	102	16	13	183	54	234	89
+Cluster 3
+	Soma Vértices: 125
+	Soma Arestas: 16021.9
+	Nós adicionados no cluster
+	217	66	198	83	31	216	38	157	93	154	123	64	26	193	188	125	135	152	168	118	61	95	226	88	185
+Cluster 4
+	Soma Vértices: 108
+	Soma Arestas: 9705.16
+	Nós adicionados no cluster
+	0	25	104	166	114	74	30	11	153	197	148	199	180	41	191	173	203	186	55
+Cluster 5
+	Soma Vértices: 104
+	Soma Arestas: 11918.8
+	Nós adicionados no cluster
+	220	27	19	2	124	1	12	58	221	190	143	117	213	23	222	75	67	142	189	105	98
+Cluster 6
+	Soma Vértices: 85
+	Soma Arestas: 6884.97
+	Nós adicionados no cluster
+	137	239	160	108	82	109	46	97	184	91	81	51	60	63	45	79
+Cluster 7
+	Soma Vértices: 113
+	Soma Arestas: 13709.8
+	Nós adicionados no cluster
+	155	167	103	178	177	215	128	211	96	110	126	29	35	53	94	165	68	205	28	200	181	112	15
+Cluster 8
+	Soma Vértices: 90
+	Soma Arestas: 10818.4
+	Nós adicionados no cluster
+	138	206	132	202	223	156	92	21	145	65	101	33	56	212	22	24	90	71	39	136
+Cluster 9
+	Soma Vértices: 114
+	Soma Arestas: 10943.4
+	Nós adicionados no cluster
+	233	7	238	73	214	149	194	18	100	228	47	140	209	127	201	195	169	170	34	207	3
+Cluster 10
+	Soma Vértices: 110
+	Soma Arestas: 10007.8
+	Nós adicionados no cluster
+	50	85	192	129	231	182	176	119	147	210	146	116	40	172	10	196	139	48	204
+Cluster 11
+	Soma Vértices: 76
+	Soma Arestas: 7358.23
+	Nós adicionados no cluster
+	44	62	78	171	36	4	121	151	130	6	232	5	224	219	43	8	159
+-------------- SOLUÇÃO: 124834 --------------

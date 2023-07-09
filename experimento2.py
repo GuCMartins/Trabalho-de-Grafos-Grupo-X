@@ -26,23 +26,25 @@ pasta_instancias = "../instancias/"
         # Saída na tela (ou arquivo): o valor da solução e o tempo para cada execução
         # Calcular a média da qualidade e do tempo sobre as 30 execuções
 parametros = [
-    [pasta_instancias+"20_5_270001","../saida.txt","Handover", "0", "1", "0", "GRA", num_iteracoes, alfa_randomizado],
+    # [pasta_instancias+"20_5_270001","../saida.txt","Handover", "0", "1", "0", "GRA", num_iteracoes, alfa_randomizado],
      
-    [pasta_instancias+"20_10_270001","../saida.txt","Handover", "0", "1", "0", "GRA", num_iteracoes, alfa_randomizado],
+    # [pasta_instancias+"20_10_270001","../saida.txt","Handover", "0", "1", "0", "GRA", num_iteracoes, alfa_randomizado],
 
-    [pasta_instancias+"30_5_270003","../saida.txt","Handover", "0", "1", "0", "GRA", num_iteracoes, alfa_randomizado],
+    # [pasta_instancias+"30_5_270003","../saida.txt","Handover", "0", "1", "0", "GRA", num_iteracoes, alfa_randomizado],
 
-    [pasta_instancias+"RanReal240_01.txt","../saida.txt","RanReal240", "0", "1", "0", "GRA", num_iteracoes, alfa_randomizado],
+    # [pasta_instancias+"RanReal240_01.txt","../saida.txt","RanReal240", "0", "1", "0", "GRA", num_iteracoes, alfa_randomizado],
 
-    [pasta_instancias+"RanReal240_04.txt","../saida.txt","RanReal240", "0", "1", "0", "GRA", num_iteracoes, alfa_randomizado],
+    # [pasta_instancias+"RanReal240_04.txt","../saida.txt","RanReal240", "0", "1", "0", "GRA", num_iteracoes, alfa_randomizado],
 
-    [pasta_instancias+"RanReal480_01.txt","../saida.txt","RanReal480", "0", "1", "0", "GRA", num_iteracoes, alfa_randomizado],
+    [pasta_instancias+"RanReal240_07.txt","../saida.txt","RanReal240", "0", "1", "0", "GRA", num_iteracoes, alfa_randomizado],
+
+    # [pasta_instancias+"RanReal480_01.txt","../saida.txt","RanReal480", "0", "1", "0", "GRA", num_iteracoes, alfa_randomizado],
    
-    [pasta_instancias+"RanReal480_04.txt","../saida.txt","RanReal480", "0", "1", "0", "GRA", num_iteracoes, alfa_randomizado],
+    # [pasta_instancias+"RanReal480_04.txt","../saida.txt","RanReal480", "0", "1", "0", "GRA", num_iteracoes, alfa_randomizado],
     
-    [pasta_instancias+"RanReal960_01.30.txt","../saida.txt","RanReal960", "0", "1", "0", "GRA", num_iteracoes, alfa_randomizado],
+    # [pasta_instancias+"RanReal960_01.30.txt","../saida.txt","RanReal960", "0", "1", "0", "GRA", num_iteracoes, alfa_randomizado],
     
-    [pasta_instancias+"Sparse82_02.txt","../saida.txt","Sparse82", "0", "1", "0", "GRA", num_iteracoes, alfa_randomizado],
+    # [pasta_instancias+"Sparse82_02.txt","../saida.txt","Sparse82", "0", "1", "0", "GRA", num_iteracoes, alfa_randomizado],
 ]
 
 for parametro in parametros:

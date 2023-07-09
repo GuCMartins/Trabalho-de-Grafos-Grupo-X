@@ -25,27 +25,27 @@ pasta_instancias = "../instancias/"
         # Anotar o valor da solução, o valor de alfa que a obteve, e o tempo em cada execução
 
 parametros = [
-    [pasta_instancias+"20_5_270001","../saida.txt","Handover", "0", "1", "0", "GRAR", num_iteracoes, bloco],
+    # [pasta_instancias+"20_5_270001","../saida.txt","Handover", "0", "1", "0", "GRAR", num_iteracoes, bloco],
     
-    [pasta_instancias+"20_10_270001","../saida.txt","Handover", "0", "1", "0", "GRAR", num_iteracoes, bloco],
+    # [pasta_instancias+"20_10_270001","../saida.txt","Handover", "0", "1", "0", "GRAR", num_iteracoes, bloco],
     
-    [pasta_instancias+"30_5_270003","../saida.txt","Handover", "0", "1", "0", "GRAR", num_iteracoes, bloco],
+    # [pasta_instancias+"30_5_270003","../saida.txt","Handover", "0", "1", "0", "GRAR", num_iteracoes, bloco],
     
-    [pasta_instancias+"RanReal240_01.txt","../saida.txt","RanReal240", "0", "1", "0", "GRAR", num_iteracoes, bloco],
+    # [pasta_instancias+"RanReal240_01.txt","../saida.txt","RanReal240", "0", "1", "0", "GRAR", num_iteracoes, bloco],
     
 
-    [pasta_instancias+"RanReal240_04.txt","../saida.txt","RanReal240", "0", "1", "0", "GRAR", num_iteracoes, bloco],
+    # [pasta_instancias+"RanReal240_07.txt","../saida.txt","RanReal240", "0", "1", "0", "GRAR", num_iteracoes, bloco],
     
 
     [pasta_instancias+"RanReal480_01.txt","../saida.txt","RanReal480", "0", "1", "0", "GRAR", num_iteracoes, bloco],
     
 
-    [pasta_instancias+"RanReal480_04.txt","../saida.txt","RanReal480", "0", "1", "0", "GRAR", num_iteracoes, bloco],
+    # [pasta_instancias+"RanReal480_04.txt","../saida.txt","RanReal480", "0", "1", "0", "GRAR", num_iteracoes, bloco],
     
-    [pasta_instancias+"RanReal960_01.30.txt","../saida.txt","RanReal960", "0", "1", "0", "GRAR", num_iteracoes, bloco],
+    # [pasta_instancias+"RanReal960_01.30.txt","../saida.txt","RanReal960", "0", "1", "0", "GRAR", num_iteracoes, bloco],
     
 
-    [pasta_instancias+"Sparse82_02.txt","../saida.txt","Sparse82", "0", "1", "0", "GRAR", num_iteracoes, bloco]
+    # [pasta_instancias+"Sparse82_02.txt","../saida.txt","Sparse82", "0", "1", "0", "GRAR", num_iteracoes, bloco]
 ]
 
 for parametro in parametros:

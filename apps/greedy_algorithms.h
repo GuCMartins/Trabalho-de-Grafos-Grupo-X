@@ -645,6 +645,8 @@ void gulosoRandomizadoReativo(Grafo *g, Cluster **clusters, int num_clusters, fl
 {
     time_t seed = time(NULL);
     arquivoMetricas<<","<<seed;
+
+    float alfaMelhorSolucao = -1;
     
     srand(seed);
     // cout << "VALOR DA SEMENTE: " << seed << endl;
@@ -781,10 +783,11 @@ void gulosoRandomizadoReativo(Grafo *g, Cluster **clusters, int num_clusters, fl
                 melhorSolucao = copiaClusters(clusters, num_clusters, g);
                 // solBest[indexAlfa].melhorSolucao = qualidadeSolAtual;
                 melhorSolucaoGeral.melhorSolucao = qualidadeSolAtual;
+                alfaMelhorSolucao = alfa;
             }
             else if (qualidadeSolAtual > calculaQualidadeSolucao(melhorSolucao, num_clusters))
             {
-                
+                alfaMelhorSolucao = alfa;
                 melhorSolucao = copiaClusters(clusters, num_clusters, g);
                 // solBest[indexAlfa].melhorSolucao = qualidadeSolAtual;
                 melhorSolucaoGeral.melhorSolucao = qualidadeSolAtual;
@@ -819,7 +822,10 @@ void gulosoRandomizadoReativo(Grafo *g, Cluster **clusters, int num_clusters, fl
 
         k++;
     }
-
+    if(alfaMelhorSolucao != -1)
+        arquivoMetricas<<","<< alfaMelhorSolucao;
+    else
+        arquivoMetricas<<",SEM ALFA ACHADO";
     escreveNosCluster(melhorSolucao, num_clusters, pathOut, arquivoMetricas);
 }
 
