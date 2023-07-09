@@ -532,7 +532,7 @@ void gulosoRandomizado(Grafo *g, Cluster **clusters, int num_clusters, float min
             }
         }
 
-        k++;
+        
 
         // Zera todos os clusters para a próxima iteração.
         for (int i = 0; i < g->getOrdem(); i++)
@@ -543,6 +543,23 @@ void gulosoRandomizado(Grafo *g, Cluster **clusters, int num_clusters, float min
             }
             nosInseridos[i] = -1; // Resetar
         }
+
+        // se não achou solução na ultima iteraçao, inicializa os clusters com novos ids
+        if (melhorSolucao == nullptr)
+        {
+            for (int i = 0; i < num_clusters; i++)
+            {
+                int idRandom = rand() % g->getOrdem(); // Id de um nó
+                while (nosInseridos[idRandom] != -1)
+                {
+                    idRandom = rand() % g->getOrdem();
+                }
+                inicializacaoIndices[i] = idRandom; // Para cada indice que representa o indice de um cluster, nessa posição estará o valor de qual nó que o inicializará.
+                nosInseridos[idRandom] = i;         // Na posição idRandom que é o id de um nó eu taco qual cluster que ele vai entrar
+            }
+        }
+
+        k++;
     }
     
     escreveNosCluster(melhorSolucao, num_clusters, pathOut, arquivoMetricas);
@@ -784,6 +801,22 @@ void gulosoRandomizadoReativo(Grafo *g, Cluster **clusters, int num_clusters, fl
             }
             nosInseridos[i] = -1; // Resetar
         }
+
+        // se não achou solução na ultimo bloco de iteraçao, inicializa os clusters com novos ids
+        if (k % bloco == 0 && melhorSolucao == nullptr)
+        {
+            for (int i = 0; i < num_clusters; i++)
+            {
+                int idRandom = rand() % g->getOrdem(); // Id de um nó
+                while (nosInseridos[idRandom] != -1)
+                {
+                    idRandom = rand() % g->getOrdem();
+                }
+                inicializacaoIndices[i] = idRandom; // Para cada indice que representa o indice de um cluster, nessa posição estará o valor de qual nó que o inicializará.
+                nosInseridos[idRandom] = i;         // Na posição idRandom que é o id de um nó eu taco qual cluster que ele vai entrar
+            }
+        }
+
         k++;
     }
 
