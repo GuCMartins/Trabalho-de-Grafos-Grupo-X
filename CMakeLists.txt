@@ -17,7 +17,9 @@ add_library(lib-Trabalho_de_Grafos
 
 # add_executable(Grupo_1 apps/main1.cpp)
 #Descomente a de baixo e comente a de cima para executar os algoritmos gulosos
-add_executable(Grupo_1 apps/main2.cpp)
+# add_executable(Grupo_1 apps/main2.cpp)
+#Código para executar experimentos de forma automatizada
+add_executable(Grupo_1 apps/main3.cpp)
 
 set(CPACK_PROJECT_NAME ${PROJECT_NAME})
 set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})

@@ -40,32 +40,36 @@ bool solucao(Cluster **clusters, int num_clusters)
     return true;
 }
 
-void escreveNosCluster(Cluster **clusters, int num_clusters, string pathOut){
-   if(solucao(clusters, num_clusters))
-   {
-    ofstream nosCluster(pathOut);
-   float solucao = 0;
-   for(int i=0;i<num_clusters;i++){
-       nosCluster <<"Cluster "<<i<<endl;
-       std::forward_list<int> inseridos = clusters[i]->getInseridos();
-       nosCluster<<"\tSoma Vértices: "<<clusters[i]->getSumVertices()<<endl;
-       nosCluster<<"\tSoma Arestas: "<<clusters[i]->getSumArestas()<<endl;
-       nosCluster << "\tNós adicionados no cluster\n";
-       solucao+=clusters[i]->getSumArestas();
-       for (std::forward_list<int>::iterator it = inseridos.begin(); it != inseridos.end(); it++)
-       {
-           nosCluster<<"\t"<<(*it);  
-       }
-       nosCluster<<endl;
-   }
-   nosCluster<<"-------------- SOLUÇÃO: "<<solucao<<" --------------"<<endl;
-   nosCluster.close();
-   }
-   else{
-        cout << "Nenhuma solução foi encontrada\n";
-   }
+void escreveNosCluster(Cluster **clusters, int num_clusters, string pathOut, ofstream &metricas)
+{
+    if (clusters!=nullptr && solucao(clusters, num_clusters))
+    {
+        ofstream nosCluster(pathOut);
+        float solucaoValor = 0;
+        for (int i = 0; i < num_clusters; i++)
+        {
+            nosCluster << "Cluster " << i << endl;
+            std::forward_list<int> inseridos = clusters[i]->getInseridos();
+            nosCluster << "\tSoma Vértices: " << clusters[i]->getSumVertices() << endl;
+            nosCluster << "\tSoma Arestas: " << clusters[i]->getSumArestas() << endl;
+            nosCluster << "\tNós adicionados no cluster\n";
+            solucaoValor += clusters[i]->getSumArestas();
+            for (std::forward_list<int>::iterator it = inseridos.begin(); it != inseridos.end(); it++)
+            {
+                nosCluster << "\t" << (*it);
+            }
+            nosCluster << endl;
+        }
+        metricas<<","<<solucaoValor;
+        nosCluster << "-------------- SOLUÇÃO: " << solucaoValor << " --------------" << endl;
+        nosCluster.close();
+    }
+    else
+    {
+        metricas<<","<<"FALSE";
+        // cout << "Nenhuma solução foi encontrada\n";
+    }
 }
-
 
 void criarArquivoDotClusters(Cluster **clusters,int num_clusters, const string &nomeArquivo)
 {
@@ -313,12 +317,13 @@ bool comparePesos(std::tuple<int, int, float, int> a, std::tuple<int, int, float
     ? param num_clusters: Inteiro que representa o tamanho do vetor de clusters
     ? param min, max: Inteiros que representam o valor máximo e mínimo do intervalo dos clusters
 */
-void guloso(Grafo *g, Cluster **clusters, int num_clusters, float min, float max, string pathOut)
+void guloso(Grafo *g, Cluster **clusters, int num_clusters, float min, float max, string pathOut, ofstream &arquivoMetricas)
 {
 
     time_t seed = time(NULL);
+    arquivoMetricas<<","<<seed;
 
-    cout << "VALOR DA SEMENTE: " << seed << endl;
+    // cout << "VALOR DA SEMENTE: " << seed << endl;
 
     srand(seed);
 
@@ -379,7 +384,7 @@ void guloso(Grafo *g, Cluster **clusters, int num_clusters, float min, float max
         cont += 1;
     }
 
-    escreveNosCluster(clusters, num_clusters, pathOut);
+    escreveNosCluster(clusters, num_clusters, pathOut, arquivoMetricas);
 }
 
 int randomRange(int num_candidatos, float alfa)
@@ -426,12 +431,12 @@ float calculaQualidadeSolucao(Cluster **cluster, int num_clusters)
     ? param num_clusters: Inteiro que representa o tamanho do vetor de clusters
     ? param min, max: Inteiros que representam o valor máximo e mínimo do intervalo dos clusters
 */
-void gulosoRandomizado(Grafo *g, Cluster **clusters, int num_clusters, float min, float max, float alfa, int num_iteracoes, string pathOut)
+void gulosoRandomizado(Grafo *g, Cluster **clusters, int num_clusters, float min, float max, float alfa, int num_iteracoes, string pathOut, ofstream &arquivoMetricas)
 {
-
     time_t seed = time(NULL);
     srand(seed);
-    cout << "VALOR DA SEMENTE: " << seed << endl;
+    // cout << "VALOR DA SEMENTE: " << seed << endl;
+    arquivoMetricas<<","<<seed;
 
     // Matriz para saber o peso da aresta entre os nós i e j
     int **matriz = new int *[g->getOrdem()];
@@ -539,13 +544,8 @@ void gulosoRandomizado(Grafo *g, Cluster **clusters, int num_clusters, float min
             nosInseridos[i] = -1; // Resetar
         }
     }
-
-    if (melhorSolucao == nullptr)
-    {
-        cout << "Solução não encontrada..." << endl;
-    }else{
-        escreveNosCluster(melhorSolucao, num_clusters, pathOut);
-    }   
+    
+    escreveNosCluster(melhorSolucao, num_clusters, pathOut, arquivoMetricas);
 }
 
 void inicializaVetores(float *P, float *M, int *escolhasAlfa, float *somaSolucoes, BestSol *solBest, int m)
@@ -571,7 +571,6 @@ void atualizaProbabilidades(float *P, float *medias, float *alfa, BestSol solBes
         q[i] = 0;
         if (medias[i] != 0)
         {
-            // q[i] = solBest[i].melhorSolucao / medias[i];
             q[i] = solBest.melhorSolucao / medias[i];
             q[i] = pow(q[i], 100);
             soma += q[i];
@@ -609,8 +608,7 @@ int escolheAlfa(float *P, int tamVetAlfa)
             return i;
         }
     }
-
-    return i;
+    return i-1;
 
 }
 
@@ -626,11 +624,13 @@ void atualizaMedias(float *M, float s, float *alfas)
     ? param num_clusters: Inteiro que representa o tamanho do vetor de clusters
     ? param min, max: Inteiros que representam o valor máximo e mínimo do intervalo dos clusters
 */
-void gulosoRandomizadoReativo(Grafo *g, Cluster **clusters, int num_clusters, float min, float max, float *alfas, int num_iteracoes, int bloco, int m, string pathOut)
+void gulosoRandomizadoReativo(Grafo *g, Cluster **clusters, int num_clusters, float min, float max, float *alfas, int num_iteracoes, int bloco, int m, string pathOut, ofstream &arquivoMetricas)
 {
     time_t seed = time(NULL);
+    arquivoMetricas<<","<<seed;
+    
     srand(seed);
-    cout << "VALOR DA SEMENTE: " << seed << endl;
+    // cout << "VALOR DA SEMENTE: " << seed << endl;
 
     // Matriz para saber o peso da aresta entre os nós i e j
     int **matriz = new int *[g->getOrdem()];
@@ -679,7 +679,6 @@ void gulosoRandomizadoReativo(Grafo *g, Cluster **clusters, int num_clusters, fl
 
     int k = 0;
     Cluster **melhorSolucao = nullptr;
-    ofstream arqAlfas("../alfas.txt");
 
     int indexAlfa;
     float alfa;
@@ -690,7 +689,6 @@ void gulosoRandomizadoReativo(Grafo *g, Cluster **clusters, int num_clusters, fl
         // k != 0 para evitar divisão por 0 na primeira iteração
         if (k % bloco == 0 && k != 0)
         {
-
             if (escolhasAlfa[indexAlfa] != 0)
             {
                 medias[indexAlfa] = somaSolucoes[indexAlfa] / escolhasAlfa[indexAlfa]; // soma das solucoes pelo numero de vezes que o alfa i foi escolhido
@@ -712,7 +710,6 @@ void gulosoRandomizadoReativo(Grafo *g, Cluster **clusters, int num_clusters, fl
 
         indexAlfa = escolheAlfa(P, m);
         alfa = alfas[indexAlfa];
-
         
         // Loop para encontrar uma solução com alfa e armazenar na variável clusters
         while (cont < g->getOrdem() && !candidatos.empty())
@@ -725,7 +722,8 @@ void gulosoRandomizadoReativo(Grafo *g, Cluster **clusters, int num_clusters, fl
             // cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
 
             // cout << "Debug 1\n";
-
+            // cout <<"INDEX: "<<indexAlfa<<endl;
+            // cout <<"ALFA: "<<alfa<<endl;
             int index = randomRange(std::distance(candidatos.begin(), candidatos.end()), alfa);
             std::tuple<int, int, float, int> top;
             int contador = 0;
@@ -786,16 +784,10 @@ void gulosoRandomizadoReativo(Grafo *g, Cluster **clusters, int num_clusters, fl
             }
             nosInseridos[i] = -1; // Resetar
         }
-
         k++;
     }
 
-    if (melhorSolucao == nullptr)
-    {
-        cout << "Não encontrou NENHUMA solução..." << endl;
-    }else{
-        escreveNosCluster(melhorSolucao, num_clusters, pathOut);
-    }
+    escreveNosCluster(melhorSolucao, num_clusters, pathOut, arquivoMetricas);
 }
 
 #endif

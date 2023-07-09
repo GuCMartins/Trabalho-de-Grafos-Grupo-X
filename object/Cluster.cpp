@@ -40,7 +40,6 @@ bool Cluster::confereNosInseridos(int val){
 }
 
 void Cluster::zeraCluster(Grafo *grafo){
-    delete this->cluster_graph;
     this->cluster_graph = new Grafo(grafo->getOrdem(), grafo->ehDir(), grafo->ehPondAr(), grafo->ehPondNode());
     while(!this->inseridos.empty()){
         this->inseridos.pop_front();
