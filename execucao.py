@@ -1,5 +1,6 @@
 import subprocess
 import os
+import time
 
 os.chdir('./build')
 proc = subprocess.Popen(["cmake",".."])
@@ -89,4 +90,5 @@ for parametro in parametros:
         comando = ["./Grupo_1"]+parametro
         print(comando)
         proc = subprocess.Popen(comando)
-        proc.wait()
+        proc.wait()# só passar para a próxima iteração quando terminar esse processo
+        time.sleep(1)#aguardar um tempo entre cada execução para não usar sempre a mesma semente
