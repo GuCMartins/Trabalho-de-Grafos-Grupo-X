@@ -659,7 +659,7 @@ int main(int argc, char **argv)
         if (!arquivoExistente.good())
         {
             ofstream tempFile(fileMetricasGRAR, ios::app);
-            tempFile << "Instância,Semente,Solução,Tempo,Iteraçoes,Bloco,melhorAlfa" << endl;
+            tempFile << "Instância,Semente,Solução,melhorAlfa,Tempo,Iteraçoes,Bloco" << endl;
             tempFile.close();
         }
 

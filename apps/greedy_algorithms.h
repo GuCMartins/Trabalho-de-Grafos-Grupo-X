@@ -26,6 +26,7 @@ typedef struct
 {
     float melhorSolucao;
     int *pesodeCadaCluster;
+    float melhorSolucaoAlfa;
 } BestSol;
 
 
@@ -661,6 +662,7 @@ void gulosoRandomizadoReativo(Grafo *g, Cluster **clusters, int num_clusters, fl
     BestSol solBest[m];
     BestSol melhorSolucaoGeral;
     melhorSolucaoGeral.melhorSolucao = 0;
+    melhorSolucaoGeral.melhorSolucaoAlfa = -1;
 
     inicializaVetores(P, medias, escolhasAlfa, somaSolucoes, solBest, m);
 
@@ -783,14 +785,14 @@ void gulosoRandomizadoReativo(Grafo *g, Cluster **clusters, int num_clusters, fl
                 melhorSolucao = copiaClusters(clusters, num_clusters, g);
                 // solBest[indexAlfa].melhorSolucao = qualidadeSolAtual;
                 melhorSolucaoGeral.melhorSolucao = qualidadeSolAtual;
-                alfaMelhorSolucao = alfa;
+                melhorSolucaoGeral.melhorSolucaoAlfa = alfas[indexAlfa];
             }
             else if (qualidadeSolAtual > calculaQualidadeSolucao(melhorSolucao, num_clusters))
             {
-                alfaMelhorSolucao = alfa;
                 melhorSolucao = copiaClusters(clusters, num_clusters, g);
                 // solBest[indexAlfa].melhorSolucao = qualidadeSolAtual;
                 melhorSolucaoGeral.melhorSolucao = qualidadeSolAtual;
+                melhorSolucaoGeral.melhorSolucaoAlfa = alfas[indexAlfa];
             }
 
         }
@@ -805,28 +807,27 @@ void gulosoRandomizadoReativo(Grafo *g, Cluster **clusters, int num_clusters, fl
             nosInseridos[i] = -1; // Resetar
         }
 
-        // // se não achou solução na ultimo bloco de iteraçao, inicializa os clusters com novos ids
-        // if (k % bloco == 0 && melhorSolucao == nullptr)
-        // {
-        //     for (int i = 0; i < num_clusters; i++)
-        //     {
-        //         int idRandom = rand() % g->getOrdem(); // Id de um nó
-        //         while (nosInseridos[idRandom] != -1)
-        //         {
-        //             idRandom = rand() % g->getOrdem();
-        //         }
-        //         inicializacaoIndices[i] = idRandom; // Para cada indice que representa o indice de um cluster, nessa posição estará o valor de qual nó que o inicializará.
-        //         nosInseridos[idRandom] = i;         // Na posição idRandom que é o id de um nó eu taco qual cluster que ele vai entrar
-        //     }
-        // }
+        // se não achou solução na ultimo bloco de iteraçao, inicializa os clusters com novos ids
+        if (k % bloco == 0 && melhorSolucao == nullptr)
+        {
+            for (int i = 0; i < num_clusters; i++)
+            {
+                int idRandom = rand() % g->getOrdem(); // Id de um nó
+                while (nosInseridos[idRandom] != -1)
+                {
+                    idRandom = rand() % g->getOrdem();
+                }
+                inicializacaoIndices[i] = idRandom; // Para cada indice que representa o indice de um cluster, nessa posição estará o valor de qual nó que o inicializará.
+                nosInseridos[idRandom] = i;         // Na posição idRandom que é o id de um nó eu taco qual cluster que ele vai entrar
+            }
+        }
 
         k++;
     }
-    if(alfaMelhorSolucao != -1)
-        arquivoMetricas<<","<< alfaMelhorSolucao;
-    else
-        arquivoMetricas<<",SEM ALFA ACHADO";
+
     escreveNosCluster(melhorSolucao, num_clusters, pathOut, arquivoMetricas);
+    
+    arquivoMetricas<<","<<melhorSolucaoGeral.melhorSolucaoAlfa;
 }
 
 #endif
