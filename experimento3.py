@@ -10,8 +10,8 @@ proc = subprocess.Popen(["make"])
 proc.wait()
 
 
-num_iteracoes = "50"
-bloco = "5"
+num_iteracoes = "500"
+bloco = "50"
 
 alfa_randomizado = "0.35"
 alfas_randomizado = ["0.05", "0.10", "0.15", "0.30", "0.5"]
