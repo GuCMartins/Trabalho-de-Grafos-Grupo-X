@@ -312,48 +312,50 @@ void Grafo::imprimirListaNosAdjacentes(int idNo)
     }
 }
 
-int* Grafo::vizinhancaAberta(int idNo){
-    int size = 0;
-    No* no = findNoById(idNo);
-    if(direcionado)
-        size = no->getGrauSaida() + no->getGrauEntrada();
-    else
-        size = no->getGrauEntrada();    
-    int *vizinhanca = new int[size];//aloca um vetor de vizinhanca com o numero de vizinhos do no
-    int i = 0;
-    Arco* arco = this->findNoById(idNo)->getAdjacente();//pega a aresta que sai do nó
-    while(i<size && arco != NULL){
-        if(arco->getNodeDest() == idNo || arco->getProx()->getNodeDest() == idNo){
-            vizinhanca[i] = arco->getProx()->getNodeDest();
-            i++;
-        }
-    }
+void Grafo::vizinhancaAberta(int idNo){
+    No *no = findNoById(idNo);
 
-    for(int i = 0; i < size; i++){
-        cout << vizinhanca[i] << endl;
+    if (no == NULL)
+    {
+        cout << "Nó com id " << idNo << " não encontrado no grafo..." << endl;
+        return;
     }
-    return vizinhanca;
+    Arco *arco = no->getAdjacentes();
+    if (arco == NULL)
+    {
+        cout << "Nó com id " << idNo << " não tem vizinhos" << endl;
+        return;
+    }
+    cout << "Vizinhança Aberta do nó: " << idNo << endl;
+    while (arco != NULL)
+    {
+        cout << "\tID: " << arco->getNodeDest() << endl;
+        arco = arco->getProx();
+    }
 }
 
-int *Grafo::vizinhancaFechada(int idNo)
+void Grafo::vizinhancaFechada(int idNo)
 {
-    int size = 0;
-    No* no = findNoById(idNo);
-    if(direcionado)
-        size = no->getGrauSaida() + no->getGrauEntrada();
-    else
-        size = no->getGrauEntrada();    
-    int *vizinhancaAux = new int[size];//aloca um vetor de vizinhanca com o numero de vizinhos do no
-    int *vizinhanca = new int[size+1];
-    vizinhancaAux = vizinhancaAberta(idNo);//recebe a vizinhanca aberta e completa com o no que esta sendo analisado
-    for(int i =0;i<size;i++)
-        vizinhanca[i] = vizinhancaAux[i];
-    vizinhanca[size] = idNo;
-    
-    for(int i = 0; i < size; i++){
-        cout << vizinhanca[i] << endl;
+    No *no = findNoById(idNo);
+
+    if (no == NULL)
+    {
+        cout << "Nó com id " << idNo << " não encontrado no grafo..." << endl;
+        return;
     }
-    return vizinhanca;
+    Arco *arco = no->getAdjacentes();
+    if (arco == NULL)
+    {
+        cout << "Nó com id " << idNo << " não tem vizinhos" << endl;
+        return;
+    }
+    cout << "Vizinhança Fechada do nó: " << idNo << endl;
+    cout << "\tID: " << idNo << endl;
+    while (arco != NULL)
+    {
+        cout << "\tID: " << arco->getNodeDest() << endl;
+        arco = arco->getProx();
+    }
 }
 
 bool Grafo::Euleriano(){//recebe um vetor de visitados do DFS

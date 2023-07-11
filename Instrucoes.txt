@@ -1,0 +1,73 @@
+Instruções para compilar e executar os algoritmos da Etapa 1 e Etapa 2 (Gulosos, Randomizado e Reativo)
+
+1. Entre na pasta build
+
+2. Execute o comando: cmake ..
+
+3. Execute o comando: make
+
+------------------------------------------------------- ETAPA 1 -----------------------------------------------------------------------------
+Para executar os programas desenvolvidos para a ETAPA 1:
+
+1. Na pasta build execute o programa:
+    ./Grupo_1 path/entrada.txt path/saida.txt <direcionado[0,1]> <ponderadoNode[0,1]> <ponderadoAresta[0,1]
+
+        path/entrada.txt: caminho do arquivo de entrada para o grafo
+        path/saida.txt: arquivo onde será salvo o grafo
+        direcionado: 0 para direcionado e 1 para não direcionado
+        ponderadoNode: 0 para não ponderado nos nós e 1 para ponderado nos nós
+        ponderadoAresta: 0 para não ponderado nas arestas e 1 para ponderado nas arestas
+    
+    Cerifique que os arquivos entrada.txt e saida.txt existam no caminho informado!
+    
+    Por exemplo:
+        ./Grupo_1 ../entrada.txt ../saida.txt 0 1 0
+
+    Será lido o grafo do arquivo entrada.txt e será salvo no arquivo saida.txt
+
+------------------------------------------------------- ETAPA 2 -----------------------------------------------------------------------------
+Para executar os programas desenvolvidos para a ETAPA 2:
+
+1. Na pasta build, execute o programa passando os parâmetros especificados:
+
+Algoritmo Guloso
+    ./Grupo_01 path/nome_arquivo_instancia path/arquivo_saida tipo_instancia 0 1 1 <algoritmo>
+
+Onde os valores possíveis são:
+    algoritmo: [G, GRA, GRAR]
+
+Guloso Randomizado
+    ./Grupo_01 path/nome_arquivo_instancia path/arquivo_saida tipo_instancia 0 1 1 <algoritmo> <alfa>
+
+Onde os valores possíveis são:
+    algoritmo: [G, GRA, GRAR]
+    alfa: valor de alfa entre 0 e 1
+
+Guloso Randomizado Reativo
+    ./Grupo_01 path/nome_arquivo_instancia path/arquivo_saida tipo_instancia 0 1 1 <algoritmo> <num_iteracoes> <bloco>
+
+Onde os valores possíveis são:
+    tipo_instancia: [Handover, RanReal240, RanReal480, RanReal960, Sparse82]
+    algoritmo: [G, GRA, GRAR]
+    alfa: valor de alfa entre 0 e 1
+    num_iteracoes: valor inteiro
+    bloco: valor inteiro
+
+2. Uma vez que o programa seja executado, será salvo um arquivo .csv para cada algoritmo na pasta resultados, com os dados da solução:
+    - metricasG.csv: métricas para o algoritmo guloso
+    - metricasGRA.csv: métricas para o algoritmo guloso randomizado
+    - metricasGRAR.csv: métricas para o algoritmo guloso randomizado reativo
+
+Alguns exemplos:
+
+Guloso
+    ./Grupo_01 ../instancias/30_5_270003 ../saida.txt Handover 0 1 1 G
+
+Guloso Randomizado
+    ./Grupo_01 ../instancias/30_5_270003 ../saida.txt Handover 0 1 1 GRA 500 0.45
+
+Guloso Randomizado Reativo
+    ./Grupo_01 ../instancias/30_5_270003 ../saida.txt Handover 0 1 1 GRAR 500 50
+
+
+

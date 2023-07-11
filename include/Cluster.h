@@ -9,6 +9,7 @@ class Cluster
 {
 private:
     float min, max; // min <= Sum(Peso dos nós do cluster) <= max (Constraint do problema)
+    Grafo *grafoOriginal;
     Grafo *cluster_graph; //Grafo que será induzido pelos nós que já se encontram no cluster
     std::forward_list<int> inseridos; //Guarda o valor inteiro dos ids dos nós que já estão dentro do cluster
     float sumVertices, sumArestas; //Soma dos pesos dos nós do cluster e soma dos pesos das arestas do cluster
@@ -16,6 +17,7 @@ private:
     bool confereNosInseridos(int val); //Função auxiliar na inserção
     std::string type;
     int numVertices;
+
 public:
     Cluster(float min, float max, Grafo *grafo, std::string type);
     ~Cluster();
@@ -42,6 +44,7 @@ public:
     void inserirNoCluster(No* nodeToInsert); //Nó que será adicionado ao cluster
 
     Grafo *getGrafo(){return cluster_graph;};
+    Grafo *getGrafoOriginal(){return grafoOriginal;};
 
     //Métodos do Gustavo.
 

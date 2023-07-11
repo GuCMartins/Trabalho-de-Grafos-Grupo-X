@@ -11,6 +11,7 @@ using namespace std;
 Cluster::Cluster(float min, float max, Grafo *grafo, std::string type)
 {
     //Inicialização dos valores do cluster->
+    this->grafoOriginal = grafo;
     this->min = min;
     this->max = max;
     this->sumVertices = 0;

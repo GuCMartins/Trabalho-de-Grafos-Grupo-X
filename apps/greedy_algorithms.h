@@ -32,9 +32,31 @@ typedef struct
 
 bool solucao(Cluster **clusters, int num_clusters)
 {
+    Grafo *grafoOriginal = clusters[0]->getGrafoOriginal();
+    int *nosInseridos = new int[grafoOriginal->getOrdem()];
+    for (int i = 0; i < grafoOriginal->getOrdem(); i++)
+    {
+        nosInseridos[i] = -1; // Flag -1 indica que ainda não foi inserido
+    }
+
     for (int i = 0; i < num_clusters; i++)
     {
-        if (clusters[i]->getSumVertices() > clusters[i]->getMax() || clusters[i]->getSumVertices()<clusters[i]->getMin()){
+        if (clusters[i]->getSumVertices() > clusters[i]->getMax() || clusters[i]->getSumVertices() < clusters[i]->getMin())
+        {
+            return false;
+        }
+
+        std::forward_list<int> inseridos = clusters[i]->getInseridos();
+        for (std::forward_list<int>::iterator it = inseridos.begin(); it != inseridos.end(); it++)
+        {
+            nosInseridos[*it] = 1;
+        }
+    }
+
+    for (int i = 0; i < grafoOriginal->getOrdem(); i++)
+    {
+        if (nosInseridos[i] == -1)
+        {
             return false;
         }
     }

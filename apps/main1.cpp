@@ -410,120 +410,202 @@ void escritaArquivo(string pathOut, Grafo *G){
     arqSaida.close();
 }
 
+void clearScreen() {
+    #ifdef _WIN32
+        std::system("cls");
+    #else
+        std::system("clear");
+    #endif
+}
+
 int main(int argc, char **argv)
 {
 
-    string pathIn = "", pathOut = "";
-    string ehDir, ehPondNode, ehPondAr, instance;
+        string pathIn = "", pathOut = "";
+        string ehDir, ehPondNode, ehPondAr, instance;
 
-    if (argc != 6)
-    {
-        cout << "Entrada invalida! Tente <nome_do_executavel> <arq_In> <arqOut> <direcionado[0,1]> <ponderadoNode[0,1]> <ponderadoAresta[0,1]>" << endl;
-        
-        // cout << argv[0] << endl;
-        // cout << argv[1] << endl;
-        // cout << argv[2] << endl;
-        // cout << argv[3] << endl;
-        // cout << argv[4] << endl;
-        // cout << argv[5] << endl;
-        // cout << argv[6] << endl;
-        return 0;
-    }else
-    {
-        pathIn = argv[1];
-        pathOut = argv[2];
-        ehDir = argv[3];
-        ehPondAr = argv[4];
-        ehPondNode = argv[5];
-    }
+        if (argc != 6)
+        {
+            cout << "Entrada invalida! Tente <nome_do_executavel> <arq_In> <arqOut> <direcionado[0,1]> <ponderadoNode[0,1]> <ponderadoAresta[0,1]>" << endl;
 
-
-    //Usar o que está abaixo para ler e escreve o grafo dos algoritmos da primeira etapa.
-    Grafo *G = leituraArquivoFase1(pathIn, ehDir, ehPondAr, ehPondNode);
-    escritaArquivo(pathOut, G);
-    G->imprimirTodosNosAdjacentes();
-    
-    char opcao = ' ';
-    
-    while(opcao != 'n'){
-        cout << "Digite qual a letra, dentre as avaliativas, da função que você deseja utilizar. Digite a letra 'n' a qualquer momento para pausar o display..." << endl;
-        cin >> opcao;
-        int idNo;
-        int noOrigem, noDestino;
-        switch(opcao){
-            case 'h': 
-            {cout << "Digite o id do no que será avaliada a vizinhança aberta: " << endl;
-            cin >> idNo;
-            G->vizinhancaAberta(idNo);
-            break;}
-            case 'i': 
-            {cout << "Digite o id do no que será avaliada a vizinhança fechada: "<< endl;
-            cin >> idNo;
-            G->vizinhancaFechada(idNo);
-            break;}
-            case 'l':
-            {cout << "O grafo lido é bipartido ? " << isBipartite(G) << endl;
-            break;}
-            case 'o':
-            {cout << "Digite o id do no que será avaliada o fecho transitivo direto: "<< endl;
-            cin >> idNo;
-            G->FechoTransitivoDireto(idNo);
-            break;}
-            case 'p':
-            {cout << "Digite o id do no que será avaliada a fecho transitivo indireto: "<< endl;
-            cin >> idNo;
-            G->FechoTransitivoIndireto(idNo);
-            break;}
-            case 'r':
-            {//Caso queira utilizar essa função, preencha, por favor, o vetor com os valores e o respectivo tamanho do mesmo.
-            int *idNosVet = {};
-            int size;
-            Grafo *induzido = subgrafoInduzido(G, idNosVet, size);
-            induzido->imprimirTodosNosAdjacentes();
-            break;}
-            case 't':
-            {componentesFortementeConexas(G);
-            break;}
-            case 'u':
-            {cout << "É euleriano ? " << G->Euleriano() << endl;
-            break;}
-            case 'v':
-            {cout << "Digite o id do no que sera verificado a propriedade: "<< endl;
-            cin >> idNo;
-            cout << "É nó de articulação ? " << ehNoArticulacao(G, idNo) << endl;
-            break;}
-            case 'w':
-            {cout << "Digite o id do nó de origem: "<< endl;
-            cin >> noOrigem;
-            cout << "Digite o id do nó de destino: "<< endl;
-            cin >> noDestino;
-            cout << "É aresta ponte ? " << ehArestaPonte(G, noOrigem, noDestino) << endl;
-            break;}
-            case 'y':
-            {Grafo *g = kruskalAlgorithm(G);
-            g->imprimirTodosNosAdjacentes();
-            break;}
-            case 'z':
-            {char opt;
-            cout << "Qual o nó de origem ?" << endl;
-            cin >> noOrigem;
-            cout << "Qual o nó de destino ?" << endl;
-            cin >> noDestino;
-            cout << "Deseja utilizar o algoritmo de Dijkstra(d) ou de Floyd(f)?" << endl;
-            cin >> opt;
-            if(opt == 'd'){
-                float* valores = dijkstraAlgorithm(G, noOrigem);
-                cout << "Valor do caminho mínimo: " << valores[noDestino] << endl;
-            }else if(opt == 'f'){
-                float** valores = floydWarshalAlgorithm(G);
-                cout << "Valor do caminho mínimo: " << valores[noOrigem][noDestino] << endl; 
-            }
-            break;}
-            case 'n':
-            {cout << "Saindo do display..." << endl;
-            break;}
+            // cout << argv[0] << endl;
+            // cout << argv[1] << endl;
+            // cout << argv[2] << endl;
+            // cout << argv[3] << endl;
+            // cout << argv[4] << endl;
+            // cout << argv[5] << endl;
+            // cout << argv[6] << endl;
+            return 0;
         }
-    }
+        else
+        {
+            pathIn = argv[1];
+            pathOut = argv[2];
+            ehDir = argv[3];
+            ehPondAr = argv[4];
+            ehPondNode = argv[5];
+        }
 
-    return 0;
+        // Usar o que está abaixo para ler e escreve o grafo dos algoritmos da primeira etapa.
+        Grafo *G = leituraArquivoFase1(pathIn, ehDir, ehPondAr, ehPondNode);
+        escritaArquivo(pathOut, G);
+        // G->imprimirTodosNosAdjacentes();
+
+        char opcao = ' ';
+
+        while (opcao != 'n')
+        {
+            cout << "==================================== Menu ====================================" << endl;
+            cout <<"1. Limpar tela\n";
+            cout <<"2. Sair\n";
+            cout << "h) mostrar a vizinhança aberta de um dado nó informado pelo usuário\n";
+            cout << "i) mostrar a vizinhança fechada de um dado nó informado pelo usuário\n";
+            cout << "l) verificar se o grafo é bipartido\n";
+            cout << "o) retornar o fecho transitivo direto de um dado nó informado pelo usuário\n";
+            cout << "p) retornar o fecho transitivo indireto de um dado nó informado pelo usuário\n";
+            cout << "r) apresentar o subgrafo induzido por um dado conjunto de vértices informado pelo usuário\n";
+            cout << "t) para digrafos, apresentar as componentes fortemente conexas\n";
+            cout << "u) verificar se o grafo é eulerianos\n";
+            cout << "v) apresentar os nós de articulação";
+            cout << "w) apresentar as arestas ponte\n";
+            cout << "y) apresentar o raio, o diâmetro, o centro e a periferia dografo\n";
+            cout << "z) Apresentar o caminho mínimo entre dois vértices usando o algoritmo de Dijkstra ou de Floyd (escolha do usuário).\n";
+
+            // cout << "Digite qual a letra, dentre as avaliativas, da função que você deseja utilizar. Digite a letra 'n' a qualquer momento para pausar o display..." << endl;
+            cin >> opcao;
+            int idNo;
+            int noOrigem, noDestino;
+            switch (opcao){
+                case '1':
+                {
+                    clearScreen();
+                    break;
+                }
+                case '2':
+                {
+                    exit(0);
+                    break;
+                }
+                case 'h':
+                {
+                    cout << "Digite o id do no que será avaliada a vizinhança aberta: " << endl;
+                    cin >> idNo;
+                    cout << "ID no: " << idNo << endl;
+
+                    G->vizinhancaAberta(idNo);
+                    break;
+                }
+                case 'i':
+                {
+                    cout << "Digite o id do no que será avaliada a vizinhança fechada: " << endl;
+                    cin >> idNo;
+                    G->vizinhancaFechada(idNo);
+                    break;
+                }
+                case 'l':
+                {
+                    clearScreen();
+                    if(isBipartite(G)){
+                        cout << "O grafo lido é bipartido!"<< endl;
+                    }else{
+                        cout << "O grafo lido não é bipartido!"<< endl;
+                    }
+
+                    break;
+                }
+                case 'o':
+                {
+                    cout << "Digite o id do no que será avaliada o fecho transitivo direto: " << endl;
+                    cin >> idNo;
+                    G->FechoTransitivoDireto(idNo);
+                    break;
+                }
+                case 'p':
+                {
+                    cout << "Digite o id do no que será avaliada a fecho transitivo indireto: " << endl;
+                    cin >> idNo;
+                    G->FechoTransitivoIndireto(idNo);
+                    break;
+                }
+                case 'r':
+                {
+                    int numeroVertices;
+                    cout << "Informe o número de vértices: " << endl;
+                    cin >> numeroVertices;
+                    int *idNosVet = new int[numeroVertices];
+                    cout << "Informe os ids dos vértices: " << endl;
+                    int idV;
+                    for (int k = 0; k < numeroVertices; k++)
+                    {
+                        cin >> idNosVet[k];
+                    }
+                    Grafo *induzido = subgrafoInduzido(G, idNosVet, numeroVertices);
+                    cout << "Grafo induzido pelos vértices informados: " << endl;
+                    induzido->imprimirTodosNosAdjacentes();
+                    break;
+                }
+                case 't':
+                {
+                    componentesFortementeConexas(G);
+                    break;
+                }
+                case 'u':
+                {
+                    cout << "É euleriano ? " << G->Euleriano() << endl;
+                    break;
+                }
+                case 'v':
+                {
+                    cout << "Digite o id do no que sera verificado a propriedade: " << endl;
+                    cin >> idNo;
+                    cout << "É nó de articulação ? " << ehNoArticulacao(G, idNo) << endl;
+                    break;
+                }
+                case 'w':
+                {
+                    cout << "Digite o id do nó de origem: " << endl;
+                    cin >> noOrigem;
+                    cout << "Digite o id do nó de destino: " << endl;
+                    cin >> noDestino;
+                    cout << "É aresta ponte ? " << ehArestaPonte(G, noOrigem, noDestino) << endl;
+                    break;
+                }
+                case 'y':
+                {
+                    Grafo *g = kruskalAlgorithm(G);
+                    g->imprimirTodosNosAdjacentes();
+                    break;
+                }
+                case 'z':
+                {
+                    char opt;
+                    cout << "Qual o nó de origem ?" << endl;
+                    cin >> noOrigem;
+                    cout << "Qual o nó de destino ?" << endl;
+                    cin >> noDestino;
+                    cout << "Deseja utilizar o algoritmo de Dijkstra(d) ou de Floyd(f)?" << endl;
+                    cin >> opt;
+                    if (opt == 'd')
+                    {
+                        float *valores = dijkstraAlgorithm(G, noOrigem);
+                        cout << "Valor do caminho mínimo: " << valores[noDestino] << endl;
+                    }
+                    else if (opt == 'f')
+                    {
+                        float **valores = floydWarshalAlgorithm(G);
+                        cout << "Valor do caminho mínimo: " << valores[noOrigem][noDestino] << endl;
+                    }
+                    break;
+                }
+                case 'n':
+                {
+                    cout << "Saindo do display..." << endl;
+                    break;
+                }
+                
+            }
+            
+        }
+
+        return 0;
 }

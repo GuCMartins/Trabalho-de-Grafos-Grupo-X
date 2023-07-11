@@ -39,8 +39,8 @@ public:
     bool ehPondNode(){return pondNode;};
 
     bool existeArco(int noPartida,int noDestino);
-    int* vizinhancaAberta(int idNo);
-    int* vizinhancaFechada(int idNo);
+    void vizinhancaAberta(int idNo);
+    void vizinhancaFechada(int idNo);
     bool Euleriano();
 
     int* FechoTransitivoDireto(int idNo);
